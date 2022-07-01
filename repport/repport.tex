@@ -23,7 +23,7 @@
 \usepackage{color}
 \usepackage{listings}
 \usepackage{tikz-cd}
-\usepackage[hidelinks]{hyperref}
+\usepackage[colorlinks=true, linkcolor=black, urlcolor=blue, citecolor=black, anchorcolor=blue]{hyperref}
 \usepackage{cleveref}
 \usepackage{comment}
 \usepackage{caption}
@@ -137,21 +137,72 @@
 
 
 \section{Introduction}
-\begin{itemize}
-    \item presentation of the Internship
-    \item state of the art
-    \item result
-    \item goal to reach
-\end{itemize}
+
+ {\color{red}
+  \begin{itemize}
+      \item Contexte du stage
+      \item Histoire de l'informatique quantique
+      \item présentation du model des quantum query
+      \item présentation des mot des dyck
+      \item présentation de ce qui a été fait sur le sujet
+      \item présentation de l'ojectif du stage
+      \item présentation des résultat
+  \end{itemize}}
+
+\subsection*{Context of the internship}
+
+As part of the \href{http://informatique.ens-lyon.fr/en/academic-programs/master/m1}{first year of Master} at the
+\href{http://www.ens-lyon.fr/en/}{École Normale Supérieure de Lyon},
+I was able to do a 12 weeks research internship in a laboratory.
+
+My research for an internship in Quantum Algorithmic have brought me to
+the \href{https://www.lu.lv/en/studies/faculties/faculty-of-computing/}{Faculty of Computing}
+at the \href{https://www.lu.lv/}{University of Latvia}
+and my supervisor \href{http://home.lu.lv/~ambainis/}{Andris Ambainis}. My research also
+brings me to discuss with \href{https://kpfu.ru/Kamil.Hadiev?p_lang=2}{Kamil Khadiev}
+from \href{https://eng.kpfu.ru/}{Kazan Federal University} who has become my co-supervisor.
+We have discussed by email to find an interesting subject of research on which I have
+liked to work on. I thank them for their help, their supervision and the time they have
+given to me during this 12 weeks.
+
+During the internship, I have been integrated to the life of the
+\href{https://quantum.lu.lv/}{Center for Quantum Computing Science}.
+I thanks members of the team for the great discussions we had after
+the seminar.
+
+I also want to thank \href{https://perso.ens-lyon.fr/omar.fawzi/}{Omar Fawzi} for
+having introduced me to quantum computing and its fascinating possibilities.
+
+The team's research area is quantum algorithms and complexity theory. More precisely,
+the team works on establishing new quantum algorithm with better complexity and proving
+new lower bound to the quantum complexity for many different type of problem belonging
+from graph theory to cryptography passing by language  recognition theory. My work on
+the recognition of restricted Dyck words integrate itself great in the team work as it
+has already been studied by the team few years ago \cite{art:2DGrid} and further by
+Kamil Khadiev \cite{DBLP:conf/uc/KhadievK21}.
+
+My internship, named "Complexity of recognizing Dyck language with a
+quantum computer", as for goal to reduce the gap between the lower and the upper bound for
+a quantum query algorithm that recognizes Dyck words of bounded height. The best
+lower and upper bound are describe in \cite{art:2DGrid} by Andris Ambainis team.
+
+In the end the the introduction I will present more precisely the field of research.
+After I will present the technical preliminaries that are useful to understand the
+current and the new result. Finally, I will present my new result on the problem
+and my failure.
+
+
 
 
 \section{Preliminaries}
-\begin{itemize}
-    \item Quantum Query Complexity
-    \item \Dyck{k, n} problem
-    \item Trichotomy statement
-    \item Adversary methode
-\end{itemize}
+
+ {\color{red}
+  \begin{itemize}
+      \item language sans étoile
+      \item Trichotomy theorem
+      \item LOwer bound
+      \item Upper bound
+  \end{itemize}}
 
 
 
@@ -163,7 +214,7 @@ In the article \cite{art:2DGrid}, Andris Ambainis give us a quantum algorithm to
 the belonging of a $n$ length bit string in $\Dyck{k, n}$ using
 $O(\sqrt{n}(\log_2(n))^{0.5k})$ quantum queries. But the quantum query complexity for $k=1$ is not as good as a
 Grover's search which is sufficient. More precisely, for $k=1$ the algorithm is
-searching for a minimal $\pm 2$ string in $1x0$ but we know that every minimal $\pm 2$ string
+searching for a minimal $\pm 2$ string in $1x0$ but every minimal $\pm 2$ string
 is of size $2$. So the logarithmic search of the upper bound on the size of the
 minimal $\pm 2$ string is no more useful and the algorithm can be summarized to
 applying a Grover search for 2 consecutive 0 or two consecutive 1. This lower the quantum
@@ -182,7 +233,7 @@ This give us this following algorithm for \FA{k}.
         \Else
         \State \textbf{Find} $t$ in $\{l, l+1, \dots, r\}$ such that \\
         \hspace*{1cm} $v_t \gets$ \FALM{2}$(l,r,t,2,s)$ is \textbf{not} \Null
-        \State \textbf{return} $v_t$ of \Null if none
+        \State \textbf{return} $v_t$ of \Null \ if none
         \EndIf
     \end{algorithmic}
 \end{algorithm}
@@ -214,7 +265,8 @@ query complexity for \Dyck{k,n}.
 \newpage
 
 \begin{theorem}{\textbf{\Dyck{k,n}'s algorithm correctness}} \label{th:subroutine_correctness}
-    The new definition of \FA{} and \FFP{} does not change the behavior the original algorithm.
+    The new definition of \FA{} and \FFP{} does not change the behavior the original algorithm
+    as other subroutines (\autoref{annex:complete_subroutine_dyck_kn}) stay unchanged.
 \end{theorem}
 
 \begin{tproof}
@@ -230,19 +282,28 @@ query complexity for \Dyck{k,n}.
         \item $Q$(\FA{k+1}$(l,r,s)$) = $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)$ \ for $k \geq 1$
         \item $Q$(\FFL{k+1}$(l,r,d,s)$) = $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right)$ \ for $k \geq 2$
         \item $Q$(\FALM{k+1}$(l, r, t, d, s)$) = $\left\{
-                  \begin{array}{l}
-                      O\left(\sqrt{d}(\log_2(d))^{0.5(k-2)}\right)\ \textrm{for} \ k \geq 2 \\
-                      O(1)\ \textrm{for} \  k = 1
+                  \begin{array}{ll}
+                      O\left(\sqrt{d}(\log_2(d))^{0.5(k-2)}\right) & \textrm{for} \ k \geq 2 \\
+                      O(1)                                         & \textrm{for} \  k = 1
                   \end{array}
                   \right.$
         \item $Q$(\FF{k}$(l,r,s, left)$) = $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right)$ \ for $k \geq 2$
-        \item $Q$(\FFP{k}$(l,r,t,s)$) = $\left\{ \begin{array}{l}
-                      O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right)\ \textrm{for} \ k \geq 3 \\
-                      O(1) \ \textrm{for} \ k = 2
+        \item $Q$(\FFP{k}$(l,r,t,s)$) = $\left\{ \begin{array}{ll}
+                      O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right) & \textrm{for} \ k \geq 3 \\
+                      O(1)                                             & \textrm{for} \ k = 2
                   \end{array}
                   \right.$
     \end{enumerate}
 \end{theorem}
+
+\begin{tproof}
+    The idea is that only the $O\left(\sqrt{n}\right)$ comes from the initial cases for $k = 1$ and
+    for each of the $k-1$ level of the recursion, the quantum query complexity is increased by
+    a $O\left(\sqrt{\log_2(n)}\right)$ factor. The $O\left(\sqrt{\log_2(n)}\right)$ factor
+    is proven by Andris Ambainis' team in \cite{art:2DGrid} while the $O\left(\sqrt{n}\right)$
+    for $k = 1$ comes from the new version of \FA{k} (\textsc{Algorithm} \autoref{alg:ffp_better}).
+    The complete proof for the theorem is given in \autoref{proof:complexity_dyckkn}.
+\end{tproof}
 
 Unfortunately, the improvements done on the initial cases of some of the subroutines are not sufficient
 to get a significant improvement for the quantum query complexity of \Dyck{k,n} algorithm. In order to
@@ -251,37 +312,37 @@ improve more the query complexity, an other algorithm using a different strategy
 \subsection{A new algorithm for \Dyck{2,n}}
 
 First, we would like to find an algorithm with a quantum query complexity near to match the lower bound,
-$\exists c \geq 1$ such that $Q\left(\Dyck{k,n}\right)=\Omega\left(\sqrt{n}c^k\right)$, describes by Andris
-Ambainis team in \cite{art:2DGrid}. This means that we are searching for an algorithm with a quantum query
+$\exists c > 1$ such that $Q\left(\Dyck{k,n}\right)=\Omega\left(\sqrt{n}c^k\right)$, describes by Andris
+Ambainis' team in \cite{art:2DGrid}. So the searched algorithm must have a quantum query
 complexity of $O\left(\sqrt{n}\right)$.
 
-If we come back to the case were $k=1$, the query complexity comes only from a call to Grover's search
+For $k=1$, the query complexity comes only from a call to Grover's search
 because rejecting is easily by finding a 00 or a 11 substrings inside the entry. For $k=2$
 it no more possible as the substrings that reject are of the form 00(10)*0 or of the form 11(01)*1. It
 implies that the number of calls to Grover's search in the naive approach is in $O\left(n\right)$ so the
 quantum query complexity finally becomes $O\left(n\sqrt{n}\right)$. In order to keep it in
 $O\left(\sqrt{n}\right)$, the algorithm must do a constant number of calls to Grover's search.
 
-For that, we will  define a new alphabet that allow to express every even length binary
-strings and that will have convenient property compatible with Grover's search. Let
+For that, we define a new alphabet that can express every even length binary
+strings and that have convenient property for a Grover's search. Let
 $\mathcal{A} = \{a, b, c, d\}$ the alphabet where $a$ corresponds to 00, $b$ to 11, $c$
 to 01, and $d$ to 10. So every string of size 2 has its letter in $\mathcal{A}$ thus every
 even length bit string is expressed in $\mathcal{A}^*$. This alphabet allow us to prove the
 following theorem.
 
-\begin{theorem}{Substrings rejection for Dyck word of height at most 2.}
+\begin{theorem}{\textbf{Substrings rejection for Dyck word of height at most 2.}}
     A word on the alphabet $\mathcal{A}$ embodies a Dyck word of
-    height at most 2 if and only if it does not contain $aa, ac, bb, bd, cb, cd, da, dc$
+    height at most 2 if and only if it does not contain $aa, ac, bb, bd, cb, cd, da, \textrm{or}\ dc$
     as substrings.
 \end{theorem}
 
 \begin{tproof}
-    This alphabet $\mathcal{A}$ is important because each of this letter has a height variation
-    in $\{-2, 0, 2\}$. Indeed, $a$ has a 2 height variation, $b$ a $-2$, $c$ a 0, and $d$ a zero.
+    First, this alphabet $\mathcal{A}$ is important because each letter has a height variation
+    in $\{-2, 0, 2\}$. Indeed, $a$ has a 2 height variation, $b$ a $-2$, $c$ a 0, and $d$ a 0.
     This means that after each letter in a word, the current height will be even. Moreover,
     for a valid Dyck word of height at most 2, after every letter the height will be 0 or 2
     which are respectively the lower and upper bound for the height. It means that no letter
-    can cross a border between its two bits.
+    can cross a border after its first bit.
 
     \begin{figure}[h!]
         \centering
@@ -307,8 +368,8 @@ following theorem.
     \end{figure}
 
     This property is important as it implies that every $\pm 3$ strings uses at least two letters.
-    First, we can get a partition of $\mathcal{A}^2$ give in \autoref{tab:partitionDyck2} by checking if
-    each pair as a substring of a word make it not a Dyck word.
+    So by checking if a pair of letter as a substring of a word make it not a Dyck word, $\mathcal{A}^2$
+    can be split into two sets described in \autoref{tab:partitionDyck2}.
 
     \begin{table}[htb]
         \centering
@@ -326,15 +387,15 @@ following theorem.
         \newpage
     \end{table}
     \begin{itemize}
-        \item The set $\mathcal{X}$. First, every couple of letter such that it contains
+        \item The set $\mathcal{X}$. First, every couple of letter which contains
               a $\pm 3$ strings is in $\mathcal{X}$. This first condition explains the belonging
               of $aa, ac, dc, da, cb, bb, bd, \textrm{and}\ cd $. Next, $cd$ and $dc$ belong
               to $\mathcal{X}$ because of the following property: For any valid Dyck word of
-              height 2, the current height is bounded between 0 and 2, moreover after each
-              letter the current height is even this means that both couple $cd$ and $dc$ start
-              on a boundary and finish on the same one. Because $cd$ and $dc$ are going
-              above and below the height at which they start, both are going outside off the
-              boundary which implies the word can not be a Dyck Word of height a most 2.
+              height at most 2, the current height is bounded between 0 and 2, moreover after each
+              letter the current height is even so both couple $cd$ and $dc$ start
+              and finish on the same bound. Futhermore,  $cd$ and $dc$ are going
+              above and below the height at which they start so both are going outside off the
+              bounds, thus a word which contains $cd$ or $dc$ can not be a Dyck Word of height a most 2.
               The \autoref{fig:rejectDyck2} shows each couple of $\mathcal{X}$.
 
               \begin{figure}[h!]
@@ -373,13 +434,13 @@ following theorem.
                       \draw[blue, dashed] (15, 1.5) -- (15, 2.5);
                   \end{tikzpicture}
                   \caption{Every 2 letters configuration that implies the word, whom
-                      the configuration is a substring, is not a Dyck word of height 2.}
+                      the configuration is a substring, is not a Dyck word of height at most 2.}
                   \label{fig:rejectDyck2}
               \end{figure}
 
-        \item The set $\mathcal{V}$. The couple of $\mathcal{A}$ do not implies
-              that the word is not a Dyck word of size 2 if each can fit inside
-              the height boundaries. The \autoref{fig:donotrejectDyck2} shows that
+        \item The set $\mathcal{V}$. The couples of $\mathcal{A}$ do not imply
+              that the word is not a Dyck word of height at most 2 because each couple
+              can fit inside the height bounds. The \autoref{fig:donotrejectDyck2} shows that
               every couple not in $\mathcal{X}$ (ie. $ab, ad, ba, bc, ca, cc, db, dd$)
               fit between height 0 and 2.
 
@@ -421,7 +482,7 @@ following theorem.
                       \draw[blue, dashed] (15, -.2) -- (15, .5);
                   \end{tikzpicture}
                   \caption{Every 2 letters configuration that
-                      can be found in a valid Dyck word of height 2.}
+                      can be found in a valid Dyck word of height at most 2.}
                   \label{fig:donotrejectDyck2}
               \end{figure}
     \end{itemize}
@@ -430,10 +491,10 @@ following theorem.
     cannot be a Dyck word of height two. But does every non Dyck word of height
     at most 2 have a substring in $\mathcal{X}$?
 
-    A word is not a dyck word of height 2 if it include a $\pm 3$ strings.
+    A word is not a dyck word of height at most 2 if it include a $\pm 3$ strings.
     But how are represented $\pm 3$ strings using the letters? There are 8
     different cases which are 2 by 2 symmetrical so \autoref{fig:p3string}
-    and \autoref{fig:p3string2piece} shows only the cases for +3 strings. In
+    and \autoref{fig:p3string2piece} show only the cases for +3 strings. In
     \autoref{fig:p3string}, every +3 string of size 3 is include in $aa$ or
     $ac$ so it is sufficient to search for this two couple. In \autoref{fig:p3string2piece}
     every +3 strings of length greater than 3 are composed of 2 minimal +2
@@ -525,7 +586,7 @@ following theorem.
     \end{figure}
 
 \end{tproof}
-Finally, A word on the alphabet $\mathcal{A}$ embodies a Dyck word of
+Finally, a word on the alphabet $\mathcal{A}$ embodies a Dyck word of
 height at most 2 if and only if it does not contain $aa, ac, bb, bd, cb, cd, da, dc$
 as substrings. The following \textsc{Algorithm} \autoref{alg:dyck2nsqrt} for \Dyck{2, n}
 comes from the direct application of the theorem.
@@ -548,19 +609,21 @@ comes from the direct application of the theorem.
     \end{algorithmic}
 \end{algorithm}
 
-\newpage
+\begin{theorem}{\textbf{The quantum query complexity of \textsc{DyckFast}$_{2,n}$.}}
+    The \textsc{DyckFast}$_{2,n}$ algorithm has a quantum query complexity of $O\left(\sqrt{n}\right)$.
+\end{theorem}
+
+\begin{tproof}
+    The algorithm is doing at most 8 Grover's search on the modified input string $11x00$.
+    So the total quantum query complexity is the folling.
+    \[Q(\textsc{DyckFast}_{2, n}) = 8\times O\left(\sqrt{n+4}\right) = O\left(\sqrt{n}\right)\]
+\end{tproof}
+
+\subsection{Search for an algorithm for all k}
 
 \section{Conclusion}
 
-bonsoir paris
-
-bonnoaisn
-
-boabdado
-
-ibabdiubaoiz
-
-iabdiabdo
+Conclusion here.
 
 
 \bibliographystyle{plain}
@@ -575,8 +638,11 @@ iabdiabdo
     \section*{The frame of the intership}
 
     \section{The algorithm for \Dyck{k, n}}
+    \label{annex:complete_subroutine_dyck_kn}
+    All the subroutines' pseudo code can be found from \textsc{Algorithm}
+    \autoref{alg:dyck_kn} to \textsc{Algorithm} \autoref{alg:ffp}.
 
-    \begin{algorithm};
+    \begin{algorithm}
         \caption{\Dyck{k,n}}\label{alg:dyck_kn}
         \begin{algorithmic}
             \Require $n \geq 0$ and $k \geq 1$
@@ -669,7 +735,7 @@ iabdiabdo
 
 
     \begin{algorithm}
-        \caption{$\FFP{k}(l,r,t,s)$}
+        \caption{$\FFP{k}(l,r,t,s)$}\label{alg:ffp}
         \begin{algorithmic}
             \Require $0\leq l<r$, $l \leq t \leq r$ and $s \subseteq \{1, -1\}$
 
@@ -681,8 +747,30 @@ iabdiabdo
     \end{algorithm}
 
     \section{The proof of the quantum query complexity for \Dyck{k,n} algorithm's subroutines}
+    \label{proof:complexity_dyckkn}
 
-    \begin{tproof} The proof is done by induction on the height of the Dyck word $k$.
+    \begin{theorem}{\textbf{\Dyck{k,n}'s Subroutines complexity}} \label{th:subroutine_complexity}
+        The subroutines' quantum query complexity for $k$ are the following.
+        \begin{enumerate}
+            \item $Q$(\Dyck{k,n}) = $O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)$ \ for $k \geq 1$
+            \item $Q$(\FA{k+1}$(l,r,s)$) = $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)$ \ for $k \geq 1$
+            \item $Q$(\FFL{k+1}$(l,r,d,s)$) = $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right)$ \ for $k \geq 2$
+            \item $Q$(\FALM{k+1}$(l, r, t, d, s)$) = $\left\{
+                      \begin{array}{ll}
+                          O\left(\sqrt{d}(\log_2(d))^{0.5(k-2)}\right) & \textrm{for} \ k \geq 2 \\
+                          O(1)                                         & \textrm{for} \  k = 1
+                      \end{array}
+                      \right.$
+            \item $Q$(\FF{k}$(l,r,s, left)$) = $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right)$ \ for $k \geq 2$
+            \item $Q$(\FFP{k}$(l,r,t,s)$) = $\left\{ \begin{array}{ll}
+                          O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right) & \textrm{for} \ k \geq 3 \\
+                          O(1)                                             & \textrm{for} \ k = 2
+                      \end{array}
+                      \right.$
+        \end{enumerate}
+    \end{theorem}
+
+    \begin{tproof} The proof is done by induction on the height $k$ of the Dyck word.
         \init{For $k=1$ and $k=2$ we have the following initialization. \\
             \begin{itemize}
                 \item For $k=1$, only \FALM{2}, \FA{2} ,and \Dyck{1,n} are defined. The $O(1)$ quantum query complexity
@@ -761,7 +849,7 @@ iabdiabdo
             \end{align*}
 
             Hence the $O\left( \sqrt{r-l}(\log_2(r-l))^{0.5k} \right)$ quantum query complexity of \FA{k+2} comes from the
-            the $O\left(\sqrt{\log_2(r-l)}\right)$ calls to \FFL{k+2}
+            the $O\left(\sqrt{\log_2(r-l)}\right)$ calls to \FFL{k+2}.
 
             \begin{align*}
                 Q(\textrm{\FA{k+2}}(l, r, s)) & = O\left(\sqrt{\log(r-l)}\right) \times O\left(Q(\textrm{\FFL{k+2}}(l, r, d, s))\right) \\
