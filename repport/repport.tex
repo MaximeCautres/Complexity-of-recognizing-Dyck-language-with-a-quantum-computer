@@ -122,7 +122,6 @@
             \end{minipage}
 
             \vspace*{0.5cm}
-
             % Bottom of the page
             {\large   May the 2nd 2022 -  July the 22th 2022}
         \end{center}
@@ -186,10 +185,44 @@ quantum computer", as for goal to reduce the gap between the lower and the upper
 a quantum query algorithm that recognizes Dyck words of bounded height. The best
 lower and upper bound are describe in \cite{art:2DGrid} by Andris Ambainis team.
 
-In the end the the introduction I will present more precisely the field of research.
-After I will present the technical preliminaries that are useful to understand the
-current and the new result. Finally, I will present my new result on the problem
-and my failure.
+In the end of the introduction the field of research will be presented more precisely.
+After that, technical preliminaries, which are useful to understand the
+current and the new results, ill be detailed. Finally, the last section presents the
+new results on the problem and the failures.
+
+\subsection{History of quantum computing}
+
+The history of quantum computing has started in 1980 when Paul Benioff, an american physicist,
+proposed a quantum mechanical model of the Turing machine \cite{art:paulbenioff}.
+This machine use some properties
+of the matter that has been discovered by quantum physicist. After that, some computer
+scientists suggested that the quantum model of turing machine may be more expressive that the
+classical model. Few years after, the first bricks of the quantum circuit have been introduced
+by Richard Feymann \cite{art:feymann}. The first quantum computers have started to arrived middle
+of 1990s. During the last 20 years, the founds given to the creation of the first quantum computer
+have skyrocketed, as the number of start-up and company dedicated to it. This emulation has made
+from the quantum computer
+field one of the most active field of research today. On the algorithmic side, the first
+astonishing result is the algorithm designed by Peter Shor (1994) \cite{art:shor}. The
+algorithm improves a lot the complexity of factorizing integers, enough to break our
+cryptographic protocols when quantum computer will be powerful enough. Since 1994, the
+quantum algorithm area has evolved almost independently from the quantum computers and
+has developed many beautiful theories and interesting results. But how does a quantum
+circuit works ?
+
+\subsection{The quantum circuit and quantum query model}
+
+In classical computer science, the piece of information is represented by using
+0 and 1. This two states can be easily obtained using electricity with 0 equal to 0V
+and 1 equal 5V. It is easy to propagate electricity through wires and to stock its
+level into capacitor. Moreover a little piece of hardware, named transitor, has allow to do some
+computations using logical gates which when include in a complex machine create our
+so-called "computers".
+
+In quantum computer, the story isn't so different. First, the 0 and 1 are
+now represented using particles like electrons or photons. For example,
+an electron with a spin of $+\frac{1}{2}$ (note $|1>$) represents a 1 and
+an other one with a spin of $-\frac{1}{2}$ (note $|0>$) represents a 0.
 
 
 
