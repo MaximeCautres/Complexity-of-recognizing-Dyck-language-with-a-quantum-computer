@@ -34,6 +34,7 @@
 \usepackage{float}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
+\usepackage{qcircuit}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \newcommand{\Dyck}[1]{\textsc{Dyck$_{#1}$}}
@@ -53,6 +54,12 @@
 \newcommand{\observation}[1]{\paragraph*{Observation:}{#1}}
 \newcommand{\notation}[1]{\paragraph*{Notation:}{#1}}
 \newcommand{\property}[1]{\paragraph*{Property:}{#1}}
+\newcommand{\ket}[1]{\ensuremath{|#1\rangle}}
+\newcommand{\metersymbol}[1]{\begin{tikzpicture}[scale=#1]
+    \draw (.8, 0) arc (0:180:.8);
+    \draw[->] (0, 0) -- (1, 1);
+\end{tikzpicture}
+    }
 
 \renewcommand{\comment}[1]{}
 \newcommand\blfootnote[1]{%
@@ -137,17 +144,6 @@
 
 \section{Introduction}
 
- {\color{red}
-  \begin{itemize}
-      \item Contexte du stage
-      \item Histoire de l'informatique quantique
-      \item présentation du model des quantum query
-      \item présentation des mot des dyck
-      \item présentation de ce qui a été fait sur le sujet
-      \item présentation de l'ojectif du stage
-      \item présentation des résultat
-  \end{itemize}}
-
 \subsection*{Context of the internship}
 
 As part of the \href{http://informatique.ens-lyon.fr/en/academic-programs/master/m1}{first year of Master} at the
@@ -210,7 +206,7 @@ quantum algorithm area has evolved almost independently from the quantum compute
 has developed many beautiful theories and interesting results. But how does a quantum
 circuit works ?
 
-\subsection{The quantum circuit and quantum query model}
+\subsection{The quantum circuit, and quantum query model and complexity}
 
 In classical computer science, the piece of information is represented by using
 0 and 1. This two states can be easily obtained using electricity with 0 equal to 0V
@@ -221,23 +217,225 @@ so-called "computers".
 
 In quantum computer, the story isn't so different. First, the 0 and 1 are
 now represented using particles like electrons or photons. For example,
-an electron with a spin of $+\frac{1}{2}$ (note $|1>$) represents a 1 and
-an other one with a spin of $-\frac{1}{2}$ (note $|0>$) represents a 0.
+an electron with a spin of $+\frac{1}{2}$ (note \ket{1}) represents a 1 and
+an other one with a spin of $-\frac{1}{2}$ (note \ket{0}) represents a 0.
+But the use of particles is motivated by their properties and mainly by
+a quantum property called superposition. A quantum state is not only \ket{0}
+or \ket{1}, but can be $\lambda_0 \ket{0} + \lambda_1 \ket{1}$ for every
+$\lambda_{0, 1} \in \mathbb{C}$ such that $\lambda_0+\lambda_1=1$ and a quantum
+bit is now called a qubit. As before, the computations are done by gates, here
+quantum gates which transform the quantum state of the qubit into another one.
+At the end, to get the result of a computation, it is mandatory to measure the
+state of the quantum system, which break the quantum superposition. A quantum
+state of $n$ qubits can be represented with a length 1 vector in a $2^n$
+dimensional space and a quantum gates by a linear unitary transformation
+on a $2^n$ dimensional space. A transformation is said unitary if is preserved
+the length.
+
+\paragraph*{A quantum circuit} is a precise configuration of quantum gates
+on a finite number of qubits. The following \autoref{fig:quantum_circuit_examle} represents the quantum
+circuit that computes a uniform randomize on $\{0, 1\}^n$.
+
+\begin{figure}[h!]
+    \begin{minipage}{.30\textwidth}
+        \centering
+        $
+            \Qcircuit @C=.8em @R=1em {
+            \mbox{$n$ \textrm{entries}} &     &                              &     & \mbox{$n$\ \textrm{outputs}}    \\
+            \lstick{\ket{0}} & \qw & \multigate{2}{H^{\otimes n}} & \qw & \meter & \cw\\
+            \vdots & & \ghost{H^{\otimes n}} & \qw & \vdots &\\
+            \lstick{\ket{0}}& \qw & \ghost{H^{\otimes n}} & \qw & \meter & \cw\\
+            }$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{.65\textwidth}
+        \textbf{Legend:}
+
+        $ \bullet \
+            \Qcircuit @C=1em @R=1em {
+            & \qw & & \cw \\
+            }$ are respectively a quantum wire and a classical wire.
+
+        $\bullet \ \Qcircuit @C=.4em @R=.4em {
+            & \gate{H^{\otimes n}} \\
+            }$ is the Hadamard's gates on each input qubit.
+
+        $\bullet \ \Qcircuit @C=.4em @R=.4em {
+            & \meter \\
+            }$ is the measure of 1 qubit in the algorithm.
+    \end{minipage}
+    \caption{A quantum circuit computing the uniform random on $\{0, 1\}^n$. }
+    \label{fig:quantum_circuit_examle}
+\end{figure}
+
+\paragraph*{The quantum query circuit} is a quantum circuit used to
+compute function with an entry space where $x=x_1 \ldots x_N$ belongs.
+The black box model \cite{black_box_andris} of a quantum query circuit is composed of
+an input state $\ket{\psi_ {start}}$ and a sequence
+$U_0, Q, U_1, \ldots, Q, U_T$ of linear unitary transformations such that $\ket{\psi_{start}}$ and all $U_i$
+do not depend on entry $x$ unlike the $Q_i$ which depend on $x$. The quantum state
+$\ket{\psi_ {start}}$ belong to a $d$-dimensional space generated
+by $\ket{1}, \ket{2},\ldots, \ket{d}$.  To define $Q$, the basis vectors first need to
+be renamed from $\ket{1},\ldots, \ket{d}$ to $\ket{i, j}$ with
+$i \in \llbracket 0, N\rrbracket$ and $j \in \llbracket1, d_i \rrbracket$ for some
+$d_i$ such that  $d_1 + d_2 + \ldots + d_N = d$. Next, $Q$ is define as following.
+
+\[Q(\ket{i, j}) := \left\{
+    \begin{array}{ll}
+        \ket{0, j}  & \textrm{if\ } i = 0                          \\
+        \ket{i, j}  & \textrm{if\ } i > 0 \ \textrm{and\ } x_i = 0 \\
+        -\ket{i, j} & \textrm{if\ } i > 0 \ \textrm{and\ } x_i = 1
+    \end{array}
+    \right. \]
+
+The gates $Q$ are doing the queries to input $x$ by flipping some of the vectors.
+Finally, to get the output of the quantum query algorithm it is necessary to
+measure the output. A quantum query algorithm can the summarized with the following
+quantum circuit.
+
+\begin{figure}[h!]
+    \centering
+    $
+        \Qcircuit @C=.8em @R=1em {
+        \lstick{\vdots} & \qw & \multigate{2}{U_0}  & \multigate{2}{Q} & \multigate{2}{U_1} & \qw &  & &  \multigate{2}{Q} & \multigate{2}{U_T}&\multigate{2}{\metersymbol{.2}} & \cw\\
+        &\lstick{\ket{\psi_{start}}} qw & \ghost{U_0} & \ghost{Q} & \ghost{U_1} & \qw & \cdots & & \ghost{Q} & \ghost{U_T} & \ghost{\metersymbol{.2}}& \cw\\
+        \lstick{\vdots}& \qw & \ghost{U_0} & \ghost{Q}  & \ghost{U_1} & \qw & & &\ghost{Q} &\ghost{U_T}&\ghost{\metersymbol{.2}}& \cw \\
+        }$
+    \caption{Structure of a quantum query algorithm.}
+    \label{fig:quantum_query_algorithm_structure}
+\end{figure}
+
+\paragraph*{The quantum query complexity} of an algorithm corresponds to the number of calls to the $Q$ gate. Often, this number of calls
+is depending on the size of the entry. The quantum query complexity of a problem corresponds to the higher bound for which it is
+certain there is no quantum query algorithm with a greater quantum query complexity solving the problem.
+
+\subsection{Dyck Languages of height $k$}
+
+First, the Dyck Language corresponds to the set of correct and balanced word  of parenthesis.
+The Dyck language is a context free language as it can easily be recognized using a context
+free grammar. The work done by Andris Ambainis' team \cite{art:2DGrid} focus on a restriction
+Dyck language with fixed height $k$. More precisely, a Dyck word has a height of $k$ if, in every
+of its prefix, the difference between the number of opening and closing parenthesis does not
+exceeds $k$. These restricted Dyck languages are called \Dyck{k,n} and are interesting because
+they belong to the already well studied class of star free languages (Detail in \autoref{ssec:starfree}).
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[scale=.55]
+        \draw[<->, thick] (0, 4) -- (0, 0)  -- (12.3, 0);
+        \draw[dashed] (-.2, 1) -- (12.3, 1);
+        \draw[dashed] (-.2, 2) -- (12.3, 2);
+        \draw[dashed, red] (-.2, 3) -- (12.3, 3);
+        \draw[blue, very thick] (0, 0) -- (2, 2) -- (3, 1) -- (5, 3) -- (7, 1) -- (8, 2) -- (9, 1) -- (10, 2) -- (12, 0);
+        \draw (0, 0) node[above left] {0};
+        \draw (0, 1) node[above left] {1};
+        \draw (0, 2) node[above left] {2};
+        \draw[red] (0, 3) node[above left] {3};
+
+        \draw[<->, thick] (15+0, 4) -- (15+0, 0)  -- (15+12.3, 0);
+        \draw[dashed] (15+-.2, 1) -- (15+12.3, 1);
+        \draw[dashed] (15+-.2, 2) -- (15+12.3, 2);
+        \draw[dashed, red] (15+-.2, 3) -- (15+12.3, 3);
+        \draw[blue, very thick] (15+0, 0) -- (15+2, 2) -- (15+3, 1) -- (15+6, 4) -- (15+9, 1) -- (15+10, 2) -- (15+12, 0);
+        \draw (15+0, 0) node[above left] {0};
+        \draw (15+0, 1) node[above left] {1};
+        \draw (15+0, 2) node[above left] {2};
+        \draw[red] (15+0, 3) node[above left] {3};
+    \end{tikzpicture}
+    \caption{\textbf{On the left}, a valid Dyck word of height 3. \textbf{On the right}, an invalid Dyck word of height 3.}
+    \label{fig:dyck_word}
+\end{figure}
+
+\subsection{State of the art}
+This state of the art will not be to precise as the understanding of the
+bibliography has taken almost the first half the internship and will be
+more detailed in the \autoref{sec:preli}. First, few years ago Aaronson,
+Grier and Schaeffer \cite[2019]{trichotomy_not_andris} worked on quantum complexity
+of recognizing regular languages as they can model a lot of tasks. They
+concluded that there are 3 different cases depending of the language:
+\begin{itemize}
+    \item $O(1)$ if it is sufficient to read constant number of letters at the beginning and the end.
+    \item $\tilde{\Theta}(\sqrt{n})$ if a Grover's search is the best way to recognize the language.
+    \item $\Theta(n)$ if recognizing the language is the same as counting modulo some value that can
+          be computed with $O(n)$.
+\end{itemize}
+Further more, it is proved that being in the second classes is equivalent to
+being a star free language. Andris ambainis' team decided to work on \Dyck{k, n} as this
+language is a beautiful example of star free languages. In \cite[2020]{art:2DGrid},
+the team focus on the power of the logarithm in $\tilde{\Theta}\left(\sqrt{n}\right)$.
+They first proved by reduction that the quantum query complexity of \Dyck{k, n}
+called $Q\left(\Dyck{k, n}\right)$ is in $\Omega\left(c^k\sqrt{n}\right)$ where $c$ is
+a constant greater than 1 and after gave an algorithm for \Dyck{k, n} with a quantum
+query complexity of $O\left(\sqrt{n}(\log(n))^{0.5k}\right)$. Since then, no better
+lower bound or algorithm have been found.
+
+\subsection{Goals of the internship}
+The problem on the quantum query complexity of \Dyck{k,n} is still open, my internship
+has for goal to reduce the gap between the lower bound and the best known algorithm.
+The researches have been organized on two main axes:
+\begin{itemize}
+    \item \textbf{Increasing the lower bound.} To do this, It is necessary to understand the bibliography
+          on the adversary method in order to try to find a new adversary with better property.
+    \item \textbf{Lowering the upper bound.} It is sufficient to find new algorithms
+          with a quantum query complexity better than  the previous best known algorithm's one.
+\end{itemize}
+Finally, the overall goal would be to made the two bounds match in order to get the exact quantum
+query complexity of \Dyck{k,n}. Finally, the problem could also be reformulated for multi-brackets word
+as done by Kamil Khadiev in \cite{DBLP:conf/uc/KhadievK21}.
+
+\subsection{Results}
+
+{\color{red} \Huge TODO}
+
+\section{Preliminaries}\label{sec:preli}
+
+{ \color{red} Do another plan, to understand this i need to understand this}
+
+\subsection{Quantum query for regular languages.}
+
+In the article \cite{trichotomy_not_andris}, Aaronson, Grier and Schaeffer presented
+a really interesting algebraic characterization of regular languages based on the
+recognition by monoids and the syntactic congruence. This totally new to me definition
+give me some hard time in order to understand it correctly.
+
+\subsection{Regular languages}
+
+Usually, the set of regular languages $\mathcal{R}$ on the alphabet $\Sigma$ is defined as the smallest
+fixed point of the function F (the function that computes concatenations, unions, and Kleene stars)
+including $\{\varnothing\} \cup \{\varepsilon\} \cup(\cup_{l\in\Sigma}\{l\})$
+with F equal:
+\begin{align*}\label{eq:F}
+    F(X) = & \{AB\  \forall (A,B)\in X^2\}            \\
+           & \cup \{A\cup B\ \forall (A,B) \in X^2 \} \\
+           & \cup \{A^*\ \forall A \in X \}
+\end{align*}
+But here, the more convenient way to characterize regular language is with their
+algebraic characterization. Indeed, a regular language is always a pre image of a subset
+of a monoid under monoid homomorphism. A monoid is a 3-tuple of a set M, an
+internal associative binary operation and finally the identity element associated to the
+operation. A monoid homomorphism is a map from a monoid to another that preserve the
+operation and the identity. The previous property comes from the
 
 
 
+\subsubsection{Star free languages}\label{ssec:starfree}
 
-\section{Preliminaries}
-
- {\color{red}
-  \begin{itemize}
-      \item language sans étoile
-      \item Trichotomy theorem
-      \item LOwer bound
-      \item Upper bound
-  \end{itemize}}
+\subsubsection{Trichotomy theorem}
 
 
+
+\subsection{The bounds for \Dyck{k,n} problem}
+
+\subsubsection{Lower bound on the quantum query complexity of \Dyck{k, n}}
+
+Explaination of reduction
+
+explaination of adversary methods
+
+
+\subsubsection{Best known algorithm to recognize \Dyck{k, n}}
+
+Explanation of the algorithm.
 
 \section{A better algorithm for \Dyck{k,n}}
 
@@ -406,7 +604,7 @@ following theorem.
 
     \begin{table}[htb]
         \centering
-        \caption{Partition of $\mathcal{A}$ into $\mathcal{X}, \mathcal{V}$}
+        \caption{Partition of $\mathcal{A}$ into $\mathcal{X}, \mathcal{V}$.}
         \label{tab:partitionDyck2}
         \begin{tabular}{|c|c|}
             \hline
@@ -652,7 +850,11 @@ comes from the direct application of the theorem.
     \[Q(\textsc{DyckFast}_{2, n}) = 8\times O\left(\sqrt{n+4}\right) = O\left(\sqrt{n}\right)\]
 \end{tproof}
 
-\subsection{Search for an algorithm for all k}
+\subsection{A new algorithm for k=3}
+
+\subsection{A try for a new algorithm for any k.}
+
+
 
 \section{Conclusion}
 
@@ -661,6 +863,8 @@ Conclusion here.
 
 \bibliographystyle{plain}
 \bibliography{biblio}
+\listoffigures
+\listofalgorithms
 
 \newpage
 
@@ -835,6 +1039,14 @@ Conclusion here.
             Thus the $O \left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right)$ quantum query complexity of \FF{k+1} comes
             from the dichotomize search using calls to \FA{k+1} and \FF{k+1}.
 
+            \blfootnote{\begin{align*}
+                    ^{a}\sum_{u=1}^{+\infty} \left(\frac{\textrm{d}}{\textrm{d}x}(x^{u})\right)\left(\frac{1}{\sqrt{2}}\right)
+                    \leq \left(\frac{\textrm{d}}{\textrm{d}x} \left( \sum_{u=1}^{+\infty} x^u \right)\right)\left(\frac{1}{\sqrt{2}}\right)
+                    \leq \left(\frac{\textrm{d}}{\textrm{d}x} \left( \frac{x}{1-x} \right)\right)\left(\frac{1}{\sqrt{2}}\right)
+                    \leq \left(\frac{1}{(1-x)^2}\right)\left(\frac{1}{\sqrt{2}}\right)
+                    \leq \frac{1}{(1-\frac{1}{\sqrt{2}})^2} \leq \frac{\sqrt{2}^2}{(\sqrt{2} - 1)^2}
+                \end{align*}}
+
             \begin{align*}
                 Q(\textrm{\FF{k+1}}(l,r,t,d,s)) & = \begin{array}{l}
                     \sum_{u=1}^{\log_2(r-l)}2u \times O\left(Q(\textrm{\FA{k+1}}(0, \frac{r-l}{2^{u-1}}, s))\right) \\
@@ -852,13 +1064,6 @@ Conclusion here.
                 O \left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)
             \end{align*}
 
-            \blfootnote{\begin{align*}
-                    ^{a}\sum_{u=1}^{+\infty} \left(\frac{\textrm{d}}{\textrm{d}x}(x^{u})\right)\left(\frac{1}{\sqrt{2}}\right)
-                    \leq \left(\frac{\textrm{d}}{\textrm{d}x} \left( \sum_{u=1}^{+\infty} x^u \right)\right)\left(\frac{1}{\sqrt{2}}\right)
-                    \leq \left(\frac{\textrm{d}}{\textrm{d}x} \left( \frac{x}{1-x} \right)\right)\left(\frac{1}{\sqrt{2}}\right)
-                    \leq \left(\frac{1}{(1-x)^2}\right)\left(\frac{1}{\sqrt{2}}\right)
-                    \leq \frac{1}{(1-\frac{1}{\sqrt{2}})^2} \leq \frac{\sqrt{2}^2}{(\sqrt{2} - 1)^2}
-                \end{align*}}
 
             Next, the $ O\left(\sqrt{d}(\log_2(d))^{0.5(k-1)} \right)$ quantum query complexity comes of \FALM{k+2}from the constant amount
             of calls to \FALM{k+1}, \FARM{k+1} ,and \FF{k+1}.
