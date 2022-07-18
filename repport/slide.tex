@@ -1,0 +1,325 @@
+\documentclass[9pt, notheorems]{beamer}
+\setcounter{tocdepth}{4}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{amsfonts}
+\usepackage{stmaryrd}
+\usepackage{xfrac}
+\usepackage{dsfont}
+\usepackage{fancybox}
+\usepackage{fancyref}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{textcomp}
+\usepackage{mathrsfs}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{tikz-cd}
+\usepackage{comment}
+\usepackage{caption}
+\usepackage{shuffle}
+\usepackage{multirow}
+\usepackage{appendix}
+\usepackage{fdsymbol}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{qcircuit}
+\usepackage{hyperref}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\Dyck}[1]{\textsc{Dyck$_{#1}$}}
+\newcommand{\FA}[1]{\textsc{FindAny$_{#1}$}}
+\newcommand{\FFL}[1]{\textsc{FindFixedLength$_{#1}$}}
+\newcommand{\FFP}[1]{\textsc{FindFixedPos$_{#1}$}}
+\newcommand{\FALM}[1]{\textsc{FindAtLeftMost$_{#1}$}}
+\newcommand{\FARM}[1]{\textsc{FindAtRightMost$_{#1}$}}
+\newcommand{\FF}[1]{\textsc{FindFirst$_{#1}$}}
+\newcommand{\Null}{\textsc{Null}}
+
+\newcommand{\hered}[1]{\paragraph*{Induction:}{#1}}
+\newcommand{\init}[1]{\paragraph*{Initialization:}{#1}}
+\newcommand{\IH}[1]{\paragraph*{Induction Hypothesis:}{#1}}
+\newcommand{\Conc}[1]{\paragraph*{Conclusion:}{#1}}
+\newcommand{\remark}[1]{\paragraph*{Remark:}{#1}}
+\newcommand{\observation}[1]{\paragraph*{Observation:}{#1}}
+\newcommand{\notation}[1]{\paragraph*{Notation:}{#1}}
+\newcommand{\property}[1]{\paragraph*{Property:}{#1}}
+\newcommand{\ket}[1]{\ensuremath{|#1\rangle}}
+\newcommand{\metersymbol}[1]{\begin{tikzpicture}[scale=#1]
+    \draw (.8, 0) arc (0:180:.8);
+    \draw[->] (0, 0) -- (1, 1);
+\end{tikzpicture}
+    }
+
+\renewcommand{\comment}[1]{}
+\newcommand\blfootnote[1]{%
+    \begingroup
+    \renewcommand\thefootnote{}\footnote{#1}%
+    \addtocounter{footnote}{-1}%
+    \endgroup
+}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Définition}
+\newtheorem{proposition}{Proposition}[definition]
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}{Lemma}[theorem]
+
+\theoremstyle{definition}
+\newtheorem{conjecture}{Conjecture}[definition]
+\newtheorem{cproof}{Proof Corollary}[theorem] 
+\newtheorem{lproof}{Proof Lemma}[theorem]
+\newtheorem{tproof}{Proof Theorem}[section]
+
+\usetheme{Warsaw}
+
+\title[QQC of bounded height Dyck languages.]{{\huge Complexity of recognizing Dyck languages
+of bounded height with quantum query algorithms.}}
+\author{Maxime CAUTRÈS}
+\institute{Faculty of Computing\\ University of Latvia}
+\date{31/08/2022}
+
+\addtobeamertemplate{footline}{\ \insertframenumber/\inserttotalframenumber\ }
+
+\AtBeginSection[]
+{
+  \begin{frame}
+  \frametitle{Sommaire}
+  \tableofcontents[currentsection, hideothersubsections]
+  \end{frame} 
+}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section{Introduction.}
+
+
+\subsection{Quantum query model and complexity.}
+
+\begin{frame}
+    \frametitle{Classical and quantum computers are both made with simple components.}
+    \begin{minipage}{.45\textwidth}
+        \begin{figure}
+            \input{illustration/schemafulladder.tex}
+            \caption{A Boolean circuit (Full adder).}
+        \end{figure}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{.45\textwidth}
+        \begin{figure}
+            \vspace*{.5cm}
+            \input{illustration/schemacircuit_quantique.tex}\\[.8cm]
+            \caption{A Quantum circuit.}
+        \end{figure}
+    \end{minipage}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Interacting with qubits is more more complexe.}
+
+    \begin{minipage}{.45\textwidth}
+        \visible<1->{
+            \begin{figure}
+                \begin{tikzpicture}
+                    \draw[thick, ->] (0, 0) -- (1, 0);
+                    \draw[thick, ->] (0, 0) -- (0, 1);
+                    \draw (1, 0) node[above] {0};
+                    \draw (0, 1) node[left] {1};
+                \end{tikzpicture}
+                \caption{A classical bit}
+            \end{figure}}
+        \visible<3->{
+            \begin{figure}
+                \begin{tabular}{c|c||c}
+                    $A$ & $B$ & $A\oplus B$ \\
+                    \hline
+                    0   & 0   & 0           \\
+                    0   & 1   & 1           \\
+                    1   & 0   & 1           \\
+                    1   & 1   & 0           \\
+                \end{tabular}
+                \caption{Truth table on 2 bits.}
+            \end{figure}}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{.45\textwidth}
+        \visible<2->{
+            \begin{figure}
+                \begin{tikzpicture}[scale=.6]
+                    \shade[ball color = gray!40, opacity = 0.4] (0,0) circle (2cm);
+                    \draw (0,0) circle (2cm);
+                    \draw (-2,0) arc (180:360:2 and 0.6);
+                    \draw[dashed] (2,0) arc (0:180:2 and 0.6);
+                    \fill[fill=black] (0,0) circle (1pt);
+                    \draw[thick, ->] (0,0 ) -- node[above]{$\ket{0}$} (2,0);
+                    \draw[thick, ->] (0,0) -- node[left]{$\ket{1}$} (0, 2);
+                \end{tikzpicture}
+                \caption{A quantum bit.}
+            \end{figure}}
+        \visible<4->{
+            \begin{figure}
+                $H^{\oplus2} =\frac{1}{2}
+                    \begin{bmatrix}
+                        1 & 1  & 1  & 1  \\
+                        1 & -1 & 1  & -1 \\
+                        1 & 1  & -1 & -1 \\
+                        1 & -1 & -1 & 1
+                    \end{bmatrix}$
+                \caption{Unitary matrix on 2 qubits.}
+            \end{figure}}
+    \end{minipage}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Quantum query algorithm is just a quantum circuit.}
+    \begin{figure}[h!]
+        \centering
+        $
+            \Qcircuit @C=.8em @R=1em {
+            \lstick{\vdots} & \qw & \multigate{2}{U_0}  & \multigate{2}{Q} & \multigate{2}{U_1} & \qw &  & &  \multigate{2}{Q} & \multigate{2}{U_T}&\multigate{2}{\metersymbol{.2}} & \cw\\
+            &\lstick{\ket{\psi_{start}}} qw & \ghost{U_0} & \ghost{Q} & \ghost{U_1} & \qw & \cdots & & \ghost{Q} & \ghost{U_T} & \ghost{\metersymbol{.2}}& \cw\\
+            \lstick{\vdots}& \qw & \ghost{U_0} & \ghost{Q}  & \ghost{U_1} & \qw & & &\ghost{Q} &\ghost{U_T}&\ghost{\metersymbol{.2}}& \cw \\
+            }$
+        \caption{Structure of a quantum query algorithm.}
+        \label{fig:quantum_query_algorithm_structure}
+    \end{figure}
+\end{frame}
+
+\subsection{Dyck languages of bounded height}
+
+\begin{frame}
+    \frametitle{Dyck words}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Dyck word of bounded hight}
+\end{frame}
+
+\subsection{History of the problem}
+
+\begin{frame}
+    \frametitle{The trichotomy article}
+\end{frame}
+
+\begin{frame}
+    \frametitle{There is two main direction of study}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Goal of the internship}
+\end{frame}
+
+\section{State of the art}
+
+\subsection{Lower bounds to the QQC of \Dyck{k,n}}
+
+\begin{frame}
+    \frametitle{Dont speak to muck abour it}
+    \begin{itemize}
+        \item \textbf{By reduction:}
+        \item \textbf{By adversary method:}
+    \end{itemize}
+    MOre information in the report
+\end{frame}
+
+\subsection{Upper bounds to the QQC of \Dyck{k,n}}
+
+\begin{frame}
+    \frametitle{Algorithms gives QQC upper bounds.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Reduction to transmit the QQC upper bounds .}
+
+\end{frame}
+
+\section{The progress to reduce the \Dyck{k,n} QQC .}
+
+\subsection{Why does the problem is not only a grover search }
+
+\begin{frame}
+    \frametitle{FOr k >=2 it is not more easy}
+
+
+
+\end{frame}
+
+\subsection{Original algorithm and small revisions }
+
+\begin{frame}
+    \frametitle{presentation of the algorithm}
+
+
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{small revision}
+
+
+
+\end{frame}
+
+\subsection{A new algorithm for k=2}
+
+\begin{frame}
+    \frametitle{the new algorithm}
+
+
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{can be plug in the big one}
+
+
+
+\end{frame}
+
+\section{New idea to get better quantum query complexity bounds }
+
+\subsection{lower bounds: try to do reduction from other problem}
+\begin{frame}
+    \frametitle{}
+
+
+
+\end{frame}
+\subsection{Upper bounds: Trying not do to every node}
+\begin{frame}
+    \frametitle{}
+
+
+
+\end{frame}
+\subsection{Conclusion}
+
+\begin{frame}
+    \frametitle{Conclusion}
+    \textbf{What as been done:}
+    \begin{itemize}
+        \item
+    \end{itemize}
+    \textbf{Possible idea to go further:}
+    \begin{itemize}
+        \item
+    \end{itemize}
+
+\end{frame}
+
+\end{document}

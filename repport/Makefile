@@ -9,9 +9,16 @@ pdf:
 	@$(TEXC) repport
 	@$(TEXC) repport
 
+slide:
+	@$(TEXC) slide
+	@bibtex slide
+	@$(TEXC) slide
+	@$(TEXC) slide
+
 affiche:
 	@evince repport.pdf &
-
+slide_affiche:
+	@evince slide.pdf &
 
 clean:
 	@echo "Cleaning files..."

@@ -1,0 +1,249 @@
+In order to understand from where comes the $\tilde{\Theta}(\sqrt{n})$ quantum
+query complexity, it is mandatory to start by understanding the
+Trichotomy theorem \cite{trichotomy_not_andris} and its dependency on Regular
+languages and star free languages.
+After that, to understand how to find a lower bounds, it is necessary to explore
+the different adversary methods \cite{adversary_equivalence}.
+
+\subsection{Quantum query for regular languages.}
+
+In the article \cite{trichotomy_not_andris}, Aaronson, Grier and Schaeffer presented
+a really interesting algebraic characterization of regular languages based on the
+recognition by monoids and the syntactic congruence. This totally new to me definition
+give me some hard time in order to understand it correctly.
+
+\subsubsection{Regular languages}
+
+Usually, the set of regular languages $\mathcal{R}$ on the alphabet $\Sigma$ is defined as the smallest
+fixed point of the function F (the function that computes concatenations, unions, and Kleene stars)
+including $\{\varnothing\} \cup \{\varepsilon\} \cup(\cup_{l\in\Sigma}\{l\})$
+with F equal
+\begin{align*}\label{eq:F}
+    F(X) = & \{AB\  \forall (A,B)\in X^2\}                                                   \\
+           & \cup \{A\cup B\ \forall (A,B) \in X^2 \}                                        \\
+           & \cup \{A\cap B\ \forall (A,B) \in X^2 \}\ \texttt{\color{gray!50}$\#$ optional} \\
+           & \cup \{A^*\ \forall A \in X \}.
+\end{align*}
+
+But here, the more convenient way to characterize regular language is with their
+algebraic characterization. Indeed, a regular language is always a pre image of a subset
+of a monoid under monoid homomorphism. A monoid is a 3-tuple of a set M, an
+internal associative binary operation and finally the identity element associated to the
+operation. A monoid homomorphism is a map from a monoid to another that preserve the
+operation and the identity. Usually, to get the monoid representation of a regular
+language, the first step is to compute the syntactical monoid. The syntactical monoid is
+obtained by dividing $\Sigma^*$ by the following equivalence relation called syntactic
+congruence
+\[x \sim_L y \Leftrightarrow \forall (u, v) \in \left(\Sigma^*\right)^2, (uxv \in L \Leftrightarrow uyv \in L).\]
+This equivalence relation is a congruence relation as the equivalence class can be multiplied
+(i.e. if $x\sim_L y$ and $u \sim_L v$ then $xu \sim_L yv$). Now, it is necessary to get the monoid
+homomorphism. For that it is sufficient to take the homomorphism that map an element to its
+congruence class. Inside a congruence class, none or every element of the class is in $L$.
+Indeed,  if $x$ is in $L$ and $x \sim_L y$ then for all
+$(u, v)$ in $\left(\Sigma^*\right)^2, (uxv$ in $L \Leftrightarrow uyv$ in $L)$ thus
+$x$ in $L$ implies $y$ in $L$ and finally as $x$ is in $L$ then $y$ is also in $L$.
+Now, it is sufficient to prove that the syntactical monoid is of finite size.
+{\color{red} ma be put the proof if time else say folklore.}
+
+Finally, every regular language can be recognized by finite monoid.
+
+\subsubsection{Star free languages}\label{ssec:starfree}
+
+The set of star free languages is a really well studied subset of the regular languages.
+Its definition differs a little from regular languages' one as the Kleene star is replace
+by the complement operation (note $\overline{L}$). So star free languages are defined
+as the smallest fixed point of the function F' (the function that computes concatenations, unions
+and complements) and such that it includes
+$\{\varnothing\} \cup \{\varepsilon\} \cup(\cup_{l\in\Sigma}\{l\})$.
+This restriction does not imply that every star free language is finite. Indeed,
+$\Sigma^*$ can be written $\overline{\varnothing}$. For example the language on
+$\Sigma = \{1, 2, 3\}$ described with the regular expression $\Sigma^*20^*2\Sigma^*$ can be written
+as following in the star free way
+$\overline{\varnothing}2\overline{\overline{\varnothing}\Sigma{\setminus}\{0\}\overline{\varnothing}}2\overline{\varnothing}$.
+
+As for regular languages, it exists an algebraic characterization for star free
+languages. Let $M$ be a monoid, $M$ is said to be aperiodic if for every $x$ in
+$m$ it exits a positive integer $n$ such that $x^n=x^n+1$. A theorem proved by
+Schützenberger \cite{Schtzenberger1965OnFM} state that a language is recognized
+by a finite aperiodic monoid if and only if if is star free.
+
+Good examples of star free languages are the Dyck word languages with bounded heights.
+It is first easy to have a finite automata that recognize Dyck word of height $k$ by
+putting one state for each integer from 0 up to $k$. However, the belonging to the star
+free regular languages is more delicate to prove. It has been done done by Italian
+researcher in \cite[1978]{dyck_height_bound_star_free}.
+
+\subsubsection{Trichotomy theorem}
+
+\begin{theorem}[Aaronson, Grier and Schaeffer \cite{trichotomy_not_andris}]
+    Every regular language has quantum query complexity
+    \(0,\Theta(1), \tilde{\Theta}(\sqrt{n}),\) or \(\Theta(n) \)
+    according to the smallest class in the following hierarchy that contains
+    the language.
+    \begin{itemize}
+        \item Degenerate: One of the four languages \(\varnothing, \varepsilon, \Sigma^*\), or \(\Sigma^+\).
+        \item Trivial: The set of languages which have trivial
+              \footnote{A language $L$ is said to be trivial if and only if it exists 2 finite size alphabets
+                  $L_1$ and $L_2$ such that $L = L_1 \Sigma^* L_2$.}
+              regular expressions.
+        \item Star free: The set of languages which have star-free regular expressions.
+        \item Regular: The set of languages which have regular expressions.
+    \end{itemize}
+\end{theorem}
+
+This theorem is really important as it give a good idea on the quantum query complexity
+of many language recognitions. Moreover, the classes are now clearly defined so it is now
+easier to know where is a problem compared to the classes in the introduction. However,
+it does not give the exact quantum query complexity because for star free languages
+the result is given using \(\tilde{\Theta}\). The $\tilde{\Theta}(\sqrt{n})$ means that
+the quantum query complexity of any star free regular language is in
+$\Theta(\sqrt{n}(\log_2(n))^p)$ for some $p$ a non negative constant.
+As it is known that \Dyck{k} languages are star free, it is an interesting problem
+to find the power of $\log_2(n)$ depending on the value of $k$.
+
+\subsection{The bounds for \Dyck{k,n} problem}
+
+The trichotomy theorem state that \Dyck{k,n} language has a quantum query complexity
+in $\tilde{\Theta}(\sqrt{n})$. The $\Theta$ means that the best possible algorithm
+is both a $\tilde{O}(\sqrt{n})$ and a $\tilde{\Omega}(\sqrt{n})$. So, a common method
+to find the power of $\log_2(n)$ depending on $k$ is the squeeze theorem. More
+precisely, the quantum query complexity of \Dyck{k, n} is trapped between a lower
+and an upper bound for quantum query complexity. So it is possible to deduce
+the quantum query complexity from an increasing sequence of lower bound and
+a decreasing sequence of upper bound such that they share the same limit $l$ with $l$
+equals to $Q(\Dyck{k,n})$. How to find this sequence ?
+\begin{itemize}
+    \item \textbf{For the lower bound sequence.} Some of the most important tools to compute
+          lower bounds are called \textbf{quantum adversary methods} and have been invented by Ambainis
+          \cite{andris_adversary_methode}. This tools can compute
+          lower bounds more or less tight and some of this adversary methods have really
+          useful property such as being compatible with a certain type of composition
+          of problems. This lead to the \textbf{reduction methods} that can compute
+          a lower bounds from different but easier problem's ones.
+    \item \textbf{For the upper bound sequence.} The main method is to \textbf{find quantum
+              query algorithms} that are more and more efficient. An other way is also
+          \textbf{by reduction} to a more difficult problem with a
+          good enough upper bound.
+    \item \textbf{For the same limit.}
+          The idea is to do an iterative process where each step improves successively
+          each bound until only one will continue to be improved. Finally, both
+          bounds may end up matching. However, before my internship, both \Dyck{k,n}'s
+          lower and upper bounds where stuck to $\Omega\left(c^k\sqrt{n}\right)$ for some
+          constant $c$ greater than 1 and $O\left(\sqrt{n}\left(\log_2(n)\right)^{0.5k}\right)$.
+\end{itemize}
+
+
+\subsubsection{Lower bound on the quantum query complexity of \Dyck{k, n}}
+
+\paragraph*{\textbf{The quantum adversary methods:}}
+This part as for goal to present some quantum adversary methods and their usages.
+
+\subparagraph*{\textbf{The adversary method.}} The adversary method is a classical
+way to prove lower bound in classical algorithmic. Indeed, the idea behind the classical
+adversary is to prove that for every algorithm, it exist an entry such that the algorithm
+cannot decide in less unit of complexity than the lower bounds. In general, during
+the algorithm execution, the adversary modifies entry values that have not been already used
+in order to increase the execution time. This classical adversary work great for classical
+algorithm but is not really useable on  quantum algorithms.
+
+\subparagraph*{\textbf{The super basic quantum adversary method.}}
+In order to recognize a language it is mandatory to be able to distinguish between
+a valid word $v$ and an invalid word $w$. So at the output of the quantum query
+algorithm, the states $\ket{\psi^T_v}$ and $\ket{\psi^T_w}$ should be distinguishable thus
+$\vert \langle \psi_v^T \vert \psi_w^T \rangle \vert < \frac{2}{3}$. How do they
+will differs? The quantum query algorithm start with
+$\ket{\psi^0_v} = \ket{\psi^0_w} = \ket{\psi_{start}}$. Moreover, the inner product
+of both states isn't affected by $U_i$ gates because there are unitary. However, the $Q_i$
+gates affect this inner product as the $Q_i$'s behaviors are depending on the input.
+Let define the progress measure $\mathcal{P}$ such that
+$\mathcal{P}(t) := \langle \psi_v^t \vert \psi_w^t \rangle$ where $\ket{\psi^t}$ represents
+the state after $Q_t$. Let suppose it exists $d$ such that for all $0\leq t \leq T-1$,
+$\vert \mathcal{P}(t+1)-\mathcal{P}(t)\vert \leq d$. It implies the following inequality
+\[
+    \mathcal{P}(T) = \underbrace{\mathcal{P}(0)}_{=1} + \sum_{i=0}^{T-1}\underbrace{\mathcal{P}(i+1)-\mathcal{P}(i)}_{\geq -d}  \geq \mathcal{P}(0) - T\times d.
+\]
+Moreover, $\mathcal{P}(T)$ should be lower than $\frac{2}{3}$ so it implies that
+$1 - T\times d$ should also be lower than $\frac{2}{3}$ and finally that
+$T$ should be a $O(\frac{1}{d})$. This give a general idea of how to determined
+a lower bound but it isn't precise enough to get a theorem. In its courses,
+Ryan O'Donnell \cite{Odonnel_course} explained a simple to understand adversary method called the super
+basic adversary method. This adversary allow to compute a lower bound
+by using the following method:
+
+\begin{theorem}
+    Let define $YES$ the set equal to $f^{-1}(accepted)$ and $NO$ the set
+    equal to
+
+    $f^{-1}(rejected)$. If it exist two subset $Y\subseteq YES$ and
+    $Z \subseteq NO$ such that:
+    \begin{itemize}
+        \item For each $y$ in $Y$, there are at least $m$ strings $z$ in $Z$ with dist$(y,z)=1$.
+        \item For each $z$ in $Z$, there are at least $m'$ strings $y$ in $Y$ with dist$(y,z)=1$.
+    \end{itemize}
+    Then the quantum query complexity $Q(f)$ is in  $\Omega(\sqrt{m m'})$.
+\end{theorem}
+
+The proof of the theorem can be found in \autoref{proof:advmethod}. More generally,
+the method of an adversary define a process to find the lower $d$ possible. The
+super-basic adversary method as its name let suggest is simple but does not give
+a tight lower bounds. For this, the method should be more complicated which results
+in longer days on the board to find the parameters of the methods.
+
+Let f be the function whose quantum query complexity is unknown. The two adversary methods
+are described as following:
+\begin{itemize}
+    \item \textbf{The Basic adversary method by Ambainis \cite{andris_adversary_methode}}
+          \begin{theorem}
+              Let define $YES$ the set equal to $f^{-1}(accepted)$ and $NO$ the set
+              equal to
+
+              $f^{-1}(rejected)$. Moreover, let $Y\subseteq YES$, $Z \subseteq NO$, and
+              let $\mathcal{R} \subseteq Y\times Z$ be a set of "hard to distinguish" pairs, such that:
+              \begin{itemize}
+                  \item For each $y$ in $Y$, there are at least $m$ strings $z$ in $Z$ with $(y,z)$ in $\mathcal{R}$.
+                  \item For each $z$ in $Z$, there are at least $m'$ strings $y$ in $Y$ with $(y,z)$ in $\mathcal{R}$.
+              \end{itemize}
+              Also, let define $\mathcal{R}_i$ as a restriction from $\mathcal{R}$ such
+              that $(y, z)$ is in $\mathcal{R}_i$ if and only if $(y, z)$ is in $\mathcal{R}$
+              and $y_i \neq z_i$.
+              In addition,
+              \begin{itemize}
+                  \item For each $y$ in $Y$ and $i$, there are at most $l$ strings $z$ in $Z$ with $(y,z)$ in $\mathcal{R}_i$
+                  \item For each $z$ in $Z$ and $i$, there are at most $l'$ strings $y$ in $Y$ with $(y,z)$ in $\mathcal{R}_i$
+              \end{itemize}
+              Then the quantum query complexity $Q(f)$ is in  $\Omega(\sqrt{\frac{m m'}{ll'}})$.
+          \end{theorem}
+    \item \textbf{The general adversary method by \cite{}}
+\end{itemize}
+
+\paragraph*{\textbf{The reduction method:}}
+\begin{itemize}
+    \item how does it work
+    \item how does it translate to quantum query complexity
+    \item the result for a lower bound on \Dyck{k,n}
+\end{itemize}
+
+\subsubsection{Best known algorithm to recognize \Dyck{k, n}}
+
+\paragraph*{\textbf{How to reject a word from \Dyck{k,n}}}
+\begin{itemize}
+    \item recall for the height $height$
+    \item $\pm$ $k+1$ strings, minimal ones
+\end{itemize}
+
+\paragraph*{\textbf{explaination why it is hard for $k > 1$}}
+\begin{itemize}
+    \item There is an infinit number of rejecting strings to search for
+\end{itemize}
+
+\paragraph*{\textbf{Andris ambainis team solution}}
+\begin{itemize}
+    \item Give an detailed explaination of the algorithm that are in the annexe
+    \item explain why every part of the algorithm is important.
+          \begin{itemize}
+              \item the search on $d$
+              \item the log search to have limited error.
+              \item \FALM{k}
+          \end{itemize}
+    \item
+\end{itemize}

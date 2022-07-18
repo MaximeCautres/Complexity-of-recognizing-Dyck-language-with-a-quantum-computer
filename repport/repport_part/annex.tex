@@ -1,0 +1,363 @@
+\begin{appendix}
+
+    \section*{The frame of the intership}
+
+    \section{Proof of the super-basic adversary method}\label{proof:advmethod}
+    As a little reminder here is the theorem.
+    \begin{theorem}
+        Let define $YES$ the set equal to $f^{-1}(accepted)$ and $NO$ the set
+        equal to
+
+        $f^{-1}(rejected)$. If it exist two subset $Y\subseteq YES$ and
+        $Z \subseteq NO$ such that:
+        \begin{itemize}
+            \item For each $y$ in $Y$, there are at least $m$ strings $z$ in $Z$ with dist$(y,z)=1$.
+            \item For each $z$ in $Z$, there are at least $m'$ strings $y$ in $Y$ with dist$(y,z)=1$.
+        \end{itemize}
+        Then the quantum query complexity $Q(f)$ is in  $\Omega(\sqrt{m\times m'})$
+    \end{theorem}
+
+    Understanding this proof is important as it will give the intuitions to understand the
+    general adversary.
+
+    \begin{tproof}
+        First, let define $\mathcal{R}:= \{(y, z)$ such that $ y \in Y, z \in Z,$ and dist$(y,z)=1\}$.
+        Now, it is necessary to redefine the progress notion such that
+        $\mathcal{P}(t) := \sum_{(y,z) \in \mathcal{R}}\vert \langle \psi^t_y \vert \psi^t_z \rangle\vert$
+        where $\ket{\psi_x^t}$ is the state of the algorithm after $t$ query to the entry $x$.
+        So, $\mathcal{P}(0) = \vert \mathcal{R} \vert$ and $\mathcal{P}(T) = \vert \frac{2}{3}\mathcal{R} \vert$.
+        In order to prove the theorem, lets try to prove that for all $t$,
+        \[\mathcal{P}(t) - \mathcal{P}(t+1) \leq \frac{2}{\sqrt{m m'}}\vert \mathcal{R}\vert\]
+        as it is a correct value
+        of $d$ such that the lower bound is $O(\sqrt{mm'})$. Moreover, there are relations between size
+        of the sets:
+        \[\vert \mathcal{R} \vert \geq m \vert Y \vert, \vert \mathcal{R} \vert \geq m' \vert Z \vert
+            \implies \vert 2\mathcal{R} \vert \geq m \vert Y \vert+ m' \vert Z \vert.\] Thus, instead of proving
+        $\mathcal{P}(t) - \mathcal{P}(t+1) \leq \frac{2}{\sqrt{m m'}}\vert \mathcal{R}\vert$, lets try
+        to prove
+        \[\mathcal{P}(t) - \mathcal{P}(t+1) \leq \frac{1}{\sqrt{m m'}}(m \vert Y \vert+ m' \vert Z \vert)
+            = \sqrt{\frac{m}{m'}} \vert Y \vert + \sqrt{\frac{m'}{m}}\vert Z \vert.\]
+        Now, lets take any a couple $(y,z)$ in $\mathcal{R}$, it exists a unique $i^*$ such that $y_{i^*} \neq z_{i^*}$.
+        This small variation between $y$ and $z$ can be well translated to the progress after quantum query gate.
+        Lets write $\ket{\psi^{t}_y}$ and $\ket{\psi^{t}_z}$: \\
+        \[\ket{\psi^{t}_y} = \sum_{\substack{i \in \llbracket0,N\rrbracket\\j \in \llbracket1, d_i\rrbracket}}\alpha_{i,j} \ket{i,j} \hspace*{3cm }
+            \ket{\psi^{t}_z} = \sum_{\substack{i \in \llbracket0,N\rrbracket\\j \in \llbracket1, d_i\rrbracket}}\beta_{i,j} \ket{i,j}.\]
+        Now by applying $Q_t$, the states become
+        \[\ket{\psi^{t}_y} = \sum_{\substack{i \in \llbracket0,N\rrbracket\\j \in \llbracket1, d_i\rrbracket}} (-1)^{(0y)_{i+1}}\alpha_{i,j} \ket{i,j} \hspace*{1cm }
+            \ket{\psi^{t}_z} = \sum_{\substack{i \in \llbracket0,N\rrbracket\\j \in \llbracket1, d_i\rrbracket}}(-1)^{(0z)_{i+1}}\beta_{i,j} \ket{i,j}.\]
+        However, $y$ and $z$ only differ on the index $i^*$, so the restricted progress measure
+        to $y$ and $z$ at $t$ and $t+1$ are equal to
+        \begin{align*}
+            \mathcal{P}_{y,z}(t) = \sum_{\substack{i \in \llbracket0,N\rrbracket                        \\j \in \llbracket1, d_i\rrbracket}} \overline{\alpha_{i,j}}\beta_{i,j} \hspace*{1cm}
+            \mathcal{P}_{y,z}(t+1) & = \sum_{\substack{i \in \llbracket0,N\rrbracket                    \\j \in \llbracket1, d_i\rrbracket}} (-1)^{(0y)_{i+1}+(0z)_{i+1}} \overline{\alpha_{i,j}}\beta_{i,j} \\
+                                   & = \sum_{\substack{i \in \llbracket0,N\rrbracket                    \\j \in \llbracket1, d_i\rrbracket}} \overline{\alpha_{i,j}}\beta_{i,j} -
+            2\sum_{j\in\llbracket1,d_{i^*}\rrbracket} \overline{\alpha_{i^*,j}}\beta_{i^*,j}            \\
+                                   & = \mathcal{P}_{y,z}(t) - 2\sum_{j\in\llbracket1,d_{i^*}\rrbracket}
+            \overline{\alpha_{i^*,j}}\beta_{i^*,j}       .                                              \\
+        \end{align*}
+        So, for restricted progress measure there is the inequality
+        \begin{align*}
+            \vert \mathcal{P}_{y,z}(t)\vert - \vert \mathcal{P}_{y,z}(t+1)\vert & \leq \vert \mathcal{P}_{y,z}(t) - \mathcal{P}_{y,z}(t+1)\vert                                      \\
+                                                                                & \leq \vert 2\sum_{j\in\llbracket1,d_{i^*}\rrbracket} \overline{\alpha_{i^*,j}}\beta_{i^*,j}  \vert \\
+                                                                                & \leq 2\sum_{j\in\llbracket1,d_{i^*}\rrbracket} \vert\alpha_{i^*,j}\vert\vert\beta_{i^*,j}\vert.
+        \end{align*}
+        Moreover, the math trick for all $p$, $q$ real numbers and $h$ non negative real number
+        $2pq \leq hp^2 + \frac{1}{h}q^2 $ allow to rewrite the previous inequality to
+        \begin{align*}
+            \vert \mathcal{P}_{y,z}(t)\vert - \vert \mathcal{P}_{y,z}(t+1)\vert & \leq 2\sum_{j\in\llbracket1,d_{i^*}\rrbracket}  \vert\alpha_{i^*,j}\vert\vert\beta_{i^*,j}\vert                                             \\
+                                                                                & \leq \sum_{j\in\llbracket1,d_{i^*}\rrbracket} h\vert\alpha_{i^*,j}\vert^2 + \frac{1}{h}\vert\beta_{i^*,j}\vert^2.                           \\
+            \intertext{By chosing $h$ equal to $\sqrt{\frac{m}{m'}}$, it becomes}
+            \vert \mathcal{P}_{y,z}(t)\vert - \vert \mathcal{P}_{y,z}(t+1)\vert & \leq \sum_{j\in\llbracket1,d_{i^*}\rrbracket} \sqrt{\frac{m}{m'}}\vert\alpha_{i^*,j}\vert^2 + \sqrt{\frac{m'}{m}}\vert\beta_{i^*,j}\vert^2. \\
+        \end{align*}
+        Now, it is time to sum on every couple $(y,z)$ of $\mathcal{R}$. But $i^*$ is depending on $y,z$ as much
+        as $\alpha_{i,j}$s and $\beta_{i,j}$s so lets give them $y$ and $z$ as argument
+
+        \begin{align*}
+            \mathcal{P}(t)- \mathcal{P}(t+1) & = \sum_{(y,z)\in\mathcal{R}} \left\vert\mathcal{P}_{y,z}(t)\right\vert - \sum_{(y,z)\in\mathcal{R}} \left\vert\mathcal{P}_{y,z}(t+1)\right\vert         \\
+                                             & \leq \sum_{\begin{matrix}
+                    (y,z) \in \mathcal{R} \\
+                    j\in\llbracket1,d_{i^*_{y,z}}\rrbracket
+                \end{matrix}} \sqrt{\frac{m}{m'}}\vert\alpha^{y}_{i^*_{y,z},j}\vert^2 + \sqrt{\frac{m'}{m}}\vert\beta^{z}_{i^*_{y,z},j}\vert^2. \\
+        \end{align*}
+        Now, it is useful to do the first summation in two part in order to find a upped bound to the sum
+        \begin{align*}
+            \mathcal{P}(t)- \mathcal{P}(t+1)  \leq & \sqrt{\frac{m}{m'}}
+            \sum_{\substack{y\ st\ \exists z                                                               \\ (y,z) \in \mathcal{R}}}
+            \sum_{\substack{z\ \textrm{width}                                                              \\ (y,z) \in \mathcal{R}}}
+            \sum_{j\in\llbracket1,d_{i^*_{y,z}}\rrbracket}\vert\alpha^{y}_{i^*_{y,z},j}\vert^2             \\
+                                                   & +\sqrt{\frac{m'}{m}} \sum_{\substack{z\ st\ \exists y \\ (y,z) \in \mathcal{R}}}
+            \sum_{\substack{y\ \textrm{width}                                                              \\ (y,z) \in \mathcal{R}}}
+            \sum_{j\in\llbracket1,d_{i^*_{y,z}}\rrbracket}\vert\beta^{z}_{i^*_{y,z},j}\vert^2.
+        \end{align*}
+        Now, at $y$ fixed, $z \mapsto i^*_{y,z}$ is an injective function from $\{z, (y,z)\in \mathcal{R\}}$ to $\llbracket1, N\rrbracket$ as
+        $y$ and $z$ are at distance 1. Thus $(z,j) \mapsto (i^*_{y,z}, j)$ is also an injective function
+        from $\{(z,j), (y,z)\in \mathcal{R}\ \textrm{and}\ j \in \llbracket1, d_{i^*_{y,z}}\rrbracket\}$ to
+        $\llbracket1, N\rrbracket\times\llbracket1, d_{i^*_{y,z}}\rrbracket$.
+        So, it implies that
+        \[ \bigsqcup_{\substack{z\ \textrm{width}\\ (y,z) \in \mathcal{R}}} \{i^*_{y,z}\}\times \llbracket 1,d_{i^*_{y,z}}\rrbracket\subseteq \bigsqcup_{n \in \llbracket0,N\rrbracket} \{n\}\times\llbracket1,d_n\rrbracket\]
+        and finally that
+        \begin{align*}
+            \sum_{\substack{z\ \textrm{width} \\ (y,z) \in \mathcal{R}}}
+            \sum_{j\in\llbracket1,d_{i^*_{y,z}}\rrbracket}\vert\alpha^{y}_{i^*_{y,z},j}\vert^2
+            \leq \sum_{i \in \llbracket0,N\rrbracket}
+            \sum_{j\in\llbracket1,d_{i}\rrbracket}\vert\alpha^{y}_{i,j}\vert^2 \leq \left\langle \psi_y^t \vert \psi_y^t \right\rangle \leq 1.
+        \end{align*}
+        By symmetry it also works for the second sum, so the difference of progress is now the following
+        \begin{align*}
+            \mathcal{P}(t)- \mathcal{P}(t+1)  \leq & \sqrt{\frac{m}{m'}}
+            \sum_{\substack{y\ st\ \exists z                                                                               \\ (y,z) \in \mathcal{R}}}
+            \sum_{\substack{z\ \textrm{width}                                                                              \\ (y,z) \in \mathcal{R}}}
+            \sum_{j\in\llbracket1,d_{i^*_{y,z}}\rrbracket}\vert\alpha^{y}_{i^*_{y,z},j}\vert^2                             \\
+                                                   & +\sqrt{\frac{m'}{m}} \sum_{\substack{z\ st\ \exists y                 \\ (y,z) \in \mathcal{R}}}
+            \sum_{\substack{y\ \textrm{width}                                                                              \\ (y,z) \in \mathcal{R}}}
+            \sum_{j\in\llbracket1,d_{i^*_{y,z}}\rrbracket}\vert\beta^{z}_{i^*_{y,z},j}\vert^2                              \\
+            \leq                                   & \sqrt{\frac{m}{m'}} \sum_{\substack{y\ st\ \exists z                  \\ (y,z) \in \mathcal{R}}} 1 + \sqrt{\frac{m'}{m}} \sum_{\substack{z\ st\ \exists y \\ (y,z) \in \mathcal{R}}} 1 \\
+            \leq                                   & \sqrt{\frac{m}{m'}} \vert Y \vert + \sqrt{\frac{m'}{m}} \vert Z \vert \\
+            \leq                                   & \frac{2}{\sqrt{mm'}}\vert \mathcal{R} \vert.
+        \end{align*}
+        To conclude, this give a lower bound $\Omega(\sqrt{mm'})$ for the quantum query complexity of $f$.
+
+        \qed
+
+    \end{tproof}
+
+    \newpage
+
+    \section{The algorithm for \Dyck{k, n}}
+    \label{annex:complete_subroutine_dyck_kn}
+    All the subroutines' pseudo code can be found from \textsc{Algorithm}
+    \autoref{alg:dyck_kn} to \textsc{Algorithm} \autoref{alg:ffp}.
+
+    \begin{algorithm}[h!]
+        \caption{\Dyck{k,n}}\label{alg:dyck_kn}
+        \begin{algorithmic}
+            \Require $n \geq 0$ and $k \geq 1$
+            \Ensure $|x| = n $
+            \State $x \gets 1^kx0^k$
+            \State $v \gets$ \FA{k+1}$(0, n+2*k-1, \{1,-1\})$
+            \State \textbf{return} v = \Null
+        \end{algorithmic}
+    \end{algorithm}
+
+    \begin{algorithm}[h!]
+        \caption{\FA{k}$(l,r,s)$}\label{alg:fa_k}
+        \begin{algorithmic}
+            \Require $0 \leq l < r$ and $s \subseteq \{1,-1\}$
+            \State \textbf{Find} $d$ in $\{2^{\lceil \log_2(k)\rceil }, 2^{\lceil \log_2(k)+1\rceil },\ldots,2^{\lceil \log_2(r-l)\rceil }\}$
+            such that \\
+            \hspace*{1cm} $v_d \gets $ \FFL{k}$(l,r,d,s)$ is \textbf{not} \Null
+            \State \textbf{return} $v_d$ or \Null \ if none
+        \end{algorithmic}
+    \end{algorithm}
+
+    \begin{algorithm}[h!]
+        \caption{\FFL{k}$(l,r,d,s)$}\label{alg:ffl_k}
+        \begin{algorithmic}
+            \Require $0 \leq l < r$, $1\leq d \leq r-l$ and $s \subseteq \{1,-1\}$
+            \State \textbf{Find} $t$ in $\{l, l+1, \dots, r\}$ such that \\
+            \hspace*{1cm} $v_t \gets$ \FALM{k}$(l,r,t,d,s)$ is \textbf{not} \Null
+            \State \textbf{return} $v_t$ of \Null if none
+        \end{algorithmic}
+    \end{algorithm}
+
+    \begin{algorithm}[h!]
+        \caption{\FALM{k}$(l,r,d,t,s)$}\label{alg:falm_k}
+        \begin{algorithmic}
+            \Require $0 \leq l < r$, $l \leq r \leq r$, $1\leq d \leq r-l$ and $s \subseteq \{1,-1\}$
+            \State $v = (i_1,j_1,\sigma_1) \gets \FALM{k-1}(l,r,t,d-1,\{1,-1\})$
+            \If{$v \neq \Null$} {
+                \State $v' = (i_2,j_2,\sigma_2) \gets \FARM{k-1}(l,r,i_1-1,d-1,\{1,-1\})$
+                \If{$v' = \Null$}
+                \State $v' = (i_2,j_2,\sigma_2) \gets \FF{k-1}(\max(l, j_1-d+1),i_1-1,\{1,-1\}, left)$
+                \EndIf
+                \If{$v'\neq \Null$ and $\sigma_2 \neq \sigma_1$}{\ $v' \gets \Null$}
+                \EndIf
+                \If{$v' = \Null$}
+                \State $v' = (i_2,j_2,\sigma_2) \gets \FALM{k-1}(l,r,j_1+1,d-1,\{1,-1\})$
+                \EndIf
+                \If{$v' = \Null$}
+                \State $v' = (i_2,j_2,\sigma_2) \gets \FF{k-1}(j_1+1,\max(r, i_1+d-1),\{1,-1\}, right)$
+                \EndIf
+                \If{$v' = \Null$}{\ \textbf{return} \Null}
+                \EndIf
+            }
+            \Else {
+            \State $v = (i_1,j_1,\sigma_1) \gets \FF{k-1}(t, min(t+d-1, r), \{1,-1\}, right)$
+            \If{v = \Null}{\ \textbf{return} \Null}
+            \EndIf
+            \State $v' = (i_2, j_2, \sigma_2) \gets \FF{k-1}(max(t-d+1, l), t, \{1, -1\}, left)$
+                \If{$v' = \Null$}{\ \textbf{return} \Null}
+                \EndIf
+                }
+                \EndIf
+                \If{$\sigma_1=\sigma_2$ and $\sigma_1 \in s$ and $\max(j_1, j_2) - \min(i_1, i_2) + 1 \leq d$}
+                \State \textbf{return} $(\min(i_1, i_2), \max(j_1, j_2), \sigma_1)$
+            \Else{\ \textbf{return} \Null}
+            \EndIf
+
+        \end{algorithmic}
+    \end{algorithm}
+
+    \begin{algorithm}[h!]
+        \caption{\FF{k}$(l, r, s, left)$}
+        \begin{algorithmic}
+            \Require $0\leq l < r$ and $s \subseteq \{1,-1\}$
+            \State $lBorder \gets l, rBorder \gets r, d \gets 1$
+            \While{$lBorder + 1 < rBorder $}
+            \State $ mid \gets \lfloor (lBorder + rBorder)/2 \rfloor $
+            \State $v_l \gets \FA{k}(lBorder, mid, s)$
+            \If{$v_l \neq \Null$}{\ $rBorder \gets mid$}
+            \Else
+            \State $v_{mid} \gets \FFP{k}(lBorder, rBorder, mid, s, left)$
+            \If{$v_{mid} \neq \Null$}{\ \textbf{return} $v_{mid}$}
+            \Else{\ $lBorder \gets mid + 1$}
+            \EndIf
+            \EndIf
+            \State $d \gets d+1$
+            \EndWhile
+            \State \textbf{return} \Null
+        \end{algorithmic}
+    \end{algorithm}
+
+
+    \begin{algorithm}[h!]
+        \caption{$\FFP{k}(l,r,t,s)$}\label{alg:ffp}
+        \begin{algorithmic}
+            \Require $0\leq l<r$, $l \leq t \leq r$ and $s \subseteq \{1, -1\}$
+
+            \State \textbf{Find} $d$ in $\{2^{\lceil \log_2(k)\rceil }, 2^{\lceil \log_2(k)+1\rceil },\ldots,2^{\lceil \log_2(r-l)\rceil }\}$
+            such that \\
+            \hspace*{1cm} $v_d \gets $ \FALM{k}$(l,r,t,d,s)$ is \textbf{not} \Null
+            \State \textbf{return} $v_d$ or \Null \ if none
+        \end{algorithmic}
+    \end{algorithm}
+
+    \newpage
+
+    \section{The proof of the quantum query complexity for \Dyck{k,n} algorithm's subroutines}
+    \label{proof:complexity_dyckkn}
+
+    \begin{theorem}{\textbf{\Dyck{k,n}'s Subroutines complexity}} \label{th:subroutine_complexity}
+        The subroutines' quantum query complexity for $k$ are the following.
+        \begin{enumerate}
+            \item $Q$(\Dyck{k,n}) = $O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)$ \ for $k \geq 1$
+            \item $Q$(\FA{k+1}$(l,r,s)$) = $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)$ \ for $k \geq 1$
+            \item $Q$(\FFL{k+1}$(l,r,d,s)$) = $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right)$ \ for $k \geq 2$
+            \item $Q$(\FALM{k+1}$(l, r, t, d, s)$) = $\left\{
+                      \begin{array}{ll}
+                          O\left(\sqrt{d}(\log_2(d))^{0.5(k-2)}\right) & \textrm{for} \ k \geq 2 \\
+                          O(1)                                         & \textrm{for} \  k = 1
+                      \end{array}
+                      \right.$
+            \item $Q$(\FF{k}$(l,r,s, left)$) = $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right)$ \ for $k \geq 2$
+            \item $Q$(\FFP{k}$(l,r,t,s)$) = $\left\{ \begin{array}{ll}
+                          O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right) & \textrm{for} \ k \geq 3 \\
+                          O(1)                                             & \textrm{for} \ k = 2
+                      \end{array}
+                      \right.$
+        \end{enumerate}
+    \end{theorem}
+
+    \begin{tproof} The proof is done by induction on the height $k$ of the Dyck word.
+        \init{For $k=1$ and $k=2$ we have the following initialization. \\
+            \begin{itemize}
+                \item For $k=1$, only \FALM{2}, \FA{2} ,and \Dyck{1,n} are defined. The $O(1)$ quantum query complexity
+                      of \FALM{2} comes directly from the definition of its initial case, as the $O(\sqrt{r-l})$ quantum
+                      query complexity of \FA{2}. Then the $O\left(\sqrt{n}\right)$ quantum query complexity of \Dyck{1,n} comes from
+                      the call to \FA{2}.
+                \item For $k=2$, the inductive part of the algorithm start and every subroutines is defined. The $O(1)$
+                      quantum query complexity of \FFP{2} comes from the call to \FALM{2}.
+                      The $O\left(\sqrt{r-l}\right)$ quantum query complexity of \FF{2} comes from the dichotomize search using \FA{2} and
+                      \FFP{2} because $\sum_{u=1}^{log_2(r-l)}2u\left(O\left(\sqrt{\frac{r-l}{2^{u-1}}}\right)+O(1)\right) = O(\sqrt{r-l})$
+                      (Detailed in the induction). The $O(\sqrt{d})$ quantum query complexity of \FALM{3} comes from the
+                      constant amount of calls to \FF{2} and \FALM{2} with entry of size $d$. The $O(\sqrt{r-l})$ quantum query
+                      complexity of \FFL{3} comes from the $O\left(\sqrt{\frac{r-l}{d}}\right)$ calls to \FALM{3}. The $O\left(\sqrt{(r-l)\log_2(r-l)}\right)$
+                      quantum query complexity of \FA{3} comes from the $O\left(\sqrt{\log_2(r-l)}\right)$ calls to \FFL{3}. Finally, the
+                      $O\left(\sqrt{(r-l)\log_2(r-l)}\right)$ quantum query complexity of \Dyck{2} comes from the call to \FA{3}.
+            \end{itemize}
+        }
+        \hered{Let suppose it exists $k$ such that \autoref{th:subroutine_complexity} is
+            true for $k$. Let prove that it is true for $k+1$. \\
+
+            First, the $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)$ quantum query complexity of \FFP{k+1} comes from
+            the $O\left(\sqrt{\log(r-l)}\right)$ calls to \FALM{k+1}.
+            \begin{align*}
+                Q(\textrm{\FFP{k+1}}(l, r, t, s)) & = O(\sqrt{\log(r-l)}) \times O\left(Q(\textrm{\FALM{k+1}}(l, r, t, d, s))\right)\            \\
+                                                  & \overset{IH}{=} O \left( \sqrt{\log(r-l)} \times \sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}  \right) \\
+                                                  & = O \left( \sqrt{r-l}(\log_2(r-l))^{0.5(k-1)} \right)
+            \end{align*}
+
+            Thus the $O \left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right)$ quantum query complexity of \FF{k+1} comes
+            from the dichotomize search using calls to \FA{k+1} and \FF{k+1}.
+
+            \blfootnote{\begin{align*}
+                    ^{a}\sum_{u=1}^{+\infty} \left(\frac{\textrm{d}}{\textrm{d}x}(x^{u})\right)\left(\frac{1}{\sqrt{2}}\right)
+                    \leq \left(\frac{\textrm{d}}{\textrm{d}x} \left( \sum_{u=1}^{+\infty} x^u \right)\right)\left(\frac{1}{\sqrt{2}}\right)
+                    \leq \left(\frac{\textrm{d}}{\textrm{d}x} \left( \frac{x}{1-x} \right)\right)\left(\frac{1}{\sqrt{2}}\right)
+                    \leq \left(\frac{1}{(1-x)^2}\right)\left(\frac{1}{\sqrt{2}}\right)
+                    \leq \frac{1}{(1-\frac{1}{\sqrt{2}})^2} \leq \frac{\sqrt{2}^2}{(\sqrt{2} - 1)^2}
+                \end{align*}}
+
+            \begin{align*}
+                Q(\textrm{\FF{k+1}}(l,r,t,d,s)) & = \begin{array}{l}
+                    \sum_{u=1}^{\log_2(r-l)}2u \times O\left(Q(\textrm{\FA{k+1}}(0, \frac{r-l}{2^{u-1}}, s))\right) \\
+                    + \sum_{u=1}^{\log_2(r-l)}2u \times O\left(Q(\textrm{\FFP{k+1}}(0, \frac{r-l}{2^{u-1}}, \_ , s, left))\right)
+                \end{array}                                                     \\
+                                                & \overset{IH}{=}
+                O\left(\sum_{u=1}^{\log_2(r-l)}2u \times \sqrt{\frac{r-l}{2^{u-1}}}(\log_2(\frac{r-l}{2^{u-1}}))^{0.5(k-1)}\right) \\
+                                                & =
+                O\left(\sum_{u=1}^{\log_2(r-l)}2u \times \sqrt{\frac{r-l}{2^{u-1}}}(\log_2(r-l))^{0.5(k-1)}\right)                 \\
+                                                & =
+                O \left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\sum_{u=1}^{\log_2(r-l)}u\times (\frac{1}{\sqrt{2}})^{u-1} \right)       \\
+                                                & =^{a}
+                O \left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)} \frac{\sqrt{2}^2}{(\sqrt{2}-1)^2}\right)                                \\
+                                                & =
+                O \left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)
+            \end{align*}
+
+
+            Next, the $ O\left(\sqrt{d}(\log_2(d))^{0.5(k-1)} \right)$ quantum query complexity comes of \FALM{k+2}from the constant amount
+            of calls to \FALM{k+1}, \FARM{k+1} ,and \FF{k+1}.
+
+            \begin{align*}
+                Q(\textrm{\FALM{k+2}}(l,r,t,d,s)) & = \begin{array}{l}
+                    3 \times O\left(Q(\textrm{\FALM{k+1}}(l,r,t,d,\{1,-1\}))\right) \\
+                    + 4 \times O\left(Q(\textrm{\FF{k+1}}(l,r,\{1,-1\},left))\right)
+                \end{array}                                  \\
+                                                  & \overset{IH}{=} O\left(\sqrt{d}(\log_2(d))^{0.5(k-1)} \right)
+            \end{align*}
+
+            After that, the $O\left( \sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)$ quantum query complexity of \FFL{k+2} comes from the
+            $O\left(\sqrt{\frac{r-l}{d}}\right)$ calls to \FALM{k+2}.
+
+            \begin{align*}
+                Q(\textrm{\FFL{k+2}}(l, r, d, s)) & = O\left(\sqrt{\frac{r-l}{d}}\right) \times O\left(Q(\textrm{\FALM{k+2}}(l,r,t,d,s))\right) \\
+                                                  & = O\left( \sqrt{\frac{r-l}{d}} \times \sqrt{d}(\log_2(d))^{0.5(k-1)}\right)                 \\
+                                                  & = O\left( \sqrt{r-l}(\log_2(d))^{0.5(k-1)}\right)                                           \\
+                                                  & = O\left( \sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)
+            \end{align*}
+
+            Hence the $O\left( \sqrt{r-l}(\log_2(r-l))^{0.5k} \right)$ quantum query complexity of \FA{k+2} comes from the
+            the $O\left(\sqrt{\log_2(r-l)}\right)$ calls to \FFL{k+2}.
+
+            \begin{align*}
+                Q(\textrm{\FA{k+2}}(l, r, s)) & = O\left(\sqrt{\log(r-l)}\right) \times O\left(Q(\textrm{\FFL{k+2}}(l, r, d, s))\right) \\
+                                              & = O\left( \sqrt{\log(r-l)} \times \sqrt{r-l}(\log_2(r-l))^{0.5(k-1)} \right)            \\
+                                              & = O\left( \sqrt{r-l}(\log_2(r-l))^{0.5k} \right)                                        \\
+            \end{align*}
+
+            Finally, the $O\left( \sqrt{n}(\log_2(n))^{0.5k} \right)$ quantum query complexity of \Dyck{k+1,n} comes from the
+            call to \FA{k+2}.
+
+            \begin{align*}
+                Q(\textrm{\Dyck{k+1,n}}) & = O\left(Q(\textrm{\FA{k+2}}(0,n+2k+1,s))\right) \\
+                                         & = O\left(Q(\textrm{\FA{k+2}}(0, n, s))\right)    \\
+                                         & = O\left( \sqrt{n}(\log_2(n))^{0.5k} \right)
+            \end{align*}
+
+        }
+
+        \Conc{By the induction principle we get that the \autoref{th:subroutine_complexity} is true for $k \in \mathbb{N}^*$}
+    \end{tproof}
+
+\end{appendix}
