@@ -82,6 +82,7 @@
 \newtheorem{tproof}{Proof Theorem}[section]
 
 \usetheme{Warsaw}
+\usefonttheme{professionalfonts}
 
 \title[QQC of bounded height Dyck languages.]{{\huge Complexity of recognizing Dyck languages
 of bounded height with quantum query algorithms.}}
@@ -105,10 +106,10 @@ of bounded height with quantum query algorithms.}}
     \titlepage
 \end{frame}
 
-\section{Introduction.}
+\section{Introduction}
 
 
-\subsection{Quantum query model and complexity.}
+\subsection{Quantum query model and complexity}
 
 \begin{frame}
     \frametitle{Classical and quantum computers are both made with simple components.}
@@ -129,7 +130,7 @@ of bounded height with quantum query algorithms.}}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Interacting with qubits is more more complexe.}
+    \frametitle{Interacting with qubits is more complexe.}
 
     \begin{minipage}{.45\textwidth}
         \visible<1->{
@@ -172,7 +173,7 @@ of bounded height with quantum query algorithms.}}
             \end{figure}}
         \visible<4->{
             \begin{figure}
-                $H^{\oplus2} =\frac{1}{2}
+                $H^{\otimes2} =\frac{1}{2}
                     \begin{bmatrix}
                         1 & 1  & 1  & 1  \\
                         1 & -1 & 1  & -1 \\
@@ -186,69 +187,151 @@ of bounded height with quantum query algorithms.}}
 
 \begin{frame}
     \frametitle{Quantum query algorithm is just a quantum circuit.}
-    \begin{figure}[h!]
+    \visible<1->{{
+                \huge \[x = \underbrace{100101\ldots01011}_{n}\]}}
+    \begin{figure}
         \centering
-        $
-            \Qcircuit @C=.8em @R=1em {
-            \lstick{\vdots} & \qw & \multigate{2}{U_0}  & \multigate{2}{Q} & \multigate{2}{U_1} & \qw &  & &  \multigate{2}{Q} & \multigate{2}{U_T}&\multigate{2}{\metersymbol{.2}} & \cw\\
-            &\lstick{\ket{\psi_{start}}} qw & \ghost{U_0} & \ghost{Q} & \ghost{U_1} & \qw & \cdots & & \ghost{Q} & \ghost{U_T} & \ghost{\metersymbol{.2}}& \cw\\
-            \lstick{\vdots}& \qw & \ghost{U_0} & \ghost{Q}  & \ghost{U_1} & \qw & & &\ghost{Q} &\ghost{U_T}&\ghost{\metersymbol{.2}}& \cw \\
-            }$
+
+        \input{illustration/quantumquerycircuit.tex}
         \caption{Structure of a quantum query algorithm.}
         \label{fig:quantum_query_algorithm_structure}
     \end{figure}
+    \visible<5>{
+        {\Huge \[Q(f)\]}
+    }
 \end{frame}
 
 \subsection{Dyck languages of bounded height}
 
 \begin{frame}
-    \frametitle{Dyck words}
+    \frametitle{Dyck words of bounded height are a natural restriction of Dyck words.}
+    \begin{figure}
+        \input{illustration/dyckword.tex}
+    \end{figure}
+    \visible<10>{
+        {\Huge \[\Dyck{k}\]}}
+\end{frame}
+
+\subsection{History and state of the art of the problem}
+
+\begin{frame}
+    \frametitle{A general result that help but not close the $Q(\Dyck{k})$ problem.}
+    \vfill
+    \textbf{The Trichotomy theorem:}(Aaronson,
+    Grier and Schaeffer \cite[2019]{trichotomy_not_andris})
+    \begin{center}
+        {\huge Star Free Languages $\implies \tilde{\Theta}\left(\sqrt{n}\right)$ }\\
+    \end{center}
+    \vfill
+    \pause
+    \textbf{Application:}
+    \begin{center}
+        {\huge \Dyck{k} $\in$ Star free languages}
+    \end{center}
+    \pause
+    \vfill
+    \textbf{Implication:}
+    \begin{center}
+        {\huge $\comment{\exists p, }Q(\Dyck{k,n})=\Theta \left(\sqrt{n}\log_2(n)^{p(k)}\right)$}
+    \end{center}
+    \vfill
 \end{frame}
 
 \begin{frame}
-    \frametitle{Dyck word of bounded hight}
+    \frametitle{First step, one try to have a good upper bounds.}
+
+    \begin{minipage}{.45\textwidth}
+
+        \begin{figure}
+            \begin{algorithmic}
+                \Require $n \geq 0$ and $k \geq 1$
+                \Ensure $|x| = n $
+                \State $x \gets 1^kx0^k$
+                \State $v \gets$ \FA{k+1}$(0, n+2*k-1, \{1,-1\})$
+                \State \textbf{return} v = \Null
+            \end{algorithmic}
+            \caption{Ambainis' algorithm (small piece).}
+        \end{figure}
+        \pause
+        {\huge \[O\left(\sqrt{n}(\log_2(n))^{0.5k}\right)\]}
+    \end{minipage}
+    \hfill
+    \pause
+    \begin{minipage}{.45\textwidth}
+        \begin{figure}
+            \begin{tikzpicture}[scale=.5]
+                \foreach \j in {0, ..., 3} {
+                        \foreach \i in {0, ..., 9} {
+                                \draw[-latex] (\i, \j) -- (\i,\j+1);
+                            }}
+                \foreach \j in {0, ..., 4} {
+                        \foreach \i in {0, ..., 9} {
+                                \draw[fill=black] (\i, \j) circle (.05);
+                            }}
+                \foreach \j in {0, ..., 4} {
+                        \foreach \i in {0, ..., 8} {
+                                \draw[-latex] (\i, \j) -- (\i+1,\j);
+                            }}
+                \draw[red] (.3, .2) -- (.7, -.2);
+                \draw[red] (.3, -.2) -- (.7, .2);
+
+                \draw[red] (3+.3, .2+2) -- (3+.7, -.2+2);
+                \draw[red] (3+.3, -.2+2) -- (3+.7, .2+2);
+
+                \draw[red] (5+.3, .2+1) -- (5+.7, -.2+1);
+                \draw[red] (5+.3, -.2+1) -- (5+.7, .2+1);
+
+                \draw[red] (-.5+7+.3, .2+2+.5) -- (-.5+7+.7, -.2+2+.5);
+                \draw[red] (-.5+7+.3, -.2+2+.5) -- (-.5+7+.7, .2+2+.5);
+
+                \draw[red] (6.5+.3, .2+3.5) -- (6.5+.7, -.2+3.5);
+                \draw[red] (6.5+.3, -.2+3.5) -- (6.5+.7, .2+3.5);
+            \end{tikzpicture}
+            \caption{A reduction to 2D directed grid connectivity}
+        \end{figure}
+        \pause
+        {\huge \[O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)\]}
+
+    \end{minipage}
 \end{frame}
 
-\subsection{History of the problem}
-
 \begin{frame}
-    \frametitle{The trichotomy article}
-\end{frame}
+    \frametitle{Second step, one try to prove the optimality with a matching lower bound.}
 
-\begin{frame}
-    \frametitle{There is two main direction of study}
-
+    \begin{minipage}{.45\textwidth}
+        \begin{figure}
+            bonsoir 1
+            \caption{Adversary methods}
+        \end{figure}
+        \pause
+        {\huge  \[\textrm{\sffamily{No\ result\ yet}}\]}
+    \end{minipage}
+    \hfill
+    \pause
+    \begin{minipage}{.45\textwidth}
+        \begin{figure}
+            bonsoir 2
+            \caption{A reduction}
+        \end{figure}
+        \pause
+        {\huge \[\Omega\left(\sqrt{n}c^{k}\right)\]}
+    \end{minipage}
 \end{frame}
 
 \begin{frame}
     \frametitle{Goal of the internship}
+    \begin{figure}
+        \begin{tikzcd}
+            \draw (0, 0) -- (2, 0);
+        \end{tikzcd}
+        \caption{scale}
+    \end{figure}
 \end{frame}
 
-\section{State of the art}
 
-\subsection{Lower bounds to the QQC of \Dyck{k,n}}
 
-\begin{frame}
-    \frametitle{Dont speak to muck abour it}
-    \begin{itemize}
-        \item \textbf{By reduction:}
-        \item \textbf{By adversary method:}
-    \end{itemize}
-    MOre information in the report
-\end{frame}
 
-\subsection{Upper bounds to the QQC of \Dyck{k,n}}
-
-\begin{frame}
-    \frametitle{Algorithms gives QQC upper bounds.}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Reduction to transmit the QQC upper bounds .}
-
-\end{frame}
-
-\section{The progress to reduce the \Dyck{k,n} QQC .}
+\section{The progress to reduce the \Dyck{k,n} QQC}
 
 \subsection{Why does the problem is not only a grover search }
 
@@ -319,6 +402,12 @@ of bounded height with quantum query algorithms.}}
     \begin{itemize}
         \item
     \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+    \bibliographystyle{plain}
+    \bibliography{biblio}
 
 \end{frame}
 
