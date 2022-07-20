@@ -108,7 +108,7 @@ of bounded height with quantum query algorithms.}}
 
 \section{Introduction}
 
-
+\comment{}
 \subsection{Quantum query model and complexity}
 
 \begin{frame}
@@ -165,7 +165,6 @@ of bounded height with quantum query algorithms.}}
                     \draw (0,0) circle (2cm);
                     \draw (-2,0) arc (180:360:2 and 0.6);
                     \draw[dashed] (2,0) arc (0:180:2 and 0.6);
-                    \fill[fill=black] (0,0) circle (1pt);
                     \draw[thick, ->] (0,0 ) -- node[above]{$\ket{0}$} (2,0);
                     \draw[thick, ->] (0,0) -- node[left]{$\ket{1}$} (0, 2);
                 \end{tikzpicture}
@@ -241,7 +240,9 @@ of bounded height with quantum query algorithms.}}
     \frametitle{First step, one try to have a good upper bounds.}
 
     \begin{minipage}{.45\textwidth}
-
+        \begin{itemize}
+            \item \textbf{Algorithms:}
+        \end{itemize}
         \begin{figure}
             \begin{algorithmic}
                 \Require $n \geq 0$ and $k \geq 1$
@@ -258,6 +259,9 @@ of bounded height with quantum query algorithms.}}
     \hfill
     \pause
     \begin{minipage}{.45\textwidth}
+        \begin{itemize}
+            \item \textbf{Reductions to:}
+        \end{itemize}
         \begin{figure}
             \begin{tikzpicture}[scale=.5]
                 \foreach \j in {0, ..., 3} {
@@ -287,7 +291,7 @@ of bounded height with quantum query algorithms.}}
                 \draw[red] (6.5+.3, .2+3.5) -- (6.5+.7, -.2+3.5);
                 \draw[red] (6.5+.3, -.2+3.5) -- (6.5+.7, .2+3.5);
             \end{tikzpicture}
-            \caption{A reduction to 2D directed grid connectivity}
+            \caption{A reduction to 2D directed grid connectivity.}
         \end{figure}
         \pause
         {\huge \[O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)\]}
@@ -295,36 +299,62 @@ of bounded height with quantum query algorithms.}}
     \end{minipage}
 \end{frame}
 
+
 \begin{frame}
     \frametitle{Second step, one try to prove the optimality with a matching lower bound.}
 
     \begin{minipage}{.45\textwidth}
-        \begin{figure}
-            bonsoir 1
-            \caption{Adversary methods}
-        \end{figure}
-        \pause
+        \begin{itemize}
+            \item \textbf{Adversary methods:}
+        \end{itemize}
+        \begin{align*}
+            \phantom{\textsc{Ex}_{2m}^{m|m+1}(x)=0 } & \phantom{\Leftrightarrow |x|_0-|x|_1 = 2} \\
+            \phantom{\textsc{Ex}_{2m}^{m|m+1}(x)=1}  & \phantom{\Leftrightarrow |x|_0-|x|_1 = 0} \\
+        \end{align*}
         {\huge  \[\textrm{\sffamily{No\ result\ yet}}\]}
     \end{minipage}
-    \hfill
     \pause
+    \hfill
     \begin{minipage}{.45\textwidth}
-        \begin{figure}
-            bonsoir 2
-            \caption{A reduction}
-        \end{figure}
-        \pause
+        \begin{itemize}
+            \item \textbf{Reduction from:}
+        \end{itemize}
+        \begin{align*}
+            \textsc{Ex}_{2m}^{m|m+1}(x)=0 & \Leftrightarrow |x|_0-|x|_1 = 2 \\
+            \textsc{Ex}_{2m}^{m|m+1}(x)=1 & \Leftrightarrow |x|_0-|x|_1 = 0 \\
+        \end{align*}
         {\huge \[\Omega\left(\sqrt{n}c^{k}\right)\]}
     \end{minipage}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Goal of the internship}
+    \frametitle{A natural goal is to made the bounds match.}
     \begin{figure}
-        \begin{tikzcd}
-            \draw (0, 0) -- (2, 0);
-        \end{tikzcd}
-        \caption{scale}
+        \begin{tikzpicture}
+            \draw (10, 0) node[below right] {QQC};
+            \draw[opacity=0, fill=red, fill opacity=.5 ] (2.5, .15) -- (2.5, -.15) -- (7.5, -.15) -- (7.5, .15) -- cycle;
+            \draw[red, opacity=.5, thick] (7.5, .25) -- (7.5, -.25);
+            \draw[red!70] (5, -1.5) node {\huge $\tilde{\Theta}\left(\sqrt{n}\right)$};
+            \draw[-latex, very thick] (0, 0) -- (10, 0);
+            \draw[thick] (1, .25) -- (1, -.25);
+            \draw (1, .25) node[above] {$\Theta(1)$};
+            \draw[thick] (9, .25) -- (9, -.25);
+            \draw (9, .25) node[above] {$\Theta(n)$};
+            \draw[thick] (2.5, .25) -- (2.5, -.25);
+            \draw (2.5, .25) node[above] {$\Theta(\sqrt{n})$};
+            \draw[blue, thick, -latex] (4, 1) -- (4, 0);
+            \draw[blue] (4, -.6) node {$\Theta \left(c^k\sqrt{n}\right)$};
+            \draw[blue] (4, 1) node[above] {Lower Bound};
+            \draw[blue, thick, -latex] (6, 1) -- (6, 0);
+            \draw[blue] (6.5, -.6) node {$\Theta \left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)$};
+            \draw[blue] (6.5, 1) node[above] {Upper Bound};
+
+            %\draw[opacity=0, fill=blue, fill opacity=.5 ] (4, .15) -- (4, -.15) -- (6, -.15) -- (6, .15) -- cycle;
+            \draw[blue!70] (5, .6) node {\huge \Dyck{k}};
+            \draw[blue, thick, -latex] (4.7, .4) -- (4.7, 0);
+
+        \end{tikzpicture}
+        \caption{Representation of the different bounds.}
     \end{figure}
 \end{frame}
 
@@ -336,19 +366,206 @@ of bounded height with quantum query algorithms.}}
 \subsection{Why does the problem is not only a grover search }
 
 \begin{frame}
-    \frametitle{FOr k >=2 it is not more easy}
+    \frametitle{Every $k$ is not as simple as 1.}
+    \begin{minipage}{.45\textwidth}
+        \begin{itemize}
+            \item \textbf{\huge $k=1$:}
+        \end{itemize}
+        \begin{figure}
+            \begin{tikzpicture}[scale=.7]
+                \visible<1->{
+                    \draw[latex-latex, thick] (0, 2.5) -- (0, 0)  -- (6.6, 0);
+                    \draw[red, dashed] (-.2, 1) -- (6.5, 1);
+                    \draw[dashed] (-.2, 2) -- (6.5, 2);
+                    \draw (0, 0) node[above left] {0};
+                    \draw[red] (0, 1) node[above left] {1};
+                    \draw (0, 2) node[above left] {2};
+                    \draw[blue, very thick] (0, 0) -- (1, 1) -- (2, 0) -- (4, 2) -- (6, 0);}
+                \visible<2->{
+                    \draw[red, very thick] (2, 0) -- (4, 2);}
+            \end{tikzpicture}
+            \caption{A dyck word of height 2.}
+        \end{figure}
+        \visible<2->{
+            {\huge \[O\left(\sqrt{n}\right)\]}}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{.45\textwidth}
+        \visible<3->{
+            \begin{itemize}
+                \item \textbf{\huge $k=2$:}
+            \end{itemize}}
+        \begin{figure}
+            \vspace*{-.2cm}
+            \begin{tikzpicture}[scale=.7]
+                \visible<3->{
+                    \draw[latex-latex, thick] (0, 2.5) -- (0, 0)  -- (6.6, 0);
+                    \draw[dashed] (-.2, 1) -- (6.5, 1);
+                    \draw[red, dashed] (-.2, 2) -- (6.5, 2);
+                    \draw (0, 0) node[above left] {0};
+                    \draw (0, 1) node[above left] {1};
+                    \draw[red] (0, 2) node[above left] {2};
+                    \draw[blue, very thick] (0, 0) -- (2, 2) -- (3, 1) -- (5, 3) -- (6, 2);}
+                \visible<4->{
+                    \draw[red, very thick] (0, 0) -- (2, 2) -- (3, 1) -- (5, 3);
+                    \draw[blue] (1, 1) node[above] {\Huge $($};
+                    \draw[blue] (3.2, 1) node[above] {\Huge $)^*$};}
+            \end{tikzpicture}
+            \visible<3->{\caption{A substring of height 3.}}
+        \end{figure}
+        \visible<5->{
+            {\huge \[O\left(\sqrt{n\log_2(n)}\right)\]}}
+
+    \end{minipage}
 
 
+\end{frame}
 
+\begin{frame}
+    \frametitle{Small definition and intuition}
+
+    \begin{minipage}{.30\textwidth}
+        \begin{itemize}
+            \item \textbf{$\pm k$ strings: $\phantom{decomposition}$}
+        \end{itemize}
+        \begin{figure}
+            \begin{tikzpicture}[scale=.5]
+                \draw[latex-latex, thick] (0, 2.5) --(0, 0) -- (5.5, 0);
+                \draw[blue, thick] (0.3, 0.2) -- (.8, 1 ) -- (1.1, .6)
+                -- (1.3, .8) -- (2, -.5) -- (2.3, .2) -- (2.5, -.1) --
+                (3.5, 1.5) -- (3.8, 0.9) -- (4.3, 2.3) -- (5, 1.3);
+                \draw[dotted, red] (2, -.5) -- (4.5, -.5);
+                \draw[-latex, red, thick] (4.3, -.5) --node[right] {$+ k$} (4.3, 2.3);
+            \end{tikzpicture}
+            \caption{Representation of a $+ k$ string.}
+        \end{figure}
+    \end{minipage}
+    \hfill
+    \pause
+    \begin{minipage}{.30\textwidth}
+        \begin{itemize}
+            \item \textbf{Minimal $\pm k$ strings:}
+        \end{itemize}
+        \begin{figure}
+            \begin{tikzpicture}[scale=.6]
+                \draw[latex-latex, thick] (0, 2.5) -- (0, 0)  -- (4.5, 0);
+                \draw[red, dashed] (-.2, 1) -- (4.5, 1);
+                \draw[dashed] (-.2, 2) -- (4.5, 2);
+                \draw (0, 0) node[above left] {0};
+                \draw[red] (0, 1) node[above left] {1};
+                \draw (0, 2) node[above left] {2};
+                \draw[blue, very thick] (0, 0) -- (1, 1) -- (2, 0) -- (4, 2);
+                \pause
+                \draw[red, very thick] (2, 0) -- (4,2);
+            \end{tikzpicture}
+            \caption{A non-minimal $+2$ string.}
+        \end{figure}
+    \end{minipage}
+    \pause
+    \hfill
+    \begin{minipage}{.3\textwidth}
+        \begin{itemize}
+            \item \textbf{Minimal decomposition}
+        \end{itemize}
+        \begin{figure}
+            \begin{tikzpicture}[scale=.15]
+                \draw[latex-latex, thick] (0, 8.5) -- (0, 0) -- (20.5, 0);
+                \foreach \j in {1,3,...,7} {
+                        \draw[dashed] (-.2, \j) -- (20.5, \j);
+                        \draw (0, \j) node[left] {\footnotesize \j};
+                    }
+                \draw[blue, thick] (0, 0) -- (4, 4) -- (5, 3) -- (8, 6) -- (9, 5)--(12, 8) -- (15, 5) -- (17, 7) -- (20, 4);
+                \pause
+
+                \draw[red, thick] (0, 0) -- (4, 4) -- (5, 3) -- (8, 6) -- (9, 5)--(12, 8);
+                \draw[red] (11.5, 8) node[left] {+8 string};
+                \pause
+                \draw[orange, very thick] (0, 0+.2) -- (4, 4+.2) -- (5, 3+.2) -- (8, 6+.2) -- (9, 5+.2)--(11, 7+.2);
+                \draw[orange, very thick] (1, 1-.2) -- (4, 4-.2) -- (5, 3-.2) -- (8, 6-.2) -- (9, 5-.2)--(12, 8-.2);
+                \draw[orange] (7.5, 6) node[left] {+7 string};
+                \draw[orange] (5, 2.5) node[right] {+7 string};
+            \end{tikzpicture}
+            \caption{A +3 string decomposition.}
+            {\color{red} A REFAIRE PLUS PETIT}
+        \end{figure}
+    \end{minipage}
 \end{frame}
 
 \subsection{Original algorithm and small revisions }
 
 \begin{frame}
-    \frametitle{presentation of the algorithm}
-
-
-
+    \frametitle{A first inductive algorithm with a quantum query complexity of $\tilde{\Theta}\left(\sqrt{n}\right)$}
+    \begin{minipage}{.5\textwidth}
+        \begin{figure}
+            \begin{tikzpicture}[scale=.4]
+                \visible<1->{
+                    \draw[rounded corners=.1cm] (0, -7) -- (0, -8) -- (12, -8) -- (12, -7) -- cycle;
+                    \draw (6, -7.5) node {$x$};
+                }
+                \visible<2->{
+                    \draw[blue, very thick] (0, 0) -- (3, 0) -- (3, 2) -- (0, 2) -- cycle;
+                    \draw[blue] (1.5, 1) node {$n,k+1$};
+                }
+                \visible<3->{
+                    \draw[thick, -latex] (1.5, 0) -- (1.5, -7);
+                    \draw[red, thick] (1.2, -2.7) -- (1.8, -3.3);
+                    \draw[red, thick] (1.2, -3.3) -- (1.8, -2.7);
+                }
+                \visible<4->{
+                    \draw[-latex, thick] (3, 1) -- (4, 1);
+                    \draw[-latex, thick] (3, .5) -- (4, .5);
+                    \draw[-latex, thick] (3, 1.5) -- (4, 1.5);
+                    \draw[orange, thick] (4, 0) -- (4, 2) -- (7, 2) -- (7, 0) -- cycle;
+                    \draw[orange] (5.5, 1) node {$k+1,d$};
+                    \draw[thick, -latex] (4.5, 0) -- (4.5, -7);
+                }
+                \visible<5->{
+                    \draw[red, thick] (4.2, -2.7) -- (4.8, -3.3);
+                    \draw[red, thick] (4.2, -3.3) -- (4.8, -2.7);
+                }
+                \visible<6->{
+                    \draw[-latex, very thick] (6.5, 0) -- (6.5, -1);
+                    \draw[-latex, very thick] (6.1, 0) -- (6.1, -1);
+                    \draw[-latex, very thick] (5.7, 0) -- (5.7, -1);
+                    \draw[blue, very thick] (5.25, -1) -- (7.75, -1) -- (7.75, -2.75) -- (5.25, -2.75) -- cycle;
+                    \draw[blue] (6.5, -1.875) node {$d,k$};
+                }
+                \visible<7->{
+                    \draw[thick, -latex] (6.5, -2.75) -- (6.5, -7);
+                    \draw[red, thick] (6.2, -2.7-1.5) -- (6.8, -3.3-1.5);
+                    \draw[red, thick] (6.2, -3.3-1.5) -- (6.8, -2.7-1.5);
+                    \draw[thick, -latex] (7.75, -1.875) -- (7.75+.8, -1.875);
+                    \draw[thick, -latex] (7.75, -1.875-.4) -- (7.75+.8, -1.875-.4);
+                    \draw[thick, -latex] (7.75, -1.875+.4) -- (7.75+.8, -1.875+.4);
+                    \draw[fill=black] (8.5, -3.2) circle (.05);
+                    \draw[fill=black] (9, -3.5) circle (.05);
+                    \draw[fill=black] (9.5, -3.8) circle (.05);
+                    \draw[blue, thick] (10, -4.1) -- (12, -4.1) -- (12, -5.35) -- (10, -5.35)--cycle;
+                    \draw[blue] (11, -4.725) node {$d', 2$};
+                    \draw[-latex, thick] (11, -5.35) -- (11, -7);
+                }
+                \visible<8->{
+                    \draw[red, thick, dashed, rounded corners=.5cm] (-.5, -1) -- (7.5, -1) -- (7.5, 2.5) -- (-.5, 2.5) -- cycle;
+                    \draw[red] (10, 1) node {$O\left(\sqrt{\log_(n)}\right)$};}
+                \visible<8,9>{
+                    \draw[red] (12.2, -3.3) node {$O\left(\sqrt{n\log_ 2(n)}\right)$};
+                }
+                \visible<10>{\draw[red] (11, -3.3) node {$O\left(\sqrt{n}\right)$};}
+            \end{tikzpicture}
+            \caption{Schema of the idea of the original algorithm.}
+        \end{figure}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{.4\textwidth}
+        \begin{itemize}
+            \visible<9->{
+            \item \textbf{Original QQC:}
+                  \[O\left(\sqrt{n}(\log_2(n))^{0.5k}\right)\]}
+                  \visible<10->{
+            \item \textbf{Small revision:}
+                  \[O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)\]}
+        \end{itemize}
+    \end{minipage}
 \end{frame}
 
 \begin{frame}
@@ -405,9 +622,10 @@ of bounded height with quantum query algorithms.}}
 
 \end{frame}
 
+
 \begin{frame}
-    \bibliographystyle{plain}
-    \bibliography{biblio}
+    %\bibliographystyle{plain}
+    %\bibliography{biblio}
 
 \end{frame}
 
