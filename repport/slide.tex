@@ -4,6 +4,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{amsmath}
+\usepackage{mathdots}
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{mathrsfs}
@@ -65,6 +66,15 @@
     \addtocounter{footnote}{-1}%
     \endgroup
 }
+
+\newlength\myindent
+\setlength\myindent{2em}
+\newcommand\bindent{%
+  \begingroup
+  \setlength{\itemindent}{\myindent}
+  \addtolength{\algorithmicindent}{\myindent}
+}
+\newcommand\eindent{\endgroup}
 
 \theoremstyle{definition}
 \newtheorem{definition}{Définition}
@@ -361,7 +371,7 @@ of bounded height with quantum query algorithms.}}
 
 
 
-\section{The progress to reduce the \Dyck{k,n} QQC}
+\section[The progress to reduce bounded height Dyck word's QQC]{The progress to reduce the \Dyck{k} Quantum Query Complexity}
 
 \subsection{Why does the problem is not only a grover search }
 
@@ -447,7 +457,7 @@ of bounded height with quantum query algorithms.}}
             \item \textbf{Minimal $\pm k$ strings:}
         \end{itemize}
         \begin{figure}
-            \begin{tikzpicture}[scale=.6]
+            \begin{tikzpicture}[scale=.55]
                 \draw[latex-latex, thick] (0, 2.5) -- (0, 0)  -- (4.5, 0);
                 \draw[red, dashed] (-.2, 1) -- (4.5, 1);
                 \draw[dashed] (-.2, 2) -- (4.5, 2);
@@ -455,7 +465,6 @@ of bounded height with quantum query algorithms.}}
                 \draw[red] (0, 1) node[above left] {1};
                 \draw (0, 2) node[above left] {2};
                 \draw[blue, very thick] (0, 0) -- (1, 1) -- (2, 0) -- (4, 2);
-                \pause
                 \draw[red, very thick] (2, 0) -- (4,2);
             \end{tikzpicture}
             \caption{A non-minimal $+2$ string.}
@@ -465,33 +474,30 @@ of bounded height with quantum query algorithms.}}
     \hfill
     \begin{minipage}{.3\textwidth}
         \begin{itemize}
-            \item \textbf{Minimal decomposition}
+            \item \textbf{Minimal decomposition:}
         \end{itemize}
+        \vspace*{-.2cm}
         \begin{figure}
-            \begin{tikzpicture}[scale=.15]
-                \draw[latex-latex, thick] (0, 8.5) -- (0, 0) -- (20.5, 0);
-                \foreach \j in {1,3,...,7} {
-                        \draw[dashed] (-.2, \j) -- (20.5, \j);
+            \begin{tikzpicture}[scale=.45]
+                \draw[latex-latex, thick] (0, 3) -- (0, 0) -- (5.5, 0);
+                \foreach \j in {2} {
+                        \draw[dashed] (-.2, \j) -- (5.5, \j);
                         \draw (0, \j) node[left] {\footnotesize \j};
                     }
-                \draw[blue, thick] (0, 0) -- (4, 4) -- (5, 3) -- (8, 6) -- (9, 5)--(12, 8) -- (15, 5) -- (17, 7) -- (20, 4);
-                \pause
+                \draw[blue, thick] (0, 0) -- (2, 2) -- (3, 1) -- (5, 3);
+                \draw[blue] (4.75, 2.75) node[above left] {+3 string};
 
-                \draw[red, thick] (0, 0) -- (4, 4) -- (5, 3) -- (8, 6) -- (9, 5)--(12, 8);
-                \draw[red] (11.5, 8) node[left] {+8 string};
-                \pause
-                \draw[orange, very thick] (0, 0+.2) -- (4, 4+.2) -- (5, 3+.2) -- (8, 6+.2) -- (9, 5+.2)--(11, 7+.2);
-                \draw[orange, very thick] (1, 1-.2) -- (4, 4-.2) -- (5, 3-.2) -- (8, 6-.2) -- (9, 5-.2)--(12, 8-.2);
-                \draw[orange] (7.5, 6) node[left] {+7 string};
-                \draw[orange] (5, 2.5) node[right] {+7 string};
+                \draw[orange, very thick] (0, 0+.2) -- (2, 2+.2);
+                \draw[orange] (2,2) node[above] {+2 string};
+                \draw[orange, very thick] (3, 1-.2) -- (5, 3-.2);
+                \draw[orange] (3, 1) node[below] {+2 string};
             \end{tikzpicture}
             \caption{A +3 string decomposition.}
-            {\color{red} A REFAIRE PLUS PETIT}
         \end{figure}
     \end{minipage}
 \end{frame}
 
-\subsection{Original algorithm and small revisions }
+\subsection{Original algorithm and small updates }
 
 \begin{frame}
     \frametitle{A first inductive algorithm with a quantum query complexity of $\tilde{\Theta}\left(\sqrt{n}\right)$}
@@ -499,38 +505,34 @@ of bounded height with quantum query algorithms.}}
         \begin{figure}
             \begin{tikzpicture}[scale=.4]
                 \visible<1->{
-                    \draw[rounded corners=.1cm] (0, -7) -- (0, -8) -- (12, -8) -- (12, -7) -- cycle;
-                    \draw (6, -7.5) node {$x$};
+                    \draw[rounded corners=.1cm] (0, -7) -- (0, -8) -- (15, -8) -- (15, -7) -- cycle;
+                    \draw (7.5, -7.5) node {$x$};
                 }
-                \visible<2->{
+                \visible<1->{
                     \draw[blue, very thick] (0, 0) -- (3, 0) -- (3, 2) -- (0, 2) -- cycle;
                     \draw[blue] (1.5, 1) node {$n,k+1$};
-                }
-                \visible<3->{
                     \draw[thick, -latex] (1.5, 0) -- (1.5, -7);
                     \draw[red, thick] (1.2, -2.7) -- (1.8, -3.3);
                     \draw[red, thick] (1.2, -3.3) -- (1.8, -2.7);
                 }
-                \visible<4->{
+                \visible<2->{
                     \draw[-latex, thick] (3, 1) -- (4, 1);
                     \draw[-latex, thick] (3, .5) -- (4, .5);
                     \draw[-latex, thick] (3, 1.5) -- (4, 1.5);
                     \draw[orange, thick] (4, 0) -- (4, 2) -- (7, 2) -- (7, 0) -- cycle;
-                    \draw[orange] (5.5, 1) node {$k+1,d$};
+                    \draw[orange] (5.5, 1) node {$k+1,d_1$};
                     \draw[thick, -latex] (4.5, 0) -- (4.5, -7);
-                }
-                \visible<5->{
                     \draw[red, thick] (4.2, -2.7) -- (4.8, -3.3);
                     \draw[red, thick] (4.2, -3.3) -- (4.8, -2.7);
                 }
-                \visible<6->{
+                \visible<3->{
                     \draw[-latex, very thick] (6.5, 0) -- (6.5, -1);
                     \draw[-latex, very thick] (6.1, 0) -- (6.1, -1);
                     \draw[-latex, very thick] (5.7, 0) -- (5.7, -1);
                     \draw[blue, very thick] (5.25, -1) -- (7.75, -1) -- (7.75, -2.75) -- (5.25, -2.75) -- cycle;
-                    \draw[blue] (6.5, -1.875) node {$d,k$};
+                    \draw[blue] (6.5, -1.875) node {$d_1,k$};
                 }
-                \visible<7->{
+                \visible<4->{
                     \draw[thick, -latex] (6.5, -2.75) -- (6.5, -7);
                     \draw[red, thick] (6.2, -2.7-1.5) -- (6.8, -3.3-1.5);
                     \draw[red, thick] (6.2, -3.3-1.5) -- (6.8, -2.7-1.5);
@@ -540,92 +542,211 @@ of bounded height with quantum query algorithms.}}
                     \draw[fill=black] (8.5, -3.2) circle (.05);
                     \draw[fill=black] (9, -3.5) circle (.05);
                     \draw[fill=black] (9.5, -3.8) circle (.05);
-                    \draw[blue, thick] (10, -4.1) -- (12, -4.1) -- (12, -5.35) -- (10, -5.35)--cycle;
-                    \draw[blue] (11, -4.725) node {$d', 2$};
+                    \draw[blue, thick] (9.7, -4.1) -- (12.3, -4.1) -- (12.3, -5.35) -- (9.7, -5.35)--cycle;
+
                     \draw[-latex, thick] (11, -5.35) -- (11, -7);
                 }
-                \visible<8->{
+                \visible<4-5>{
+                    \draw[orange, thick] (13, -4.1) -- (15, -4.1) -- (15, -5.35) -- (13, -5.35) -- cycle;
+                    \draw[orange] (14, -4.725) node {$2,d_k$};
+                    \draw[-latex] (12.3, -4.725) -- (13, -4.725);
+                    \draw[-latex] (12.3, -4.325) -- (13, -4.325);
+                    \draw[-latex] (12.3, -5.025) -- (13, -5.025);
+                    \draw[-latex, thick] (14, -5.35) -- (14, -7);
+                    \draw[red, thick] (10.8, -5.8) -- (11.2, -6.2);
+                    \draw[red, thick] (10.8, -6.2) -- (11.2, -5.8);}
+
+                \visible<4-7>{
+                    \draw[blue] (11, -4.725) node {$d_{k-1}, 2$};}
+                \visible<8>{\draw[red] (11, -4.725) node {$d_{k-2}, 3$};}
+
+                \visible<5->{
                     \draw[red, thick, dashed, rounded corners=.5cm] (-.5, -1) -- (7.5, -1) -- (7.5, 2.5) -- (-.5, 2.5) -- cycle;
-                    \draw[red] (10, 1) node {$O\left(\sqrt{\log_(n)}\right)$};}
-                \visible<8,9>{
-                    \draw[red] (12.2, -3.3) node {$O\left(\sqrt{n\log_ 2(n)}\right)$};
+                    \draw[red] (10, 1) node {$O\left(\sqrt{\log_2(n)}\right)$};}
+                \visible<5>{
+                    \draw[red] (12.7, -3.3) node {$O\left(\sqrt{n\log_ 2(n)}\right)$};
                 }
-                \visible<10>{\draw[red] (11, -3.3) node {$O\left(\sqrt{n}\right)$};}
+                \visible<6->{\draw[red] (11, -3.3) node {$O\left(\sqrt{n}\right)$};}
             \end{tikzpicture}
-            \caption{Schema of the idea of the original algorithm.}
+            \caption{Schema to present the idea of the original algorithm. Not show the real
+                computation of the QQC.}
         \end{figure}
     \end{minipage}
     \hfill
     \begin{minipage}{.4\textwidth}
         \begin{itemize}
-            \visible<9->{
+            \visible<5->{
             \item \textbf{Original QQC:}
                   \[O\left(\sqrt{n}(\log_2(n))^{0.5k}\right)\]}
-                  \visible<10->{
-            \item \textbf{Small revision:}
+                  \visible<6->{
+            \item \textbf{Small update:}
                   \[O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)\]}
+                  \visible<7->{
+            \item \textbf{Bigger update:}
+                  \[O\left(\sqrt{n}(\log_2(n))^{0.5(k-2)}\right)\]}
         \end{itemize}
     \end{minipage}
-\end{frame}
-
-\begin{frame}
-    \frametitle{small revision}
-
-
-
 \end{frame}
 
 \subsection{A new algorithm for k=2}
 
 \begin{frame}
-    \frametitle{the new algorithm}
+    \frametitle{An easy and fast algorithm exists for k=2.}
 
+    \begin{minipage}{.45\textwidth}
+        \begin{itemize}
+            \item \textbf{Second half:}
+        \end{itemize}
+        \begin{figure}
+            \begin{tikzpicture}[scale=.5]
+                \visible<1->{
+                    \draw[latex-latex, thick] (0, 2.5) -- (0, 0) -- (9.5, 0);
+                    \draw[red, dashed, thick] (-.2, 2) -- (9.5, 2);
+                    \draw[dashed] (-.2, 1) -- (9.5, 1);
+                    \draw[blue, very thick] (0, 0) -- (1,1);
+                    \draw[blue, dashed] (1, .5) -- (1, 1.5);
+                }
+                \visible<2->{
+                    \draw[blue, very thick] (1,1) -- (2, 2);
+                    \draw[blue, very thick] (2, 2) -- (3, 1);
+                    \draw[dashed, blue] (3, .5) -- (3, 1.5);
+                }
+                \visible<3->{
+                    \draw[blue, very thick] (3,1) -- (4, 0);
+                    \draw[blue, very thick] (4, 0) -- (5, 1);
+                    \draw[dashed, blue] (5, .5) -- (5, 1.5);
+                }
+                \visible<4->{
+                    \draw[blue ,fill=blue] (6, 1) circle (1.5pt);
+                    \draw[blue, fill=blue] (6.5, 1) circle (1.5pt);
+                    \draw[blue, fill=blue] (7, 1) circle (1.5pt);
+                    \draw[blue, dashed] (8, .5) -- (8, 1.5);
+                    \draw[blue, very thick] (8, 1) -- (9, 0);
+                }
+                \visible<5->{
+                    \draw[latex-latex, thick] (1.25+0, 2.5-3.5) -- (1.25+0, 0-3.5) -- (1.25+6.5, 0-3.5);
+                    \draw[red, dashed, thick] (1.25+-.2, 2-3.5) -- (1.25+6.5, 2-3.5);
+                    \draw[dashed] (1.25+-.2, 1-3.5) -- (1.25+6.5, 1-3.5);
+                    \draw[blue, very thick] (1.25+1, 1-3.5) -- (1.25+3,3-3.5);
+                    \draw[blue, dashed] (1.25+1, .5-3.5) -- (1.25+1, 1.5-3.5);
+                    \draw[blue, very thick] (1.25+4, 1-3.5) -- (1.25+6,-1-3.5);
+                    \draw[blue, dashed] (1.25+4, .5-3.5) -- (1.25+4, 1.5-3.5);}
+            \end{tikzpicture}
+        \end{figure}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{.45\textwidth}
+        \visible<6->{
+            \begin{itemize}
+                \item \textbf{First half}:
+            \end{itemize}}
+        \vspace*{1cm}
+        \begin{tikzpicture}[scale=.5]
+            \visible<6->{
+                \draw[latex-latex, thick] (0, 2.5) -- (0, 0) -- (9.5, 0);
+                \draw[red, dashed, thick] (-.2, 2) -- (9.5, 2);
+                \draw[dashed] (-.2, 1) -- (9.5, 1);
+                \draw[blue, very thick] (0, 0) -- (1,1);
+                \draw[blue, very thick] (7, 1) -- (9, 3);
 
+                \draw[red] (0, -.5) -- (0, 2.5);
+                \draw[red] (8, -.5) -- (8, 2.5);
+                \draw[red] (4, -.5) -- (4, 2.5);}
 
-\end{frame}
+            \visible<7>{
+                \draw[green, thick] (5.7, -.7) -- (6, -1) -- (6.6, -.4);}
+            \visible<8>{
+                \draw[green, thick] (3.7, -.7) -- (4, -1) -- (4.6, -.4);
+                \draw[red, thick] (5.7, -.4) -- (6.3, -1);
+                \draw[red, thick] (5.7, -1) -- (6.3, -.4);
+            }
+            \visible<9->{
+                \draw[green, thick] (1.7, -.7) -- (2, -1) -- (2.6, -.4);
+                \draw[red, thick] (5.7, -.4) -- (6.3, -1);
+                \draw[red, thick] (5.7, -1) -- (6.3, -.4);
+                \draw[red, thick] (3.7, -.4) -- (4.3, -1);
+                \draw[red, thick] (3.7, -1) -- (4.3, -.4);
+            }
 
-\begin{frame}
-    \frametitle{can be plug in the big one}
-
-
-
+        \end{tikzpicture}
+    \end{minipage}
+    \visible<10->{{\huge \[O\left(\sqrt{n}\right)\]}}
 \end{frame}
 
 \section{New idea to get better quantum query complexity bounds }
 
-\subsection{lower bounds: try to do reduction from other problem}
+\subsection{For lower bounds}
 \begin{frame}
-    \frametitle{}
-
-
-
+    \frametitle{The search for a new reduction.}
+    \begin{itemize}
+        \item Tightness of $\textsc{Ex}_{2m}^{m|m+1}$'s one.
+        \item New reduction:
+              \[\textsc{Ex}_{2m}^{m|m+1} \leq\ new\ problem\ \leq \Dyck{k}.\]
+    \end{itemize}
 \end{frame}
-\subsection{Upper bounds: Trying not do to every node}
+
+\subsection{For upper bounds:}
 \begin{frame}
-    \frametitle{}
-
-
-
+    \frametitle{There is a lot of recursive calls:}
+    \begin{minipage}{.45\textwidth}
+        \begin{figure}
+            \begin{algorithmic}
+                \For{$1 \leq d_1 \leq \log_2(n)$}
+                \For{$1 \leq d_2 < d_1$}
+                \State $\ddots$
+                \For{$1\leq d_{k-1} < d_{k-2}$}
+                \State \texttt{Do smthg}
+                \EndFor
+                \EndFor
+                \EndFor
+            \end{algorithmic}
+            \caption{Currents algorithm behavior}
+        \end{figure}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{.45\textwidth}
+        \begin{figure}
+            \begin{tikzpicture}[scale=.4]
+                \draw[thick, latex-latex] (0, 10) -- (0, 0) -- (10, 0);
+                \draw (10, 0) node[below] {$d_1$};
+                \draw (0, 10) node[left] {$d_2$};
+                \draw[dotted] (0, 0) -- (10, 10);
+                \draw[black, fill=black] (2.5, 1.7) circle(1pt);
+                \draw[-latex] (2.5, 1.7) -- (3.2, 1.7);
+                \draw[-latex] (2.5, 1.7) -- (2.5, 2.4);
+                \draw (0, 0) node[below left] {(1,1)};
+                \draw[fill = blue, fill opacity=.2, blue] (10, 10) -- (8, 8) -- (8, 7) -- (10, 7);
+                \draw[red, fill = red] (8, 7) circle (3pt);
+            \end{tikzpicture}
+            \caption{Graph for $k=4$.}
+        \end{figure}
+    \end{minipage}
 \end{frame}
 \subsection{Conclusion}
 
 \begin{frame}
-    \frametitle{Conclusion}
-    \textbf{What as been done:}
+    \frametitle{To conclude:}
+    \textbf{What has been done:}
     \begin{itemize}
-        \item
+        \item Trichotomy
+        \item Adversary methods
+        \item Reduction methods
+        \item New algorithm: $O\left(\sqrt{n}(\log_2(n))^{0.5k}\right) \rightarrow O\left(\sqrt{n}(\log_2(n))^{0.5(k-2)} \right)$
     \end{itemize}
+    \pause
     \textbf{Possible idea to go further:}
     \begin{itemize}
-        \item
+        \item Prove that new upper bound approach cannot work
+        \item New algorithm
+        \item General Adversary method
     \end{itemize}
 
 \end{frame}
 
 
 \begin{frame}
-    %\bibliographystyle{plain}
-    %\bibliography{biblio}
+    \bibliographystyle{plain}
+    \bibliography{biblio}
 
 \end{frame}
 
