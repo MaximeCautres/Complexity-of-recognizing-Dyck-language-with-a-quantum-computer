@@ -205,9 +205,7 @@ of bounded height with quantum query algorithms.}}
         \caption{Structure of a quantum query algorithm.}
         \label{fig:quantum_query_algorithm_structure}
     \end{figure}
-    \visible<5>{
-        {\Huge \[Q(f)\]}
-    }
+    {\Huge \[\visible<5->{Q(f)=T} \hspace*{1cm} \visible<6->{Q(\textsc{Grover})=\Theta\left(\sqrt{n}\right)} \]}
 \end{frame}
 
 \subsection{Dyck languages of bounded height}
@@ -229,7 +227,7 @@ of bounded height with quantum query algorithms.}}
     \textbf{The Trichotomy theorem:}(Aaronson,
     Grier and Schaeffer \cite[2019]{trichotomy_not_andris})
     \begin{center}
-        {\huge Star Free Languages $\implies \tilde{\Theta}\left(\sqrt{n}\right)$ }\\
+        {\huge Star Free Languages $\implies \Theta\left(\sqrt{n}(\log_2(n))^c\right)$ }\\
     \end{center}
     \vfill
     \pause
@@ -249,92 +247,61 @@ of bounded height with quantum query algorithms.}}
 \begin{frame}
     \frametitle{First step, one try to have a good upper bounds.}
 
-    \begin{minipage}{.45\textwidth}
-        \begin{itemize}
-            \item \textbf{Algorithms:}
-        \end{itemize}
-        \begin{figure}
-            \begin{algorithmic}
-                \Require $n \geq 0$ and $k \geq 1$
-                \Ensure $|x| = n $
-                \State $x \gets 1^kx0^k$
-                \State $v \gets$ \FA{k+1}$(0, n+2*k-1, \{1,-1\})$
-                \State \textbf{return} v = \Null
-            \end{algorithmic}
-            \caption{Ambainis' algorithm (small piece).}
-        \end{figure}
-        \pause
-        {\huge \[O\left(\sqrt{n}(\log_2(n))^{0.5k}\right)\]}
-    \end{minipage}
-    \hfill
-    \pause
-    \begin{minipage}{.45\textwidth}
-        \begin{itemize}
-            \item \textbf{Reductions to:}
-        \end{itemize}
-        \begin{figure}
-            \begin{tikzpicture}[scale=.5]
-                \foreach \j in {0, ..., 3} {
-                        \foreach \i in {0, ..., 9} {
-                                \draw[-latex] (\i, \j) -- (\i,\j+1);
-                            }}
-                \foreach \j in {0, ..., 4} {
-                        \foreach \i in {0, ..., 9} {
-                                \draw[fill=black] (\i, \j) circle (.05);
-                            }}
-                \foreach \j in {0, ..., 4} {
-                        \foreach \i in {0, ..., 8} {
-                                \draw[-latex] (\i, \j) -- (\i+1,\j);
-                            }}
-                \draw[red] (.3, .2) -- (.7, -.2);
-                \draw[red] (.3, -.2) -- (.7, .2);
+    \begin{itemize}
+        \item \textbf{Algorithms:} A. Ambainis and al. \cite[2020]{art:2DGrid}
+              {\huge \[Q(\Dyck{k}) = O\left(\sqrt{n}(\log_2(n))^{0.5k}\right)\]}
+              \pause
+        \item \textbf{Reductions to:}
+              \begin{figure}
+                  \begin{tikzpicture}[scale=.5]
+                      \foreach \j in {0, ..., 3} {
+                              \foreach \i in {0, ..., 9} {
+                                      \draw[-latex] (\i, \j) -- (\i,\j+1);
+                                  }}
+                      \foreach \j in {0, ..., 4} {
+                              \foreach \i in {0, ..., 9} {
+                                      \draw[fill=black] (\i, \j) circle (.05);
+                                  }}
+                      \foreach \j in {0, ..., 4} {
+                              \foreach \i in {0, ..., 8} {
+                                      \draw[-latex] (\i, \j) -- (\i+1,\j);
+                                  }}
+                      \draw[red] (.3, .2) -- (.7, -.2);
+                      \draw[red] (.3, -.2) -- (.7, .2);
 
-                \draw[red] (3+.3, .2+2) -- (3+.7, -.2+2);
-                \draw[red] (3+.3, -.2+2) -- (3+.7, .2+2);
+                      \draw[red] (3+.3, .2+2) -- (3+.7, -.2+2);
+                      \draw[red] (3+.3, -.2+2) -- (3+.7, .2+2);
 
-                \draw[red] (5+.3, .2+1) -- (5+.7, -.2+1);
-                \draw[red] (5+.3, -.2+1) -- (5+.7, .2+1);
+                      \draw[red] (5+.3, .2+1) -- (5+.7, -.2+1);
+                      \draw[red] (5+.3, -.2+1) -- (5+.7, .2+1);
 
-                \draw[red] (-.5+7+.3, .2+2+.5) -- (-.5+7+.7, -.2+2+.5);
-                \draw[red] (-.5+7+.3, -.2+2+.5) -- (-.5+7+.7, .2+2+.5);
+                      \draw[red] (-.5+7+.3, .2+2+.5) -- (-.5+7+.7, -.2+2+.5);
+                      \draw[red] (-.5+7+.3, -.2+2+.5) -- (-.5+7+.7, .2+2+.5);
 
-                \draw[red] (6.5+.3, .2+3.5) -- (6.5+.7, -.2+3.5);
-                \draw[red] (6.5+.3, -.2+3.5) -- (6.5+.7, .2+3.5);
-            \end{tikzpicture}
-            \caption{A reduction to 2D directed grid connectivity.}
-        \end{figure}
-        \pause
-        {\huge \[O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)\]}
+                      \draw[red] (6.5+.3, .2+3.5) -- (6.5+.7, -.2+3.5);
+                      \draw[red] (6.5+.3, -.2+3.5) -- (6.5+.7, .2+3.5);
+                  \end{tikzpicture}
+                  \caption{A reduction to 2D directed grid connectivity.}
+              \end{figure}
+              {\huge \[Q(\Dyck{k}) = O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)\]}
+    \end{itemize}
 
-    \end{minipage}
 \end{frame}
 
 
 \begin{frame}
     \frametitle{Second step, one try to prove the optimality with a matching lower bound.}
-
-    \begin{minipage}{.45\textwidth}
-        \begin{itemize}
-            \item \textbf{Adversary methods:}
-        \end{itemize}
-        \begin{align*}
-            \phantom{\textsc{Ex}_{2m}^{m|m+1}(x)=0 } & \phantom{\Leftrightarrow |x|_0-|x|_1 = 2} \\
-            \phantom{\textsc{Ex}_{2m}^{m|m+1}(x)=1}  & \phantom{\Leftrightarrow |x|_0-|x|_1 = 0} \\
-        \end{align*}
-        {\huge  \[\textrm{\sffamily{No\ result\ yet}}\]}
-    \end{minipage}
-    \pause
-    \hfill
-    \begin{minipage}{.45\textwidth}
-        \begin{itemize}
-            \item \textbf{Reduction from:}
-        \end{itemize}
-        \begin{align*}
-            \textsc{Ex}_{2m}^{m|m+1}(x)=0 & \Leftrightarrow |x|_0-|x|_1 = 2 \\
-            \textsc{Ex}_{2m}^{m|m+1}(x)=1 & \Leftrightarrow |x|_0-|x|_1 = 0 \\
-        \end{align*}
-        {\huge \[\Omega\left(\sqrt{n}c^{k}\right)\]}
-    \end{minipage}
+    \begin{itemize}
+        \item \textbf{Adversary methods:}
+              \begin{align*}
+                  \textsc{Ex}_{2m}^{m|m+1}(x)=0 & \Leftrightarrow |x|_0-|x|_1 = 2 \\
+                  \textsc{Ex}_{2m}^{m|m+1}(x)=1 & \Leftrightarrow |x|_0-|x|_1 = 0 \\
+              \end{align*}
+              {\huge \[Q(\textsc{Ex}_{2m}^{m|m+1}) = \Omega\left(m\right)\]}
+              \pause
+        \item \textbf{Reduction from:} $\textsc{Ex}_{2m}^{m|m+1} \leq \Dyck{k,n}$
+              {\huge \[Q(\Dyck{k}) = \Omega\left(\sqrt{n}c^{k}\right)\]}
+    \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -373,7 +340,7 @@ of bounded height with quantum query algorithms.}}
 
 \section[The progress to reduce bounded height Dyck word's QQC]{The progress to reduce the \Dyck{k} Quantum Query Complexity}
 
-\subsection{Why does the problem is not only a grover search }
+\subsection{The problem is not only a grover search.}
 
 \begin{frame}
     \frametitle{Every $k$ is not as simple as 1.}
@@ -432,7 +399,7 @@ of bounded height with quantum query algorithms.}}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Small definition and intuition}
+    \frametitle{Small definitions and intuitions.}
 
     \begin{minipage}{.30\textwidth}
         \begin{itemize}
@@ -500,7 +467,7 @@ of bounded height with quantum query algorithms.}}
 \subsection{Original algorithm and small updates }
 
 \begin{frame}
-    \frametitle{A first inductive algorithm with a quantum query complexity of $\tilde{\Theta}\left(\sqrt{n}\right)$}
+    \frametitle{A. Ambainis and all. first inductive algorithm in  $\tilde{\Theta}\left(\sqrt{n}\right)$.}
     \begin{minipage}{.5\textwidth}
         \begin{figure}
             \begin{tikzpicture}[scale=.4]
@@ -670,14 +637,14 @@ of bounded height with quantum query algorithms.}}
 
         \end{tikzpicture}
     \end{minipage}
-    \visible<10->{{\huge \[O\left(\sqrt{n}\right)\]}}
+    {\large \[\visible<10->{Q(\Dyck{2,n}) = O\left(\sqrt{n}\right)} \visible<11->{\implies Q(\Dyck{k,n})= O\left(\sqrt{n}(\log_2(n))^{0.5(k-2)}\right)}\]}
 \end{frame}
 
 \section{New idea to get better quantum query complexity bounds }
 
 \subsection{For lower bounds}
 \begin{frame}
-    \frametitle{The search for a new reduction.}
+    \frametitle{A better reduction can increse the lower bounds.}
     \begin{itemize}
         \item Tightness of $\textsc{Ex}_{2m}^{m|m+1}$'s one.
         \item New reduction:
@@ -687,7 +654,7 @@ of bounded height with quantum query algorithms.}}
 
 \subsection{For upper bounds:}
 \begin{frame}
-    \frametitle{There is a lot of recursive calls:}
+    \frametitle{Optimizing the recursion step of Ambainis and all. algorithm can decrease the upper bound.}
     \begin{minipage}{.45\textwidth}
         \begin{figure}
             \begin{algorithmic}
