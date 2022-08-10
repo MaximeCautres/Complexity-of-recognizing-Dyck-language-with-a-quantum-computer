@@ -70,7 +70,7 @@
 }
 
 \theoremstyle{definition}
-\newtheorem{definition}{Définition}
+\newtheorem{definition}{Definition}
 \newtheorem{proposition}{Proposition}[definition]
 
 \theoremstyle{plain}
@@ -118,23 +118,24 @@
 
             \vfill
 
-            \begin{center}
-                \begin{tikzpicture}[scale=.8]
-                    \node[inner sep=0pt] (charlie) at (0, 0)  {\includegraphics[width=.42\textwidth]{illustration/3156684380_2_2_vxsNaxNA.jpg}};
-                    \node[inner sep=0pt] (knuth) at (6.5, -1) {\includegraphics[width=.16\textwidth]{illustration/knuth.png}};
-                    \node[inner sep=0pt] (grover) at (10, -1) {\includegraphics[width=.145\textwidth]{illustration/grover.jpeg}};
-                    \node (textknuth) at (6.5, 2.75) {Finding Charlie};
-                    \node (textknuth) at (6.5, 2.45) {will take};
-                    \node (textknuth) at (6.5, 2.15) {a linear time...};
-                    \draw[rounded corners=4mm] (6, 1.7) -- (4.7, 1.7) -- (4.7, 3.2) -- (8.3, 3.2) -- (8.3, 1.7) -- (7, 1.7);
-                    \draw (6, 1.7) -- (6.7, 1.3) -- (7, 1.7);
-                    \node (textgrover) at (10, 2.15) {Sure of that?};
-                    \draw[rounded corners = 2.5mm] (9.5, 1.7) -- (8.5,1.7) -- (8.5, 2.6) -- (11.5, 2.6) -- (11.5, 1.7) -- (10.5, 1.7);
-                    \draw (9.5, 1.7) -- (9.8, 1.3) -- (10.5, 1.7);
-
-                \end{tikzpicture}
-            \end{center}
-
+            \begin{figure}[h!]
+                \begin{center}
+                    \begin{tikzpicture}[scale=.8]
+                        \node[inner sep=0pt] (charlie) at (0, 0)  {\includegraphics[width=.42\textwidth]{illustration/3156684380_2_2_vxsNaxNA.jpg}};
+                        \node[inner sep=0pt] (knuth) at (6.5, -1) {\includegraphics[width=.16\textwidth]{illustration/knuth.png}};
+                        \node[inner sep=0pt] (grover) at (10, -1) {\includegraphics[width=.145\textwidth]{illustration/grover.jpeg}};
+                        \node (textknuth) at (6.5, 2.79) {Finding Charlie};
+                        \node (textknuth) at (6.5, 2.47) {will take};
+                        \node (textknuth) at (6.5, 2.07) {a linear time...};
+                        \draw[rounded corners=4mm] (6, 1.7) -- (4.7, 1.7) -- (4.7, 3.2) -- (8.3, 3.2) -- (8.3, 1.7) -- (7, 1.7);
+                        \draw (6, 1.7) -- (6.7, 1.3) -- (7, 1.7);
+                        Most people do not know what they are selling so just search a general name like “singer”  \node (textgrover) at (10, 2.15) {Sure of that?};
+                        \draw[rounded corners = 2.5mm] (9.5, 1.7) -- (8.5,1.7) -- (8.5, 2.6) -- (11.5, 2.6) -- (11.5, 1.7) -- (10.5, 1.7);
+                        \draw (9.5, 1.7) -- (9.8, 1.3) -- (10.5, 1.7);
+                    \end{tikzpicture}
+                \end{center}
+                \caption{Historical discussion between Knuth and Grover.}
+            \end{figure}
             \vfill
 
             % Author and supervisor
@@ -174,6 +175,7 @@
 
 
 \section{A better algorithm for \Dyck{k,n}}
+\label{main_section}
 
 \input{repport_part/work.tex}
 

@@ -183,16 +183,21 @@ by using the following method:
     Then the quantum query complexity $Q(f)$ is in  $\Omega(\sqrt{m m'})$.
 \end{theorem}
 
-The proof of the theorem can be found in \autoref{proof:advmethod}. More generally,
-the method of an adversary define a process to find the lower $d$ possible. The
+
+The proof of the theorem can be found in \autoref{proof:advmethod}.
+One important result of the adversary method is the lower bound on the quantum query complexity
+of $Ex_{2m}^{m \vert m+1}$
+in $\Omega\left(m\right)$ where the problem $Ex_{2m}^{m\vert m+1}$ consists to
+recognize between $|x|=2m\ \land\ |x|_1 = m$ , and $|x|=2m\ \land\ |x|_1 = m+1$.
+More generally, the method of an adversary define a process to find the lower $d$ possible. The
 super-basic adversary method as its name let suggest is simple but does not give
 a tight lower bounds. For this, the method should be more complicated which results
 in longer days on the board to find the parameters of the methods.
 
-Let f be the function whose quantum query complexity is unknown. The two adversary methods
+Let $f:D\to\{0,1\}$ be the function whose quantum query complexity is unknown. Two other adversary methods
 are described as following:
 \begin{itemize}
-    \item \textbf{The Basic adversary method by Ambainis \cite{andris_adversary_methode}}
+    \item \textbf{The Basic adversary method by Ambainis \cite{andris_adversary_methode}}.
           \begin{theorem}
               Let define $YES$ the set equal to $f^{-1}(accepted)$ and $NO$ the set
               equal to
@@ -213,37 +218,181 @@ are described as following:
               \end{itemize}
               Then the quantum query complexity $Q(f)$ is in  $\Omega(\sqrt{\frac{m m'}{ll'}})$.
           \end{theorem}
-    \item \textbf{The general adversary method by \cite{}}
+    \item \textbf{The general adversary method by Reichardt \cite{Reichardt_2009}}.
+
+          A symmetric matrix $\Gamma$ is an adversary matrix for $f$ if the
+          rows and cols of $\Gamma$ can be indexed by input $x$ in $D$ such that
+          $\Gamma_{x,y} = 0$ if $f(x) = f(y)$. $\Gamma^{(i)}$ is defined from $\Gamma$
+          and is a similarly sized matrix such that $\Gamma^{(i)}_{x,y} = \left\{
+              \begin{array}{ll}
+                  \Gamma_{x,y} & \textrm{if} \ x_i\neq y_i \\
+                  0            & \textrm{otherwise}
+              \end{array}
+              \right.$. This two objects allow to define the following notion of adversary plus minus
+          \[Adv^{\pm}(f) = \underset{\textrm{\shortstack{$\Gamma$ -
+                          an adversary\\[-1ex] matrix for $f$}}}{\max} \frac{\Vert \Gamma\Vert }{\max_i \Vert \Gamma^{(i)}\Vert}.
+          \]
+
+          \begin{theorem}
+              The adversary plus minus is such that $Q(f) = O(Adv^{\pm}(f))$.
+          \end{theorem}
+
+          In \cite{Reichardt_2009}, Reichardt gave the proof that the general adversary method
+          is not only giving a lower bound to the quantum query complexity as the method
+          return the directly the quantum query complexity of $f$.
 \end{itemize}
+
+All this adversary methods are really interesting to compute lower bounds, but sometime it is
+useful to reuse already computed ones.
+
 
 \paragraph*{\textbf{The reduction method:}}
-\begin{itemize}
-    \item how does it work
-    \item how does it translate to quantum query complexity
-    \item the result for a lower bound on \Dyck{k,n}
-\end{itemize}
+
+For some problems, it looks obvious that some are easier than the others.
+Computer scientists have developed tools to handle more formally this notion
+of difficulty comparison. One of the main tool is named reduction. A reduction
+is the process to solve a first problem using an algorithm for a second one.
+Because the second problem is able to solve the first one, it is said to be
+harder, which is written $P_1 \leq P_2$.
+\begin{theorem}{Reduction and $Adv^{\pm}$}
+    \[P_1 \leq P_2 \implies Adv^{\pm}(P_1) \leq Adv^{\pm}(P_2)\]
+\end{theorem}
+Finally, problems can also be composed. Lets take $P_1:\{0, 1\}^n \to \{0, 1\}$
+and $P_2:\{0, 1\}^m \to \{0, 1\}$. Then $P_1 \circ P_2$ is defined as
+\[(P_1 \circ P_2)(x_1 \ldots x_{nm}) := P_1\left(\underbrace{P_2(x_1\ldots x_m), \ldots, P_2(x_{(n-1)m+1}\ldots x_{nm})}_{n}\right).\]
+This composition has a great behavior with the adversary plus minus.
+\begin{theorem}{Composition and $Adv^{\pm}$}
+    \[Adv^{\pm}(P_1 \circ P_2) \geq Adv^{\pm}(P_1)\times Adv^{\pm}(P_1)\]
+\end{theorem}
+Andris' team found that the $Ex_{2m}^{m\vert m+1}$ problem can be reduce using the OR and AND
+problems to \Dyck{k} problem with the reduction described in \cite{art:2DGrid}. They finally
+get a lower bound in $\Omega(c^k\sqrt{n})$ for the quantum query complexity of \Dyck{k,n}.
+
 
 \subsubsection{Best known algorithm to recognize \Dyck{k, n}}
+\label{already_known}
 
-\paragraph*{\textbf{How to reject a word from \Dyck{k,n}}}
+Before checking the algorithm for \Dyck{k,n}, it is necessary to define some terms useful
+for later.
+
+\paragraph*{\textbf{Preliminary definition:}}
+
 \begin{itemize}
-    \item recall for the height $height$
-    \item $\pm$ $k+1$ strings, minimal ones
+    \item \textbf{The height function $h$:} This first utilarity function
+          allow the computation of final height of a string. It is define as following
+          \[h(x_1\ldots x_n) := \sum_{i=1}^n(-1)^x_i\]
+    \item \textbf{$\pm k$-strings:} A string $x_1\ldots x_n$ is said to be a $+k$-string
+          (resp. $-k$-string) if
+          \[\max_{1\leq i\leq j \leq n} h(x_i \ldots x_j) = k\ \left(\textrm{resp.} \min_{1\leq i\leq j \leq n} h(x_i \ldots x_j) = -k\right).\]
+    \item \textbf{minimal $\pm k$-strings:} A $\pm k$-string $x_1...x_n$ is said to be minimal
+          if it doesn't exist $i, j$ such that $1 \leq i\leq j\leq n$, $(i, j) \neq (1, n)$
+          with $x_i\ldots x_j$ a $\pm k$-string.
 \end{itemize}
 
-\paragraph*{\textbf{explaination why it is hard for $k > 1$}}
+\paragraph*{\textbf{\Dyck{k,n} characterization:}}
+In order to recognize \Dyck{k} language, multiple approach are possible.
+The most method used in \cite{art:2DGrid} by Ambainis's team is to search
+for a substring that cannot be seen into a Dyck word of height at most $k$.
+A natural way to reject a word $w$ from \Dyck{k} is to search for a $\pm k+1$-string
+into $1^k w0^k$. Lets detail this technic more precisely. First, a Dyck word
+is always above the abscise axe, so it cannot exist $i$ such that $h(w_1 \ldots w_i)=-1$
+thus it cannot exist $i$ such that $h((1^k w0^k)_1 \ldots (1^k w0^k)_i)=-k-1$ and finally
+it cannot exist a $-(k+1)$-string into $1^k w0^k$. After that, a Dyck word always end on
+the abscise axis, which means that it doesn't exist $i$ such that $h(w_i \ldots w_n)=1$
+which implies that $1^k w0^k$ cannot contain any $+(k+1)$-string. Moreover, for a Dyck word
+of height at most $k$, it cannot exist $i$ such that $h(w_1\ldots w_i) = k+1$ so the
+bounded height constraint is already taken into account by the impossibility of having a
+$+(k+1)$-string into $1^k w0^k$. Finally, this give us that the belonging of a $\pm(k+1)$-string
+into $1^k w0^k$ is sufficient to reject every non Dyck word of height at most $k$.
+
+\paragraph*{\textbf{$\pm k+1$-strings recognition:}}
+In order to recognize \Dyck{k}, the main point is now to find efficiently
+a $\pm(k+1)$-string. Let detailed a little bit how it is done.
 \begin{itemize}
-    \item There is an infinit number of rejecting strings to search for
+    \item \textbf{For k=1:} To reject a non-\Dyck{1} word $w$, it is sufficient to find
+          $\pm 2$-strings. However, the only every minimal $\pm 2)$-strings is of size 2, so
+          every $\pm(2)$-strings can be found by searching for 11 or 00 using 2 grover search.
+          This methods implies a quantum query complexity of $O(\sqrt{n})$ from its two calls to
+          Grover's one.
+    \item \textbf{For k=2 (naive approach):} To reject, the goal is to find a $\pm(3)$-string. Unfortunately,
+          there are an infinite number of minimal $\pm(3)$-strings as they form the language
+          $1(10)^*11 + 0(01)^*00$. So trying every possible minimal $\pm(3)$-string for an input
+          string of size $n$ require $O(n)$ calls to Grover with a final quantum query complexity
+          of $O(n \sqrt{n})$. This algorithm has its complexity already above the known upper bounds
+          of the trichotomy theorem. In order to stay into the trichotomy theorem, the algorithm
+          should be improved.
+    \item \textbf{For any k+1:} In order to have a faster algorithm, Ambainis' team has
+          found an inductive algorithm on the depth. Indeed, a minimal $\pm(k+1)$-string can be
+          share into two smaller $\pm k$-strings as shown in \autoref{fig:dyck_hered}. The main
+          ideas of the induction step are:
+          \begin{enumerate}
+              \item \label{alg:step1} Chose an upper bound $d$ in $\{2, 4, 8, \ldots, 2^{\lfloor \log_2(n) \rfloor}\}$
+                    for the length of the $\pm(k+1)$-string.
+              \item \label{alg:step2} Chose an indices $t$ in $\{1, 2, 3, \ldots, n\}$ that have to be in the $\pm(k+1)$-string.
+              \item \label{alg:step3} Try to find two $\pm(k)$-string in an interval of length at most $d$ that include $t$
+                    \begin{enumerate}
+                        \item \label{alg:step3:1} Try to find a $\pm(k)$-string that include $t$ of length at most $d$-1.
+                        \item \label{alg:step3:2} If it exists, find an other $\pm(k)$-string on the left or on the right, if it fail return \texttt{NULL}.
+                        \item \label{alg:step3:3} If it does not exist, try to find $\pm(k)$-string on the left, and another $\pm(k)$-string on the right, if it fail return \texttt{NULL}.
+                        \item \label{alg:step3:4} Test if both $\pm(k)$-string are of the same sign and if the string that include both if of length lower than $d$.
+                        \item \label{alg:step3:5}If test is good, return the $\pm(k+1)$-string.
+                        \item \label{alg:step3:6}Otherwise return \texttt{NULL}.
+                    \end{enumerate}
+          \end{enumerate}
+
+          Let explain the quantum query complexities and the idea behind each step. It has been shown before
+          that searching for every minimal $\pm(k+1)$-string isn't a solution has it is too slow. So the idea
+          is to bound the size of minimal $\pm(k+1)$-string the function is currently searching for. This is interesting
+          as it allows to use a function describes in step \ref{alg:step3} named \FALM{k+1}, whose main parameters are $d$ and $t$, and which is able to
+          find a minimal $\pm(k+1)$-string if and only if it include the index $t$ and the size of the minimal $\pm(k+1)$-string
+          is bounded between $\frac{d}{2}$ and $d$. These constraints imply two things:
+          First, the parameter $t$ implies a call to Grover (as it may be possible to have a $\pm(k+1)$-string  not including $t$), but
+          there is $O(d)$ value of $t$ such that \FALM{k+1} returns a minimal $\pm(k+1)$-string so it is possible
+          to cut early the Grover search to get its quantum query complexity in $O\left(\sqrt{\frac{n}{d}}\right)$.
+          This Grover search corresponds to \autoref{alg:step2} named \FFL{k+1}.
+          After that for $d$, in order not to miss any minimal $\pm(k+1)$-string, it is necessary to call \FFL{k+1}
+          for every $d$ in $\{2, 4, 8, \ldots, 2^{\lfloor \log_2(n) \rfloor}\}$ (\autoref{alg:step1}) which implies a
+          call to Grover in $O\left(\sqrt{\log(n)}\right)$. This is done in \autoref{alg:step1} by the function named
+          \FA{k+1}.
+          Finally, the quantum query complexity of \FALM{k+1} is $O\left(\sqrt{d}(\log_2(d))^{0.5(k-1)}\right)$, it comes from
+          complex calls to many subroutines. In steps \ref{alg:step3:1} and \ref{alg:step3:2}, at most
+          three calls to \FALM{k} are done with a quantum query complexity of $O\left(\sqrt{d}(\log_2(d))^{0.5(k-2)}\right)$.
+          In step \ref{alg:step3:2} and \ref{alg:step3:3}, at most 4 calls to \FF{k} are done. The
+          subroutines \FF{k} find the closer $\pm k$-strings from the end $r$ or the beginning $l$ of a
+          specified interval. This function finally do a binary search using calls to \FA{k}
+          and \FFP{k} in a quantum query complexity of $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)$.
+          This last subroutine \FFP{k} searches only for $\pm k$-strings which include the index $t$
+          with a quantum query complexity of $O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)$.
+
+          \begin{figure}[h!]
+              \centering
+              \begin{tikzpicture}[scale=.7]
+                  \draw[latex-latex, thick] (0, 3) -- (0, 0) -- (5.5, 0);
+                  \foreach \j in {2} {
+                          \draw[dashed] (-.2, \j) -- (5.5, \j);
+                          \draw (0, \j) node[left] {\footnotesize \j};
+                      }
+                  \draw[blue, thick] (0, 0) -- (2, 2) -- (3, 1) -- (5, 3);
+                  \draw[blue] (4.75, 2.75) node[above left] {+3 string};
+
+                  \draw[orange, very thick] (0, 0+.2) -- (2, 2+.2);
+                  \draw[orange] (2,2) node[above] {+2 string};
+                  \draw[orange, very thick] (3, 1-.2) -- (5, 3-.2);
+                  \draw[orange] (3, 1) node[below] {+2 string};
+              \end{tikzpicture}
+              \caption{Decomposition of a $+3$-string into two $\pm(k+1)$-strings.}
+              \label{fig:dyck_hered}
+          \end{figure}
 \end{itemize}
 
-\paragraph*{\textbf{Andris ambainis team solution}}
-\begin{itemize}
-    \item Give an detailed explaination of the algorithm that are in the annexe
-    \item explain why every part of the algorithm is important.
-          \begin{itemize}
-              \item the search on $d$
-              \item the log search to have limited error.
-              \item \FALM{k}
-          \end{itemize}
-    \item
-\end{itemize}
+Finally, this complex algorithm has a quantum query
+complexity of $O\left(\sqrt{n}(\log(n))^{0.5k}\right)$ which is a
+$\tilde{\Theta}\left(\sqrt{n}\right)$. This description of the existing
+algorithm stay at the surface in order to stay simple, every the pseudo
+code of every subroutines can be found in
+\autoref{annex:complete_subroutine_dyck_kn}. No proof of their
+quantum query complexity is provided as a proof for
+\autoref{th:subroutine_complexity}, almost identical,
+is already provided in \autoref{proof:complexity_dyckkn}.
+However, this algorithm can
+be improved and two personal improvements are described in \autoref{main_section}.

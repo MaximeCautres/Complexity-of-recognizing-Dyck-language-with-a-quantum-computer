@@ -2,13 +2,14 @@
 
 In the article \cite{art:2DGrid}, Andris Ambainis give us a quantum algorithm to recognize
 the belonging of a $n$ length bit string in $\Dyck{k, n}$ using
-$O(\sqrt{n}(\log_2(n))^{0.5k})$ quantum queries. But the quantum query complexity for $k=1$ is not as good as a
-Grover's search which is sufficient. More precisely, for $k=1$ the algorithm is
-searching for a minimal $\pm 2$ string in $1x0$ but every minimal $\pm 2$ string
-is of size $2$. So the logarithmic search of the upper bound on the size of the
-minimal $\pm 2$ string is no more useful and the algorithm can be summarized to
-applying a Grover search for 2 consecutive 0 or two consecutive 1. This lower the quantum
-query complexity of the initial case of the function to $O(\sqrt{n})$ instead of $O(\sqrt{n\log_2(n)})$.
+$O(\sqrt{n}(\log_2(n))^{0.5k})$ quantum queries. But the quantum query complexity for
+$k=1$ ($O(\sqrt{n}\log_2(n))$) is not as good as a
+Grover's search $O(\sqrt{n})$ which is sufficient (seen in \autoref{already_known}).
+More precisely, the logarithmic search done by \FA{k+1} for $k=1$ is useless
+as there is exactly one minimal $\pm 2$ -string so it is sufficient to
+add a new initial case to \FA{k+1} for $k = 1$ in order to use a Grover search
+for $00$ and $11$ in $1w0$ instead of \FFL{2}. This lowers the quantum query
+complexity for $k=1$ of the function to $O(\sqrt{n})$ instead of $O(\sqrt{n\log_2(n)})$.
 This give us this following algorithm for \FA{k}.
 
 \begin{algorithm}
@@ -52,8 +53,6 @@ This small improvements on the initial cases will improve the global
 quantum query complexity of each subroutine and finally the quantum
 query complexity for \Dyck{k,n}.
 
-\newpage
-
 \begin{theorem}{\textbf{\Dyck{k,n}'s algorithm correctness}} \label{th:subroutine_correctness}
     The new definition of \FA{} and \FFP{} does not change the behavior the original algorithm
     as other subroutines (\autoref{annex:complete_subroutine_dyck_kn}) stay unchanged.
@@ -61,7 +60,7 @@ query complexity for \Dyck{k,n}.
 
 \begin{tproof}
     The behavior of the \Dyck{k,n} algorithm with the new subroutines is the same than the older
-    one as \FA{} (resp. \FF{}) has the same sub-behavior on every entry with its
+    one as \FA{} (resp. \FF{}) has the same sub-behavior on every entry than its
     older definition.
 \end{tproof}
 
