@@ -27,11 +27,11 @@ with F equal
 
 But here, the more convenient way to characterize regular language is with their
 algebraic characterization. Indeed, a regular language is always a pre image of a subset
-of a monoid under monoid homomorphism. A monoid is a 3-tuple of a set M, an
+of a finite monoid under monoid homomorphism. A monoid is a 3-tuple of a set M, an
 internal associative binary operation and finally the identity element associated to the
 operation. A monoid homomorphism is a map from a monoid to another that preserve the
 operation and the identity. Usually, to get the monoid representation of a regular
-language, the first step is to compute the syntactical monoid. The syntactical monoid is
+language, the first step is to compute the syntactic monoid. The syntactic monoid is
 obtained by dividing $\Sigma^*$ by the following equivalence relation called syntactic
 congruence
 \[x \sim_L y \Leftrightarrow \forall (u, v) \in \left(\Sigma^*\right)^2, (uxv \in L \Leftrightarrow uyv \in L).\]
@@ -42,8 +42,13 @@ congruence class. Inside a congruence class, none or every element of the class 
 Indeed,  if $x$ is in $L$ and $x \sim_L y$ then for all
 $(u, v)$ in $\left(\Sigma^*\right)^2, (uxv$ in $L \Leftrightarrow uyv$ in $L)$ thus
 $x$ in $L$ implies $y$ in $L$ and finally as $x$ is in $L$ then $y$ is also in $L$.
-Now, it is sufficient to prove that the syntactical monoid is of finite size.
-{\color{red} ma be put the proof if time else say folklore.}
+Now, it is sufficient to prove that the syntactical monoid is of finite size\footnote{
+    More precisely, the finiteness of the syntactic monoid is the property that
+    characterize every regular languages. A good intuition to understand is first that it
+    is always possible to construct finite automata from a finite monoid. For the second way,
+    it is more delicate but the work done by Brzozozowski, Szykula and Ye \cite[2018]{Brzozowski}
+    summarized a lot of result on the influence of the size of the minimal automata size on
+    the size of the smaller syntactic monoid.}.
 
 Finally, every regular language can be recognized by finite monoid.
 
@@ -268,6 +273,12 @@ Andris' team found that the $Ex_{2m}^{m\vert m+1}$ problem can be reduce using t
 problems to \Dyck{k} problem with the reduction described in \cite{art:2DGrid}. They finally
 get a lower bound in $\Omega(c^k\sqrt{n})$ for the quantum query complexity of \Dyck{k,n}.
 
+The team also gets another result (not published),
+they have founded an upper bound using a reduction from
+\Dyck{k,n} to a problem about the connectivity into a 2d
+directed grid with missing edges. This upper bound of
+$O(\sqrt{n}(\log_2(n))^{0.5(k-1)})$ is interesting as it
+is an upper bound in $\tilde{\Theta}(\sqrt{n})$.
 
 \subsubsection{Best known algorithm to recognize \Dyck{k, n}}
 \label{already_known}
@@ -395,4 +406,6 @@ quantum query complexity is provided as a proof for
 \autoref{th:subroutine_complexity}, almost identical,
 is already provided in \autoref{proof:complexity_dyckkn}.
 However, this algorithm can
-be improved and two personal improvements are described in \autoref{main_section}.
+be improved, indeed the first upper bound by reduction
+is still better than the upper bound from algorithm.
+Now, two personal improvements are described in \autoref{main_section}.

@@ -181,7 +181,34 @@
 
 \section{Conclusion}
 
-Conclusion here.
+During the internship, the work I have led didn't allow to merge
+both  upper and lower bounds in order to get the final quantum
+query complexity of \Dyck{k}. However, the multiple approaches used
+to improve both bounds have been half successful. Indeed, every
+try to use new reductions or to compute new adversary lower bounds
+didn't succeed. Nonetheless, the upper bound have been improved
+two times, from $O(\sqrt{n}(\log_2(n))^{0.5k})$ to
+$O(\sqrt{n}(\log_2(n))^{0.5(k-1)})$ and finally to
+$O(\sqrt{n}(\log_2(n))^{0.5(k-2)})$, thanks to a small revision
+of the original algorithm and a faster algorithm for \Dyck{2}.
+
+For the future, there is still a lot of things to try. First,
+it may be possible to prove that the approach (detailed in
+\autoref{subsec:dicho}) to simplified
+the quantum query algorithm cannot work. Next, it could be possible
+that the next breakthrough for the quantum query complexity of \Dyck{k}
+comes from a totally different quantum query algorithm. Finally,
+Andris team's members have found a potential applicant for the
+general adversary bounds, unfortunately they didn't succeed to
+compute its adversary value.
+
+This internship has allow me to experience the life in an other
+country and in a new laboratory. The discussion with different
+researcher about their research and mine were really interesting
+and help me to understand more precisely the scope and the main
+problems of quantum computing.
+
+
 
 
 \bibliographystyle{plain}

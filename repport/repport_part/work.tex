@@ -99,6 +99,7 @@ to get a significant improvement for the quantum query complexity of \Dyck{k,n} 
 improve more the query complexity, an other algorithm using a different strategy should be found.
 
 \subsection{A new algorithm for \Dyck{2,n}}
+\label{subsection:dyck2n}
 
 First, we would like to find an algorithm with a quantum query complexity near to match the lower bound,
 $\exists c > 1$ such that $Q\left(\Dyck{k,n}\right)=\Omega\left(\sqrt{n}c^k\right)$, describes by Andris
@@ -390,7 +391,7 @@ comes from the direct application of the theorem.
         \For{$\texttt{reject\_symbol} \in \{aa, ac, bb, bd, cb, cd, da, dc\}$}
         \If{$t == \Null$}
         \State \textbf{Find} $\texttt{t}$ in $\llbracket0, n\rrbracket$ such that \\
-        \hspace*{1cm} $x[2\texttt{t}, \ldots, 2\texttt{t}+3] = \texttt{reject\_symbol}$
+        \hspace*{1cm} $x[2\texttt{t}+1, \ldots, 2\texttt{t}+4] = \texttt{reject\_symbol}$
         \EndIf
         \EndFor
         \State \textbf{return} $\texttt{t} == \Null$
@@ -408,6 +409,104 @@ comes from the direct application of the theorem.
     \[Q(\textsc{DyckFast}_{2, n}) = 8\times O\left(\sqrt{n+4}\right) = O\left(\sqrt{n}\right)\]
 \end{tproof}
 
-\subsection{A new algorithm for k=3}
+\subsection{A simplification for \Dyck{2,n} algorithm}
+
+The algorithm describes in \autoref{subsection:dyck2n} is complex to explain
+but it turns out that a simpler version of it exists and is way easier to
+understand that the first one.
+
+\begin{algorithm}
+    \caption{\textsc{DyckFastEasy}$_{2,n}$}\label{alg:dyck2nsqrteasy}
+    \begin{algorithmic}
+        \Require $n \geq 0$, $x$ such that  $|x| = 2n$
+        \State $x \gets 11x00$
+        \State \textbf{Find} $\texttt{t}$ in $\llbracket0, n\rrbracket$ such that \\
+        \hspace*{1cm} $x[2\texttt{t}, 2\texttt{t}+1] \in \{00, 11\}$
+        \State \textbf{return} $\texttt{t} == \Null$
+    \end{algorithmic}
+\end{algorithm}
+
+Lets explain how it works. A Dyck word of height at most 2 can be recognized by the following grammar on the
+alphabet 0 and 1:
+\begin{align*}
+    S & \mapsto 0I1                             \\
+    I & \mapsto 01I \vert 10I \vert \varepsilon \\
+\end{align*}
+Indeed, a Dyck word of height at most 2 $w_1\ldots w_n$ can only start with
+a zero else it gets a negative height. After, if it goes up, it reach the
+height 2 so it can only go down and if it goes down, it reach height 0 so it
+can only go up. This implies that after every letter of odd indices, the
+height is equal to one, and that the possible next two letters can only be
+in $\{01, 10\}$. So, finding a $\{00,11\}$ starting on an even index is equivalent
+to not being a dyck word of height at most two. Finally, using two Grover
+searches for 00 and 11 starting on an even index is now sufficient to recognize
+\Dyck{2,n}.
+
+
+\section{Multiple tries to improve the quantum query complexity upper and lower bounds}
 
 \subsection{A try for a new algorithm for any k.}
+\label{subsec:dicho}
+In order to reduce the quantum query complexity of \Dyck{k,n}, one idea was
+to reduce the number of recursive calls during the execution. For that,
+two different possibilities seemed possible, both were using the same
+main principle: The recursive calls could be associated to nested loops,
+whose variables would correspond to the choice of $d$ for each recursion level.
+Indeed, in every recursion level, \FA{k} is called with $l$ and $r$ such that
+$r-l\leq d_{k+1}$ with $d_k+1$ the value give to $d$ in the call of \FA{k+1}.
+It is in reality more complicated but the goal is just to check if
+it may be possible to reduce the quantum query complexity with this model
+to translate later the methods for the original algorithm.
+\paragraph*{A natural graph structure on this (k-1)-tuples.} Because the initial
+cases are for $k$ equal to 1 and 2, there is only k-2 nested loops and variables $d_i$
+associated to each recursive level. This k-2 variables can be consider together
+as $k-2$-tuples. In every tuple, the following inequality is verified
+$ d_{k+1} \geq d_k \geq \ldots \geq d_3$. Each tuple is a vertex in a graph
+$(V,E)$. Edge $E$ are defined as following.
+\[ (t_u,t_v) \in E \Leftrightarrow \left(\exists ! i \in \{1, k-1\}, (t_u)_i \neq (t_v)_i\right)
+    \land \left(\forall i \in \{1, k-1\}, (t_u)_i \neq (t_v)_i \implies 2(t_u)_i =  (t_v)_i\right)\]
+This graph as an interesting property $\mathcal{P}$ for every vertex $t_u$.
+If it exists a $\pm (k+1)$-strings of length at most $(t_u)_1$ composed of 2 $\pm k$-strings of size at most
+$(t_u)_2$ composed them selves of 2 $\pm (k-1)$-strings of size at most
+$(t_u)_3$, ... and composed themselves of  2 $\pm 3$-strings of size at most
+$(t_u)_k-1$, then for every descendent $t_v$ of $t_u$ in the graph, it exists
+a $\pm (k+1)$-strings valid with $t_v$. In this context, the original algorithm
+in its simplified version (nested loops) is equivalent to do a DFS on the graph
+where the DFS searches for a vertex  $t_u$ such that the requirement of the
+property above ($\mathcal{P}$)
+is verified. The quantum query complexity of this algorithm would be the one
+of the grovered DFS times the one to check is a node satisfied the property.
+This give us a quantum query complexity in
+$O\left(\sqrt{\log_2(n)^{k-1}}\times Q(\textrm{property\ checking})\right)$.
+At this point two idea were proposed in order to cut early or explore only small
+part of the graph.
+
+\paragraph*{Binary search.} The goal here is to do a binary search on each
+dimension, in order to find  a vertex that satisfied requirement of $\mathcal{P}$.
+Indeed, $\mathcal{P}$ implies that the requirement is still true for every
+$t_v$ such that $t_u$ and $t_v$ differ only on the j-th dimension and
+$(t_u)_j\leq (t_v)_j$. The quantum query complexity of this multidimensional
+binary search would be $O(\sqrt{\log_2(\log_2(n))}^{k-1}) \times
+    Q(\textrm{property\ checking})$. In order to have an interesting quantum
+query complexity, checking the requirement of $\mathcal{P}$ should stay small.
+Unfortunately, I didn't find any checking function with an interesting quantum
+query complexity which is compatible with the binary search. In fact, the
+binary search will skip some check in each rows, so the following checking function
+(near to the one from the original algorithm) is not valid has it can answer badly
+if the value of one $d_i$ is greater than twice the size of one of the
+\begin{center}
+    \begin{minipage}{.8\textwidth}
+        Does it exists a $\pm (k+1)$-strings of length between $(t_u)_1/2$ and  $(t_u)_1$ composed of
+        2 $\pm k$-strings of size between $(t_u)_2/2$ and $(t_u)_2$ composed them selves of 2
+        $\pm (k-1)$-strings of size between $(t_u)_3/2$ and $(t_u)_3$, ... and composed themselves
+        of  2 $\pm 3$-strings of size between $(t_u)_{k-1}$ and $(t_u)_{k-1}$.
+    \end{minipage}
+\end{center}
+{\Huge \colorbox{red}{TODO}}
+
+\paragraph*{Cut early DFS.} Here the goal is to still do a DFS, but
+    {\color{red} To finish}
+
+\subsection{A new adversary plus minus for \Dyck{k,n}}
+
+\subsection{A new reduction from easier problems}
