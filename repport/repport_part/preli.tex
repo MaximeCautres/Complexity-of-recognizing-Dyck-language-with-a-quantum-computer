@@ -1,23 +1,26 @@
-In order to understand from where comes the $\tilde{\Theta}(\sqrt{n})$ quantum
-query complexity, it is mandatory to start by understanding the
-Trichotomy theorem \cite{trichotomy_not_andris} and its dependency on Regular
+In order to understand the $\tilde{\Theta}(\sqrt{n})$ quantum
+query complexity, it is mandatory to learn the logic behind the
+trichotomy theorem \cite{trichotomy_not_andris} and its dependency on regular
 languages and star free languages.
-After that, to understand how to find a lower bounds, it is necessary to explore
-the different adversary methods \cite{adversary_equivalence}.
+After that, it will be necessary to presents the tools
+that computer scientists have developed in order to
+find new bounds on the quantum query complexity.
+These tools can be group into 3 main categories:
+reductions, algorithms, and adversary methods\cite{adversary_equivalence}.
 
 \subsection{Quantum query for regular languages.}
 
-In the article \cite{trichotomy_not_andris}, Aaronson, Grier and Schaeffer presented
-a really interesting algebraic characterization of regular languages based on the
-recognition by monoids and the syntactic congruence. This totally new to me definition
-give me some hard time in order to understand it correctly.
+In the article \cite{trichotomy_not_andris}, Aaronson, Grier and Schaeffer use
+a really interesting algebraic characterization of regular languages based on
+monoids and syntactic congruence. This definition was unknown to me and I spend
+a lot of time to understand it correctly.
 
 \subsubsection{Regular languages}
 
-Usually, the set of regular languages $\mathcal{R}$ on the alphabet $\Sigma$ is defined as the smallest
-fixed point of the function F (the function that computes concatenations, unions, and Kleene stars)
-including $\{\varnothing\} \cup \{\varepsilon\} \cup(\cup_{l\in\Sigma}\{l\})$
-with F equal
+Usually, the set of regular languages $\mathcal{R}$ on the alphabet $\Sigma$ is
+defined as the smallest fixed point of the function F (the function that computes
+concatenations, unions, and Kleene stars) including $\{\varnothing\} \cup
+    \{\varepsilon\} \cup(\cup_{l\in\Sigma}\{l\})$ with
 \begin{align*}\label{eq:F}
     F(X) = & \{AB\  \forall (A,B)\in X^2\}                                                   \\
            & \cup \{A\cup B\ \forall (A,B) \in X^2 \}                                        \\
@@ -25,58 +28,64 @@ with F equal
            & \cup \{A^*\ \forall A \in X \}.
 \end{align*}
 
-But here, the more convenient way to characterize regular language is with their
-algebraic characterization. Indeed, a regular language is always a pre image of a subset
-of a finite monoid under monoid homomorphism. A monoid is a 3-tuple of a set M, an
+However in \cite{trichotomy_not_andris}, the more convenient way to characterize
+regular languages is to use their algebraic characterization. More precisely,
+for every regular language $L$ it exists a finite monoid $M$, a subset $S$ of this monoid,
+and a monoid homomorphism $\delta$ from $\Sigma^*$ to $M$ such that the regular language is exactly
+the pre-image of the subset $S$ by the monoid homomorphism $\delta$ (i.e. $\delta^{-1}(S)$).
+Lets takes apart this characterization: A monoid is a 3-tuple of a set M, an
 internal associative binary operation and finally the identity element associated to the
-operation. A monoid homomorphism is a map from a monoid to another that preserve the
-operation and the identity. Usually, to get the monoid representation of a regular
-language, the first step is to compute the syntactic monoid. The syntactic monoid is
+operation. A monoid homomorphism is a map from a monoid to another that preserves the
+operation and the identity. Now, to get every elements of the characterization, the first
+step is to compute the syntactic monoid. The syntactic monoid is
 obtained by dividing $\Sigma^*$ by the following equivalence relation called syntactic
 congruence
 \[x \sim_L y \Leftrightarrow \forall (u, v) \in \left(\Sigma^*\right)^2, (uxv \in L \Leftrightarrow uyv \in L).\]
 This equivalence relation is a congruence relation as the equivalence class can be multiplied
-(i.e. if $x\sim_L y$ and $u \sim_L v$ then $xu \sim_L yv$). Now, it is necessary to get the monoid
-homomorphism. For that it is sufficient to take the homomorphism that map an element to its
-congruence class. Inside a congruence class, none or every element of the class is in $L$.
-Indeed,  if $x$ is in $L$ and $x \sim_L y$ then for all
+(i.e. if $x\sim_L y$ and $u \sim_L v$ then $xu \sim_L yv$). With this syntactic monoid, it is
+now possible to define a monoid homomorphism. For that it is sufficient to take the
+homomorphism that map an element to its congruence class. Moreover, using a subset of the
+syntactic monoid is sufficient as in a congruence class, none or every element of the class
+is in $L$. Indeed, if $x \sim_L y$ then for all
 $(u, v)$ in $\left(\Sigma^*\right)^2, (uxv$ in $L \Leftrightarrow uyv$ in $L)$ thus
-$x$ in $L$ implies $y$ in $L$ and finally as $x$ is in $L$ then $y$ is also in $L$.
-Now, it is sufficient to prove that the syntactical monoid is of finite size\footnote{
-    More precisely, the finiteness of the syntactic monoid is the property that
+$x$ in $L$ is equivalent to $y$ in $L$. So, it exists a subset of equivalent class that
+represent every word of $L$ and no word not in $L$.
+Now, the last hard things to show is that the syntactical monoid is of finite size\footnote{
+    More precisely, the finiteness of the syntactic monoid is the main property that
     characterize every regular languages. A good intuition to understand is first that it
     is always possible to construct finite automata from a finite monoid. For the second way,
     it is more delicate but the work done by Brzozozowski, Szykula and Ye \cite[2018]{Brzozowski}
     summarized a lot of result on the influence of the size of the minimal automata size on
     the size of the smaller syntactic monoid.}.
-
 Finally, every regular language can be recognized by finite monoid.
 
 \subsubsection{Star free languages}\label{ssec:starfree}
 
 The set of star free languages is a really well studied subset of the regular languages.
-Its definition differs a little from regular languages' one as the Kleene star is replace
-by the complement operation (note $\overline{L}$). So star free languages are defined
+Its definition differs a little from regular languages' one as the Kleene star is replaced
+by the complement operation (noted $\overline{L}$). So star free languages are defined
 as the smallest fixed point of the function F' (the function that computes concatenations, unions
 and complements) and such that it includes
 $\{\varnothing\} \cup \{\varepsilon\} \cup(\cup_{l\in\Sigma}\{l\})$.
-This restriction does not imply that every star free language is finite. Indeed,
-$\Sigma^*$ can be written $\overline{\varnothing}$. For example the language on
-$\Sigma = \{1, 2, 3\}$ described with the regular expression $\Sigma^*20^*2\Sigma^*$ can be written
-as following in the star free way
-$\overline{\varnothing}2\overline{\overline{\varnothing}\Sigma{\setminus}\{0\}\overline{\varnothing}}2\overline{\varnothing}$.
+This restriction does not imply that every star free language is finite.
+For example, $\Sigma^*$ can be written $\overline{\varnothing}$ and the
+language on $\Sigma = \{1, 2, 3\}$ described with the regular expression
+$\Sigma^*20^*2\Sigma^*$ can be written as following in the star free way
+$\overline{\varnothing}2\overline{\overline{\varnothing}\Sigma{\setminus}
+        \{0\}\overline{\varnothing}}2\overline{\varnothing}$.
 
 As for regular languages, it exists an algebraic characterization for star free
 languages. Let $M$ be a monoid, $M$ is said to be aperiodic if for every $x$ in
-$m$ it exits a positive integer $n$ such that $x^n=x^n+1$. A theorem proved by
-Schützenberger \cite{Schtzenberger1965OnFM} state that a language is recognized
-by a finite aperiodic monoid if and only if if is star free.
+$M$ it exits a positive integer $n$ such that $x^n=x^n+1$. A theorem proved by
+Schützenberger \cite{Schtzenberger1965OnFM} states that a language is recognized
+by a finite aperiodic monoid if and only if it is star free.
 
-Good examples of star free languages are the Dyck word languages with bounded heights.
-It is first easy to have a finite automata that recognize Dyck word of height $k$ by
-putting one state for each integer from 0 up to $k$. However, the belonging to the star
-free regular languages is more delicate to prove. It has been done done by Italian
-researcher in \cite[1978]{dyck_height_bound_star_free}.
+Good examples of star free languages are the Dyck word languages with bounded
+heights. First, it is easy to have a finite automaton that recognize Dyck word
+of height at most $k$ by putting one state for each integer from 0 up to $k$.
+However, the belonging to the star free regular languages is more delicate to
+prove. It has been done by an italian researcher in
+\cite[1978]{dyck_height_bound_star_free}.
 
 \subsubsection{Trichotomy theorem}
 
