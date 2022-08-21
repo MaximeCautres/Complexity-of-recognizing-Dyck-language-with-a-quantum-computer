@@ -2,6 +2,8 @@
 
     \section*{The frame of the intership}
 
+
+
     \section{Proof of the super-basic adversary method}\label{proof:advmethod}
     As a little reminder here is the theorem.
     \begin{theorem}
@@ -200,6 +202,7 @@
 
     \begin{algorithm}[h!]
         \caption{\FF{k}$(l, r, s, left)$}
+        \label{alg:FF}
         \begin{algorithmic}
             \Require $0\leq l < r$ and $s \subseteq \{1,-1\}$
             \State $lBorder \gets l, rBorder \gets r, d \gets 1$
@@ -358,6 +361,8 @@
         }
 
         \Conc{By the induction principle we get that the \autoref{th:subroutine_complexity} is true for $k \in \mathbb{N}^*$}
+
+        \qed
     \end{tproof}
 
 \end{appendix}

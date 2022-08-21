@@ -62,6 +62,8 @@ query complexity for \Dyck{k,n}.
     The behavior of the \Dyck{k,n} algorithm with the new subroutines is the same than the older
     one as \FA{} (resp. \FF{}) has the same sub-behavior on every entry than its
     older definition.
+
+    \qed
 \end{tproof}
 
 \begin{theorem}{\textbf{\Dyck{k,n}'s Subroutines complexity}} \label{th:subroutine_complexity}
@@ -92,6 +94,8 @@ query complexity for \Dyck{k,n}.
     is proven by Andris Ambainis' team in \cite{art:2DGrid} while the $O\left(\sqrt{n}\right)$
     for $k = 1$ comes from the new version of \FA{k} (\textsc{Algorithm} \autoref{alg:ffp_better}).
     The complete proof for the theorem is given in \autoref{proof:complexity_dyckkn}.
+
+    \qed
 \end{tproof}
 
 Unfortunately, the improvements done on the initial cases of some of the subroutines are not sufficient
@@ -375,6 +379,7 @@ following theorem.
         \end{minipage}
     \end{figure}
 
+    \qed
 \end{tproof}
 Finally, a word on the alphabet $\mathcal{A}$ embodies a Dyck word of
 height at most 2 if and only if it does not contain $aa, ac, bb, bd, cb, cd, da, dc$
@@ -407,6 +412,8 @@ comes from the direct application of the theorem.
     The algorithm is doing at most 8 Grover's search on the modified input string $11x00$.
     So the total quantum query complexity is the folling.
     \[Q(\textsc{DyckFast}_{2, n}) = 8\times O\left(\sqrt{n+4}\right) = O\left(\sqrt{n}\right)\]
+
+    \qed
 \end{tproof}
 
 \subsection{A simplification for \Dyck{2,n} algorithm}
@@ -442,71 +449,22 @@ to not being a dyck word of height at most two. Finally, using two Grover
 searches for 00 and 11 starting on an even index is now sufficient to recognize
 \Dyck{2,n}.
 
+\subsection{A final improvement to \Dyck{k} algorithm}
 
-\section{Multiple tries to improve the quantum query complexity upper and lower bounds}
-
-\subsection{A try for a new algorithm for any k.}
-\label{subsec:dicho}
-In order to reduce the quantum query complexity of \Dyck{k,n}, one idea was
-to reduce the number of recursive calls during the execution. For that,
-two different possibilities seemed possible, both were using the same
-main principle: The recursive calls could be associated to nested loops,
-whose variables would correspond to the choice of $d$ for each recursion level.
-Indeed, in every recursion level, \FA{k} is called with $l$ and $r$ such that
-$r-l\leq d_{k+1}$ with $d_k+1$ the value give to $d$ in the call of \FA{k+1}.
-It is in reality more complicated but the goal is just to check if
-it may be possible to reduce the quantum query complexity with this model
-to translate later the methods for the original algorithm.
-\paragraph*{A natural graph structure on this (k-1)-tuples.} Because the initial
-cases are for $k$ equal to 1 and 2, there is only k-2 nested loops and variables $d_i$
-associated to each recursive level. This k-2 variables can be consider together
-as $k-2$-tuples. In every tuple, the following inequality is verified
-$ d_{k+1} \geq d_k \geq \ldots \geq d_3$. Each tuple is a vertex in a graph
-$(V,E)$. Edge $E$ are defined as following.
-\[ (t_u,t_v) \in E \Leftrightarrow \left(\exists ! i \in \{1, k-1\}, (t_u)_i \neq (t_v)_i\right)
-    \land \left(\forall i \in \{1, k-1\}, (t_u)_i \neq (t_v)_i \implies 2(t_u)_i =  (t_v)_i\right)\]
-This graph as an interesting property $\mathcal{P}$ for every vertex $t_u$.
-If it exists a $\pm (k+1)$-strings of length at most $(t_u)_1$ composed of 2 $\pm k$-strings of size at most
-$(t_u)_2$ composed them selves of 2 $\pm (k-1)$-strings of size at most
-$(t_u)_3$, ... and composed themselves of  2 $\pm 3$-strings of size at most
-$(t_u)_k-1$, then for every descendent $t_v$ of $t_u$ in the graph, it exists
-a $\pm (k+1)$-strings valid with $t_v$. In this context, the original algorithm
-in its simplified version (nested loops) is equivalent to do a DFS on the graph
-where the DFS searches for a vertex  $t_u$ such that the requirement of the
-property above ($\mathcal{P}$)
-is verified. The quantum query complexity of this algorithm would be the one
-of the grovered DFS times the one to check is a node satisfied the property.
-This give us a quantum query complexity in
-$O\left(\sqrt{\log_2(n)^{k-1}}\times Q(\textrm{property\ checking})\right)$.
-At this point two idea were proposed in order to cut early or explore only small
-part of the graph.
-
-\paragraph*{Binary search.} The goal here is to do a binary search on each
-dimension, in order to find  a vertex that satisfied requirement of $\mathcal{P}$.
-Indeed, $\mathcal{P}$ implies that the requirement is still true for every
-$t_v$ such that $t_u$ and $t_v$ differ only on the j-th dimension and
-$(t_u)_j\leq (t_v)_j$. The quantum query complexity of this multidimensional
-binary search would be $O(\sqrt{\log_2(\log_2(n))}^{k-1}) \times
-    Q(\textrm{property\ checking})$. In order to have an interesting quantum
-query complexity, checking the requirement of $\mathcal{P}$ should stay small.
-Unfortunately, I didn't find any checking function with an interesting quantum
-query complexity which is compatible with the binary search. In fact, the
-binary search will skip some check in each rows, so the following checking function
-(near to the one from the original algorithm) is not valid has it can answer badly
-if the value of one $d_i$ is greater than twice the size of one of the
-\begin{center}
-    \begin{minipage}{.8\textwidth}
-        Does it exists a $\pm (k+1)$-strings of length between $(t_u)_1/2$ and  $(t_u)_1$ composed of
-        2 $\pm k$-strings of size between $(t_u)_2/2$ and $(t_u)_2$ composed them selves of 2
-        $\pm (k-1)$-strings of size between $(t_u)_3/2$ and $(t_u)_3$, ... and composed themselves
-        of  2 $\pm 3$-strings of size between $(t_u)_{k-1}$ and $(t_u)_{k-1}$.
-    \end{minipage}
-\end{center}
-{\Huge \colorbox{red}{TODO}}
-
-\paragraph*{Cut early DFS.} Here the goal is to still do a DFS, but
-    {\color{red} To finish}
-
-\subsection{A new adversary plus minus for \Dyck{k,n}}
-
-\subsection{A new reduction from easier problems}
+The last algorithm describes is useful to recognize \Dyck{2}. However, it cannot
+be plug into the huge one because it does not return the $\pm 3$-string that allow
+him to reject. Indeed, the algorithm only find the second $\pm 2$-string of
+the $\pm 3$-string, so in order to reduce the complexity of the main algorithm
+it is required to find the first  $\pm 2$-strings. To do that, it is sufficient
+to made a call to the already existing subroutines \FF{2} described in
+\autoref{alg:FF} by asking for the closest $\pm 2$-string on the left of the
+already known $\pm 2-$string. This is done with a quantum query complexity of
+$O(\sqrt{n})$ (Computation is similar as the one done in the proof
+in \autoref{proof:complexity_dyckkn}). Finally, the algorithm for \Dyck{2}
+now return the $\pm 3$-string when it rejects. So, it can be plug into the main
+algorithm, the computation of the quantum query complexity are almost identical
+to the one done in \autoref{proof:complexity_dyckkn} but instead of having a
+initial case for $k = 2$ it now for $k = 3$. The consequence is the removing
+of a recursion step which implies the loss of a $\sqrt{\log_2(n)}$ which bring
+the quantum query complexity of the algorithm that recognizing \Dyck{k} to
+$O(\sqrt{n}(\log_2(n))^{0.5(k-2)})$.

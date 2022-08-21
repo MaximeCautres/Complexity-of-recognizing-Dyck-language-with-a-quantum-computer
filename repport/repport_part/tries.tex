@@ -1,0 +1,136 @@
+\subsection{A try to expand the new
+    algorithm's first version to every $k$.}
+
+The second version of the algorithm is a lot more simple than the previous one,
+but it doesn't make the first version of the algorithm obsolete. Indeed, the
+first algorithm was think with the goal to be easily modified to work with higher
+value of $k$. Unfortunately, the key property that make the algorithm works
+(i.e. after each letter with an even index, the height is equal to 0 or 2, both
+being the bounds for the height) no more hold. So I didn't succeed to find a way
+to generalized to greater value of $k$.
+
+\subsection{A try for a new algorithm for any k.}
+\label{subsec:dicho}
+
+In order to reduce the quantum query complexity of \Dyck{k}, one idea was
+to reduce the number of recursive calls during the execution. For that,
+two different possibilities seemed possible, both were using the same
+main principle: The recursive calls could be associated to nested loops,
+whose variables would correspond to the choice of $d$ for each recursion level.
+Indeed, in every recursion level, \FA{k} is called with $l$ and $r$ such that
+$r-l\leq d_{k+1}$ with $d_{k+1}$ the value give to $d$ in the call of \FA{k+1}.
+It is in reality more complicated but the goal is just to check if,
+first it is possible to compute the quantum query complexity
+of this model, and after to translate the method to get a better algorithm to
+recognize \Dyck{k}.
+
+\paragraph*{A natural graph structure on this (k-2)-tuples.} The initial
+cases of the recursive algorithm  are for $k$ equal to 2, 3, so there
+is only $k-2$ nested loops, thus $d_i$
+associated variable, one for each recursive level. This $k-2$ variables can
+be consider together as $k-2$-tuples. In every tuple, the following inequality
+is verified $ d_{k+1} \geq d_k \geq \ldots \geq d_4$. Each tuple is a vertex
+in a graph $(V,E)$. Edge $E$ are defined as following.
+\[ (t_u,t_v) \in E \Leftrightarrow \exists ! i \in \{1, k-2\}, \left( (t_u)_i
+    \neq (t_v)_i \land (t_v)_i = 2(t_u)_i\right)\]
+A vertex of the graph is said to me marked if and only if
+\begin{center}
+    \begin{minipage}{.8\textwidth}
+        it exists a $\pm (k+1)$-strings
+        of length at most $(t_u)_1$ composed of 2 $\pm k$-strings of size at most
+        $(t_u)_2$ composed them selves of 2 $\pm (k-1)$-strings of size at most
+        $(t_u)_3$, ... and composed themselves of  2 $\pm 3$-strings of size at most
+        $(t_u)_k-2$.
+    \end{minipage}
+\end{center}
+
+This graph has an interesting property $\mathcal{P}$ for every vertex $t_u$.
+If $t_u$ is marked then every descendent $t_v$ of $t_u$ in the graph is also
+marked.
+Without using this property, the $k-2$ nested loops are equivalent to a DFS that
+search for a marked vertex. Then the quantum query complexity of this algorithm
+would be the one of the quantum DFS multiplied by the one to check a marked vertex.
+This give us a quantum query complexity in
+$O\left(\sqrt{\log_2(n)^{k-2}}\times Q(\textrm{mark\ checking})\right)$.
+The quantum query complexity of checking if a vertex is marked depends a lot
+on what is allowed to do and the final quantum query complexity required.
+For the nested loops, the goal is to have an algorithm that improve the quantum
+query complexity of $O\left(\sqrt{n}\log_2(n)^{0.5(k-2)}\right)$. Thus, the quantum
+query complexity of checking a vertex should be at most $O(\sqrt{n})$.
+What does it mean to check a vertex? This is difficult to define as the current
+model of nested loop is quite far from the original algorithm. But, one can do
+some hypothesis and state that as for the original algorithm, it is only possible
+to check easily $O(\sqrt{n})$ a second type of marks define as:
+\begin{center}
+    \begin{minipage}{.8\textwidth}
+        it exists a $\pm (k+1)$-strings of length between $(t_u)_1/2$ and  $(t_u)_1$ composed of
+        2 $\pm k$-strings of size between $(t_u)_2/2$ and $(t_u)_2$ composed them selves of 2
+        $\pm (k-1)$-strings of size between $(t_u)_3/2$ and $(t_u)_3$, ... and composed themselves
+        of  2 $\pm 3$-strings of size between $(t_u)_{k-2}$ and $(t_u)_{k-2}$.
+    \end{minipage}
+\end{center}
+
+With this statement, it is not possible to use an algorithm whose probability
+to check a node can be zero else as for the original one, it is not possible
+to be sure of the answer. The only solutions are graph traversal that have
+a continuous border between explored and non explored vertices (DFS or BFS
+for example). So, in order to go around this constraint, it may be possible
+to use slower algorithm to check the first type of mark if it implies a
+non negligible improvement on the quantum query complexity of the exploration
+as it is not really clear what would be the quantum query complexity of checking
+a mark.
+
+In order to present the the main way to reduce the cost of the traversal,
+it is useful to order the vertex of the graph onto a discrete finite space
+of dimension $k-2$ were every axis has a logarithmic scale (base 2) starting
+from 1 to $2^{\lfloor \log_2(n) \rfloor}$.
+
+In this space, a vertex $t_u$ has its coordinate on axis $i$ equal to $(t_u)_i$.
+The goal here is to do a binary search on each
+dimension of the $k-2$-tuple, in order to find a marked vertex.
+In fact, the property $\mathcal{P}$ implies that if a vertex $t_u$
+is marked then every vertex $t_v$ is marked if $t_u$ and $t_v$ differ
+only on the j-th dimension and $(t_u)_j\leq (t_v)_j$, $t_v$. So on every
+of the $k-2$ dimensions, it is possible to do a binary search because
+it exists a value, depending on the value of all the first dimension such that
+no vertex is marked before and all vertex are marked after. Thus, the quantum
+query complexity of this multidimensional binary search would be
+\[O\left(\sqrt{\log_2(\log_2(n))}^{k-2} \times Q(\textrm{marking\ checking})\right).\]
+
+The improvement is quite spectacular if it is possible to find an algorithm
+that check the mark of a vertex with a quantum query complexity that does not
+counter balance. With more time, it would have been possible to define more
+precisely what it means to check a mark and may be an algorithm could have been
+found. It may also be possible to prove that such an algorithm cannot exits.
+
+\subsection{A new adversary plus minus for \Dyck{k,n}}
+
+The idea was first to search for a basic adversary (\autoref{th:basicadv}) for small value of $k$.
+The efforts were focus on $k=2$. The goal was to find two sets of word from
+$\{0,1\}^n$ that satisfy the requirement of the basic adversary. Moreover,
+this two sets should give a lower bound of the form
+$O(\sqrt{n}f(n))$ (for some function $f(n)$) in order to increase the current
+lower bound of $O(\sqrt{n}c^2)$ (for some constant $c$).
+This basic adversary returns lower bounds of the form
+$\sqrt{\frac{mm'}{ll'}}$ where $m,m',l,$ and $l'$ (depending on $n$)
+specify properties on both sets. I do not have found such sets,
+more precisely, it is already difficult to think about a way
+to define two sets such that their sizes increase nicely according
+to a function in $n$. So, having to deal in the same time with
+their associated values $m,m',l,$ and $l'$ made the task really difficult.
+
+
+\subsection{A new reduction from easier problems}
+
+In order to find a new lower bounds, one idea was to try new reduction.
+For $k=2$, some languages have been tested but an optimal algorithm
+have been found. For $k=3$, one of the most interesting language is defined
+by $c^*(ac^*bc^*)^*$.
+In order to reject a word $w$, it is sufficient to search if a substring $v$
+from $bwa$ can be part of the language $ac^*a+bc^*b$ so this language is also
+a star free language (the same arguments than the one for \Dyck{k} would work here).
+This means that its quantum query complexity is in $\tilde{\Theta}(\sqrt{n})$.
+Moreover, it is possible to reduce this problem to \Dyck{3} simply by doing
+the rewritings $a \mapsto 00, b\mapsto 11$ and $c \mapsto 01$. So, finding the
+quantum query complexity of this problem can be useful in order to get a lower
+bound to the quantum query complexity of \Dyck{3}.
