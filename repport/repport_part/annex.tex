@@ -2,6 +2,31 @@
 
     \section*{The frame of the internship}
 
+    My internship took place into the quantum computing team of the latvian
+    university and was under the supervision of Andris Ambainis, the team leader.
+    The team was composed of at most 10 active members and was organized around
+    one team seminar every wednesday. Because of the covid restriction that ended
+    one week before the beginning of my internship, a lot of the researched have
+    continued to work at home during my internship. So, I never really discuss
+    with researcher until I was admitted to weekly seminar after 6 weeks. Other
+    researchers were really welcoming and they gave their time to talk with me
+    about the subject. I have never see any of the phd students of the team.
+
+    About Andris Ambainis, he is an incredible researcher and is remarks during
+    the seminar were always incredible. His supervision was quite strange. He
+    never speaks first or revives a discussion, I have taken every initiative myself.
+    It has direct consequence on the supervision. I think I have really
+    experiment the work of a researcher, where my supervisor was just a distant
+    colleague if I was not insisting a lot to get small helps. I think it comes from
+    the fact that there is no tradition of internship there so he has done what
+    he does with PHD students. However, if a student want to do an internship
+    with Andris, I would just warm him or her of this because if he or she
+    is really independent at work and curious about life in Latvia, he or she
+    will spend a really interesting and good internship with Andris in Riga.
+
+    Finally, Latvia is a small, poor and beautiful country with incredibly open minded
+    people, spending time there have made me change my mind on many subject of
+    every day life.
 
     \section{Proof of the super-basic adversary method}\label{proof:advmethod}
     As a little reminder here is the theorem.
@@ -18,11 +43,11 @@
         Then the quantum query complexity $Q(f)$ is in  $\Omega(\sqrt{m\times m'})$
     \end{theorem}
 
-    Understanding this proof is important as it will give the intuitions to understand the
+    Understanding this proof is important as it gives the intuitions to understand the
     general adversary.
 
     \begin{tproof}
-        First, let define $\mathcal{R}:= \{(y, z)$ such that $ y \in Y, z \in Z,$ and dist$(y,z)=1\}$.
+        First, let's define $\mathcal{R}:= \{(y, z)$ such that $ y \in Y, z \in Z,$ and dist$(y,z)=1\}$.
         Now, it is necessary to redefine the progress notion such that
         $\mathcal{P}(t) := \sum_{(y,z) \in \mathcal{R}}\vert \langle \psi^t_y \vert \psi^t_z \rangle\vert$
         where $\ket{\psi_x^t}$ is the state of the algorithm after $t$ query to the entry $x$.
@@ -30,7 +55,7 @@
         In order to prove the theorem, lets try to prove that for all $t$,
         \[\mathcal{P}(t) - \mathcal{P}(t+1) \leq \frac{2}{\sqrt{m m'}}\vert \mathcal{R}\vert\]
         as it is a correct value
-        of $d$ such that the lower bound is $O(\sqrt{mm'})$. Moreover, there are relations between size
+        of $d$ such that the lower bound is $O(\sqrt{mm'})$. Moreover, there are relations between sizes
         of the sets:
         \[\vert \mathcal{R} \vert \geq m \vert Y \vert, \vert \mathcal{R} \vert \geq m' \vert Z \vert
             \implies \vert 2\mathcal{R} \vert \geq m \vert Y \vert+ m' \vert Z \vert.\] Thus, instead of proving
@@ -56,7 +81,7 @@
                                    & = \mathcal{P}_{y,z}(t) - 2\sum_{j\in\llbracket1,d_{i^*}\rrbracket}
             \overline{\alpha_{i^*,j}}\beta_{i^*,j}       .                                              \\
         \end{align*}
-        So, for restricted progress measure there is the inequality
+        So, for restricted progress measures there is the inequality
         \begin{align*}
             \vert \mathcal{P}_{y,z}(t)\vert - \vert \mathcal{P}_{y,z}(t+1)\vert & \leq \vert \mathcal{P}_{y,z}(t) - \mathcal{P}_{y,z}(t+1)\vert                                      \\
                                                                                 & \leq \vert 2\sum_{j\in\llbracket1,d_{i^*}\rrbracket} \overline{\alpha_{i^*,j}}\beta_{i^*,j}  \vert \\
@@ -116,7 +141,7 @@
             \leq                                   & \sqrt{\frac{m}{m'}} \vert Y \vert + \sqrt{\frac{m'}{m}} \vert Z \vert \\
             \leq                                   & \frac{2}{\sqrt{mm'}}\vert \mathcal{R} \vert.
         \end{align*}
-        To conclude, this give a lower bound $\Omega(\sqrt{mm'})$ for the quantum query complexity of $f$.
+        To conclude, it gives a lower bound $\Omega(\sqrt{mm'})$ for the quantum query complexity of $f$.
 
         \qed
 
@@ -126,7 +151,7 @@
 
     \section{The algorithm for \Dyck{k, n}}
     \label{annex:complete_subroutine_dyck_kn}
-    All the subroutines' pseudo code can be found from \textsc{Algorithm}
+    All the subroutines' pseudo codes can be found from \textsc{Algorithm}
     \autoref{alg:dyck_kn} to \textsc{Algorithm} \autoref{alg:ffp}.
 
     \begin{algorithm}[h!]
@@ -267,7 +292,7 @@
                       of \FALM{2} comes directly from the definition of its initial case, as the $O(\sqrt{r-l})$ quantum
                       query complexity of \FA{2}. Then the $O\left(\sqrt{n}\right)$ quantum query complexity of \Dyck{1,n} comes from
                       the call to \FA{2}.
-                \item For $k=2$, the inductive part of the algorithm start and every subroutines is defined. The $O(1)$
+                \item For $k=2$, the inductive part of the algorithm starts and every subroutines is defined. The $O(1)$
                       quantum query complexity of \FFP{2} comes from the call to \FALM{2}.
                       The $O\left(\sqrt{r-l}\right)$ quantum query complexity of \FF{2} comes from the dichotomize search using \FA{2} and
                       \FFP{2} because $\sum_{u=1}^{log_2(r-l)}2u\left(O\left(\sqrt{\frac{r-l}{2^{u-1}}}\right)+O(1)\right) = O(\sqrt{r-l})$
@@ -278,8 +303,8 @@
                       $O\left(\sqrt{(r-l)\log_2(r-l)}\right)$ quantum query complexity of \Dyck{2} comes from the call to \FA{3}.
             \end{itemize}
         }
-        \hered{Let suppose it exists $k$ such that \autoref{th:subroutine_complexity} is
-            true for $k$. Let prove that it is true for $k+1$. \\
+        \hered{Lets suppose it exists $k$ such that \autoref{th:subroutine_complexity} is
+            true for $k$. Lets prove that it is true for $k+1$. \\
 
             First, the $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)$ quantum query complexity of \FFP{k+1} comes from
             the $O\left(\sqrt{\log(r-l)}\right)$ calls to \FALM{k+1}.
@@ -339,7 +364,7 @@
                                                   & = O\left( \sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)
             \end{align*}
 
-            Hence the $O\left( \sqrt{r-l}(\log_2(r-l))^{0.5k} \right)$ quantum query complexity of \FA{k+2} comes from
+            Hence, the $O\left( \sqrt{r-l}(\log_2(r-l))^{0.5k} \right)$ quantum query complexity of \FA{k+2} comes from
             the $O\left(\sqrt{\log_2(r-l)}\right)$ calls to \FFL{k+2}.
 
             \begin{align*}
@@ -359,7 +384,7 @@
 
         }
 
-        \Conc{By the induction principle we get that the \autoref{th:subroutine_complexity} is true for $k \in \mathbb{N}^*$}
+        \Conc{By the induction principle,  the \autoref{th:subroutine_complexity} is true for $k \in \mathbb{N}^*$}
 
         \qed
     \end{tproof}
