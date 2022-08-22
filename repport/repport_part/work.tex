@@ -1,16 +1,16 @@
-\subsection{A better Complexity Analysis of the original algorithm}
+\subsection{A better complexity analysis of the original algorithm}
 
-In the article \cite{art:2DGrid}, Andris Ambainis give us a quantum algorithm to recognize
-the belonging of a $n$ length bit string in $\Dyck{k}$ using
-$O(\sqrt{n}(\log_2(n))^{0.5k})$ quantum queries. But the quantum query complexity for
-$k=1$ ($O(\sqrt{n}\log_2(n))$) is not as good as a
-Grover's search $O(\sqrt{n})$ which is sufficient (seen in \autoref{already_known}).
+In the article \cite{art:2DGrid}, Andris Ambainis's team gave a quantum query
+algorithm to recognize $\Dyck{k}$ that uses $O(\sqrt{n}(\log_2(n))^{0.5k})$
+quantum queries. But the quantum query complexity for $k=1$
+($O\left(\sqrt{n\log_2(n)}\right)$) is not as good as a Grover's search
+$O(\sqrt{n})$ which is sufficient (seen in \autoref{already_known}).
 More precisely, the logarithmic search done by \FA{k+1} for $k=1$ is useless
-as there is exactly one minimal $\pm 2$ -string so it is sufficient to
+as there is exactly one minimal $\pm 2$ -string. So, it is sufficient to
 add a new initial case to \FA{k+1} for $k = 1$ in order to use a Grover search
-for $00$ and $11$ in $1w0$ instead of \FFL{2}. This lowers the quantum query
-complexity for $k=1$ of the function to $O(\sqrt{n})$ instead of $O(\sqrt{n\log_2(n)})$.
-This give us this following algorithm for \FA{k}.
+for $00$ and $11$ in $1w0$ instead of \FFL{2}. This small revision has lowered
+the quantum query complexity for $k=1$ of the function to $O(\sqrt{n})$ instead
+of $O(\sqrt{n\log_2(n)})$. This gives the following algorithm for \FA{k}
 
 \begin{algorithm}
     \caption{\FA{k}(l,r,s)}\label{alg:FA_prim}
@@ -24,14 +24,15 @@ This give us this following algorithm for \FA{k}.
         \Else
         \State \textbf{Find} $t$ in $\{l, l+1, \dots, r\}$ such that \\
         \hspace*{1cm} $v_t \gets$ \FALM{2}$(l,r,t,2,s)$ is \textbf{not} \Null
-        \State \textbf{return} $v_t$ of \Null \ if none
+        \State \textbf{return} $v_t$ of \Null \ if none.
         \EndIf
     \end{algorithmic}
 \end{algorithm}
 
-The same improvement can be done on \FFP{k} because if $k = 2$ the logarithmic
-search is useless. So \FFP{k} can be redefined as in \textsc{Algorithm} \autoref{alg:ffp_better}.
-For $k=2$, the complexity is lowered from $O(\sqrt{\log_2(l-r)})$ to $O(1)$.
+The same improvements can be done on \FFP{k} because if $k = 2$ the logarithmic
+search is useless. So \FFP{k} can be redefined as in
+\textsc{Algorithm}\autoref{alg:ffp_better}. For $k=2$, the complexity is
+lowered from $O(\sqrt{\log_2(l-r)})$ to $O(1)$.
 
 \begin{algorithm}
     \caption{$\FFP{k}(l,r,t,s)$}\label{alg:ffp_better}
@@ -49,27 +50,27 @@ For $k=2$, the complexity is lowered from $O(\sqrt{\log_2(l-r)})$ to $O(1)$.
     \end{algorithmic}
 \end{algorithm}
 
-This small improvements on the initial cases will improve the global
+This small improvements on two initial cases improve the global
 quantum query complexity of each subroutine and finally the quantum
-query complexity for \Dyck{k,n}.
+query complexity for \Dyck{k}.
 
-\begin{theorem}{\textbf{\Dyck{k,n}'s algorithm correctness}} \label{th:subroutine_correctness}
-    The new definition of \FA{} and \FFP{} does not change the behavior the original algorithm
+\begin{theorem}{\textbf{\Dyck{k}'s algorithm correctness}} \label{th:subroutine_correctness}
+    The new definitions of \FA{} and \FFP{} do not change the behavior the original algorithm
     as other subroutines (\autoref{annex:complete_subroutine_dyck_kn}) stay unchanged.
 \end{theorem}
 
 \begin{tproof}
-    The behavior of the \Dyck{k,n} algorithm with the new subroutines is the same than the older
-    one as \FA{} (resp. \FF{}) has the same sub-behavior on every entry than its
-    older definition.
+    The behavior of the \Dyck{k} algorithm with the new subroutines hasn't changed
+    as \FA{} (resp. \FF{}) has the same sub-behavior on every entry than its
+    former definition.
 
     \qed
 \end{tproof}
 
-\begin{theorem}{\textbf{\Dyck{k,n}'s Subroutines complexity}} \label{th:subroutine_complexity}
-    The subroutines' quantum query complexity for $k$ are the following.
+\begin{theorem}{\textbf{\Dyck{k}'s subroutines complexity}} \label{th:subroutine_complexity}
+    The quantum query complexity of \Dyck{k} algorithm's subroutines are the following.
     \begin{enumerate}
-        \item $Q$(\Dyck{k,n}) = $O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)$ \ for $k \geq 1$
+        \item $Q$(\Dyck{k}) = $O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)$ \ for $k \geq 1$
         \item $Q$(\FA{k+1}$(l,r,s)$) = $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)$ \ for $k \geq 1$
         \item $Q$(\FFL{k+1}$(l,r,d,s)$) = $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-2)}\right)$ \ for $k \geq 2$
         \item $Q$(\FALM{k+1}$(l, r, t, d, s)$) = $\left\{
@@ -88,55 +89,63 @@ query complexity for \Dyck{k,n}.
 \end{theorem}
 
 \begin{tproof}
-    The idea is that only the $O\left(\sqrt{n}\right)$ comes from the initial cases for $k = 1$ and
-    for each of the $k-1$ level of the recursion, the quantum query complexity is increased by
-    a $O\left(\sqrt{\log_2(n)}\right)$ factor. The $O\left(\sqrt{\log_2(n)}\right)$ factor
-    is proven by Andris Ambainis' team in \cite{art:2DGrid} while the $O\left(\sqrt{n}\right)$
-    for $k = 1$ comes from the new version of \FA{k} (\textsc{Algorithm} \autoref{alg:ffp_better}).
-    The complete proof for the theorem is given in \autoref{proof:complexity_dyckkn}.
+    The idea is that only the $O\left(\sqrt{n}\right)$ comes from the initial
+    case for $k = 1$ and that each of the $k-1$ level of the recursion increases
+    the final quantum query complexity with a $O\left(\sqrt{\log_2(n)}\right)$
+    factor. The $O\left(\sqrt{\log_2(n)}\right)$ factor is proven by Andris
+    Ambainis' team in \cite{art:2DGrid} while the $O\left(\sqrt{n}\right)$
+    for $k = 1$ comes from the new version of \FA{k} (\textsc{Algorithm}
+    \autoref{alg:ffp_better}). The complete proof for the theorem is given
+    in \autoref{proof:complexity_dyckkn}.
 
     \qed
 \end{tproof}
 
-Unfortunately, the improvements done on the initial cases of some of the subroutines are not sufficient
-to get a significant improvement for the quantum query complexity of \Dyck{k,n} algorithm. In order to
-improve more the query complexity, an other algorithm using a different strategy should be found.
+Unfortunately, the improvements done on the initial cases of some of
+the subroutines are not sufficient to get a significant improvement
+for the quantum query complexity of \Dyck{k} algorithm. However,
+they are sufficient to match the theoretical upper bound gave by
+the reduction.
 
-\subsection{A new algorithm for \Dyck{2,n}}
+\subsection{A new algorithm for \Dyck{2}}
 \label{subsection:dyck2n}
 
-First, we would like to find an algorithm with a quantum query complexity near to match the lower bound,
-$\exists c > 1$ such that $Q\left(\Dyck{k,n}\right)=\Omega\left(\sqrt{n}c^k\right)$, describes by Andris
-Ambainis' team in \cite{art:2DGrid}. So the searched algorithm must have a quantum query
-complexity of $O\left(\sqrt{n}\right)$.
+First, we would like to find an algorithm with a quantum query complexity
+near to match the lower bound describes by Andris
+Ambainis' team in \cite{art:2DGrid}, $\exists c > 1$ such that
+$Q\left(\Dyck{k}\right)=\Omega\left(\sqrt{n}c^k\right)$. So the
+searched algorithm may have a quantum query complexity of
+$O\left(\sqrt{n}\right)$.
 
-For $k=1$, the query complexity comes only from a call to Grover's search
-because rejecting is easily by finding a 00 or a 11 substrings inside the entry. For $k=2$
-it no more possible as the substrings that reject are of the form 00(10)*0 or of the form 11(01)*1. It
-implies that the number of calls to Grover's search in the naive approach is in $O\left(n\right)$ so the
-quantum query complexity finally becomes $O\left(n\sqrt{n}\right)$. In order to keep it in
-$O\left(\sqrt{n}\right)$, the algorithm must do a constant number of calls to Grover's search.
+For $k=1$, the query complexity comes only from a call to Grover's search.
+For $k=2$ it no more possible to search for every minimal
+$\pm 3$-strings without a linear number of call to Grover's search. So in
+order to keep the quantum query complexity in $O\left(\sqrt{n}\right)$,
+the algorithm should do a constant number of calls to Grover's search.
 
-For that, we define a new alphabet that can express every even length binary
-strings and that have convenient property for a Grover's search. Let
-$\mathcal{A} = \{a, b, c, d\}$ the alphabet where $a$ corresponds to 00, $b$ to 11, $c$
-to 01, and $d$ to 10. So every string of size 2 has its letter in $\mathcal{A}$ thus every
-even length bit string is expressed in $\mathcal{A}^*$. This alphabet allow us to prove the
-following theorem.
+For that, we define a new alphabet that can express every even length
+binary string and that has convenient properties for a Grover's search.
+Let $\mathcal{A} = \{a, b, c, d\}$ be the alphabet where $a$ corresponds
+to 00, $b$ to 11, $c$ to 01, and $d$ to 10. Every string of size 2 has
+its associated letter in $\mathcal{A}$ thus every even length bit string
+is expressed in $\mathcal{A}^*$. This alphabet allows to prove more easily
+the following theorem.
 
 \begin{theorem}{\textbf{Substrings rejection for Dyck word of height at most 2.}}
     A word on the alphabet $\mathcal{A}$ embodies a Dyck word of
-    height at most 2 if and only if it does not contain $aa, ac, bb, bd, cb, cd, da, \textrm{or}\ dc$
-    as substrings.
+    height at most 2 if and only if it does not contain $aa, ac, bb,
+        bd, cb, cd, da,$ or$ dc$ as a substring.
 \end{theorem}
 
 \begin{tproof}
-    First, this alphabet $\mathcal{A}$ is important because each letter has a height variation
-    in $\{-2, 0, 2\}$. Indeed, $a$ has a 2 height variation, $b$ a $-2$, $c$ a 0, and $d$ a 0.
-    This means that after each letter in a word, the current height will be even. Moreover,
-    for a valid Dyck word of height at most 2, after every letter the height will be 0 or 2
-    which are respectively the lower and upper bound for the height. It means that no letter
-    can cross a border after its first bit.
+    First, this alphabet $\mathcal{A}$ is important because each letter
+    has a height variation in $\{-2, 0, 2\}$. Indeed, $a$ has a height
+    variation of 2, $b$ of $-2$, $c$ of 0, and $d$ of 0.
+    So, after each letter in a word, the current height will be even.
+    Moreover, for a valid Dyck word of height at most 2, only 0 and 2
+    are even and accessible heights. So after every
+    letter in a word, the height will be 0 or 2 which are respectively
+    the lower and the upper bound for the height.
 
     \begin{figure}[h!]
         \centering
@@ -161,9 +170,11 @@ following theorem.
         \label{tikz:dyck2alphabet}
     \end{figure}
 
-    This property is important as it implies that every $\pm 3$ strings uses at least two letters.
-    So by checking if a pair of letter as a substring of a word make it not a Dyck word, $\mathcal{A}^2$
-    can be split into two sets described in \autoref{tab:partitionDyck2}.
+    This property is important as it implies that every substrings that cross a
+    bounds uses at least two letters. So it may be possible that the belonging
+    of some pairs of letters to a word implies its non belonging to \Dyck{2}.
+    It founds out that $\mathcal{A}^2$ can be split into two sets described
+    in \autoref{tab:partitionDyck2}.
 
     \begin{table}[htb]
         \centering
@@ -181,15 +192,17 @@ following theorem.
         \newpage
     \end{table}
     \begin{itemize}
-        \item The set $\mathcal{X}$. First, every couple of letter which contains
-              a $\pm 3$ strings is in $\mathcal{X}$. This first condition explains the belonging
-              of $aa, ac, dc, da, cb, bb, bd, \textrm{and}\ cd $. Next, $cd$ and $dc$ belong
-              to $\mathcal{X}$ because of the following property: For any valid Dyck word of
-              height at most 2, the current height is bounded between 0 and 2, moreover after each
-              letter the current height is even so both couple $cd$ and $dc$ start
-              and finish on the same bound. Futhermore,  $cd$ and $dc$ are going
-              above and below the height at which they start so both are going outside off the
-              bounds, thus a word which contains $cd$ or $dc$ can not be a Dyck Word of height a most 2.
+        \item The set $\mathcal{X}$. First, every couple of letters which
+              contains a $\pm 3$-string is in $\mathcal{X}$. This first
+              condition explains the belonging of $aa, ac, dc, da, cb, bb,
+                  bd, \textrm{and}\ cd $. Next, $cd$ and $dc$ belong to
+              $\mathcal{X}$. Indeed, for any valid Dyck word of
+              height at most 2, the current height is bounded between 0 and 2.
+              After each letter the current height is even so both couple $cd$
+              and $dc$ start and finish on the same bound. However, $cd$
+              and $dc$ are going above and below the height at which they start
+              so both are going outside off the bounds. Thus, a word which
+              contains $cd$ or $dc$ can not be a Dyck Word of height a most 2.
               The \autoref{fig:rejectDyck2} shows each couple of $\mathcal{X}$.
 
               \begin{figure}[h!]
@@ -227,18 +240,17 @@ following theorem.
                       \draw[blue, dashed] (14, -.5) -- (14, .5);
                       \draw[blue, dashed] (15, 1.5) -- (15, 2.5);
                   \end{tikzpicture}
-                  \caption{Every 2 letters configuration that implies the word, whom
-                      the configuration is a substring, is not a Dyck word of height at most 2.}
+                  \caption{Every 2 letters configuration that implies that a word, whom
+                      a configuration is a substring, is not a Dyck word of height at most 2.}
                   \label{fig:rejectDyck2}
               \end{figure}
 
-        \item The set $\mathcal{V}$. The couples of $\mathcal{A}$ do not imply
-              that the word is not a Dyck word of height at most 2 because each couple
-              can fit inside the height bounds. The \autoref{fig:donotrejectDyck2} shows that
-              every couple not in $\mathcal{X}$ (ie. $ab, ad, ba, bc, ca, cc, db, dd$)
-              fit between height 0 and 2.
-
-
+        \item The set $\mathcal{V}$. Every couple of $\mathcal{A}$ does not imply
+              that the word is not a Dyck word of height at most 2 because some
+              couple of $\mathcal{A}$ can fit inside the height bounds.
+              The \autoref{fig:donotrejectDyck2} shows that every couple
+              not in $\mathcal{X}$ (ie. $ab, ad, ba, bc, ca, cc, db,$ and $ dd$)
+              can fit between heights 0 and 2.
 
               \begin{figure}[h!]
                   \centering
@@ -281,18 +293,18 @@ following theorem.
               \end{figure}
     \end{itemize}
 
-    So a word, whose letter representation has a substring in $\mathcal{X}$,
+    So, a word in $\mathcal{A}^*$ that has a substring in $\mathcal{X}$
     cannot be a Dyck word of height two. But does every non Dyck word of height
-    at most 2 have a substring in $\mathcal{X}$?
+    at most 2 has a substring in $\mathcal{X}$?
 
-    A word is not a dyck word of height at most 2 if it include a $\pm 3$ strings.
-    But how are represented $\pm 3$ strings using the letters? There are 8
-    different cases which are 2 by 2 symmetrical so \autoref{fig:p3string}
-    and \autoref{fig:p3string2piece} show only the cases for +3 strings. In
-    \autoref{fig:p3string}, every +3 string of size 3 is include in $aa$ or
-    $ac$ so it is sufficient to search for this two couple. In \autoref{fig:p3string2piece}
-    every +3 strings of length greater than 3 are composed of 2 minimal +2
-    strings. This implies that one must be a $a$ while the other must be $da$
+    A word is not a Dyck word of height at most 2 if it include a $\pm 3$-string. But how are represented $\pm 3$-strings using the letters?
+    There are 8 different cases which are 2 by 2 symmetrical so
+    \autoref{fig:p3string} and \autoref{fig:p3string2piece} show only the
+    cases for $+3$-strings. In \autoref{fig:p3string}, every $+3$-string of
+    size 3 is include in $aa$ or $ac$ so it is sufficient to search for this
+    two couples. In \autoref{fig:p3string2piece} every $+3$-string of length
+    greater than 3 is composed of 2 minimal $+2$-strings. It implies that
+    one must be a $a$ while the other must be $da$
     of $dc$. Because $da$ or $dc$ are rejecting substrings, it is sufficient
     to search for them.
 
@@ -329,7 +341,7 @@ following theorem.
                 \draw[blue, dashed] (8, 2.5-4+.5) -- (8, 3.5-4+.5);
                 \draw[blue] (8, 3-4+.5) node[above left] {$ac$};
             \end{tikzpicture}
-            \caption{Configuration for a +3 strings of size 3.}
+            \caption{Configuration for a $+3$-strings of size 3.}
             \label{fig:p3string}
         \end{minipage}
         \hfill
@@ -374,7 +386,7 @@ following theorem.
                 \draw[blue] (10, -.5) node[above left] {$a$};
 
             \end{tikzpicture}
-            \caption{Configurations for a +3 string of size greater than 3.}
+            \caption{Configurations for a $+3$-string of size greater than 3.}
             \label{fig:p3string2piece}
         \end{minipage}
     \end{figure}
@@ -382,8 +394,8 @@ following theorem.
     \qed
 \end{tproof}
 Finally, a word on the alphabet $\mathcal{A}$ embodies a Dyck word of
-height at most 2 if and only if it does not contain $aa, ac, bb, bd, cb, cd, da, dc$
-as substrings. The following \textsc{Algorithm} \autoref{alg:dyck2nsqrt} for \Dyck{2, n}
+height at most 2 if and only if it does not contain $aa, ac, bb, bd, cb, cd, da, dc$.
+The following \textsc{Algorithm} \autoref{alg:dyck2nsqrt} for \Dyck{2}
 comes from the direct application of the theorem.
 
 
@@ -409,17 +421,17 @@ comes from the direct application of the theorem.
 \end{theorem}
 
 \begin{tproof}
-    The algorithm is doing at most 8 Grover's search on the modified input string $11x00$.
-    So the total quantum query complexity is the folling.
-    \[Q(\textsc{DyckFast}_{2, n}) = 8\times O\left(\sqrt{n+4}\right) = O\left(\sqrt{n}\right)\]
+    The algorithm is doing at most 8 Grover's searches on the modified input
+    string $11x00$. So the total quantum query complexity is
+    \[Q(\textsc{DyckFast}_{2, n}) = 8\times O\left(\sqrt{n+4}\right) = O\left(\sqrt{n}\right).\]
 
     \qed
 \end{tproof}
 
-\subsection{A simplification for \Dyck{2,n} algorithm}
+\subsection{A simplification for \Dyck{2} algorithm}
 
 The algorithm describes in \autoref{subsection:dyck2n} is complex to explain
-but it turns out that a simpler version of it exists and is way easier to
+but it turns out that a simpler version of it exists and is really easier to
 understand that the first one.
 
 \begin{algorithm}
@@ -427,44 +439,44 @@ understand that the first one.
     \begin{algorithmic}
         \Require $n \geq 0$, $x$ such that  $|x| = 2n$
         \State $x \gets 11x00$
-        \State \textbf{Find} $\texttt{t}$ in $\llbracket0, n\rrbracket$ such that \\
+        \State \textbf{Find} $\texttt{t}$ in $\llbracket1, n+1\rrbracket$ such that \\
         \hspace*{1cm} $x[2\texttt{t}, 2\texttt{t}+1] \in \{00, 11\}$
         \State \textbf{return} $\texttt{t} == \Null$
     \end{algorithmic}
 \end{algorithm}
 
-Lets explain how it works. A Dyck word of height at most 2 can be recognized by the following grammar on the
-alphabet 0 and 1:
+Lets explain how it works. A Dyck word of height at most 2 is recognized by
+the following grammar on the alphabet $\{0, 1\}$:
 \begin{align*}
     S & \mapsto 0I1                             \\
     I & \mapsto 01I \vert 10I \vert \varepsilon \\
 \end{align*}
 Indeed, a Dyck word of height at most 2 $w_1\ldots w_n$ can only start with
 a zero else it gets a negative height. After, if it goes up, it reach the
-height 2 so it can only go down and if it goes down, it reach height 0 so it
-can only go up. This implies that after every letter of odd indices, the
-height is equal to one, and that the possible next two letters can only be
-in $\{01, 10\}$. So, finding a $\{00,11\}$ starting on an even index is equivalent
-to not being a dyck word of height at most two. Finally, using two Grover
-searches for 00 and 11 starting on an even index is now sufficient to recognize
-\Dyck{2,n}.
+height 2 so it can only go down. If it goes down instead of going up, it
+reaches height 0 so it can only go up. This implies that after every letter
+of odd indices, the height is equal to one, and that the next
+two letters can only be in $\{01, 10\}$. So, finding a 00, or 11 starting
+on an even index is equivalent to not being a dyck word of height at most two.
+Finally, it becomes sufficient to use two Grover searches for 00 and 11
+in order to recognize \Dyck{2,n}.
 
 \subsection{A final improvement to \Dyck{k} algorithm}
 
 The last algorithm describes is useful to recognize \Dyck{2}. However, it cannot
-be plug into the huge one because it does not return the $\pm 3$-string that allow
-him to reject. Indeed, the algorithm only find the second $\pm 2$-string of
-the $\pm 3$-string, so in order to reduce the complexity of the main algorithm
-it is required to find the first  $\pm 2$-strings. To do that, it is sufficient
-to made a call to the already existing subroutines \FF{2} described in
+be plug into the huge one because it does not return the $\pm 3$-string that
+allows it to reject. Indeed, the algorithm only finds the second $\pm 2$-string
+of the $\pm 3$-string. So,in order to reduce the complexity of the main algorithm,
+it is required to find the first  $\pm 2$-string. To do that, it is sufficient
+to make a call to the already existing subroutines \FF{2} described in
 \autoref{alg:FF} by asking for the closest $\pm 2$-string on the left of the
 already known $\pm 2-$string. This is done with a quantum query complexity of
-$O(\sqrt{n})$ (Computation is similar as the one done in the proof
-in \autoref{proof:complexity_dyckkn}). Finally, the algorithm for \Dyck{2}
-now return the $\pm 3$-string when it rejects. So, it can be plug into the main
-algorithm, the computation of the quantum query complexity are almost identical
-to the one done in \autoref{proof:complexity_dyckkn} but instead of having a
-initial case for $k = 2$ it now for $k = 3$. The consequence is the removing
-of a recursion step which implies the loss of a $\sqrt{\log_2(n)}$ which bring
-the quantum query complexity of the algorithm that recognizing \Dyck{k} to
-$O(\sqrt{n}(\log_2(n))^{0.5(k-2)})$.
+$O(\sqrt{n})$ (Computations are similar to the ones done in the proof in
+\autoref{proof:complexity_dyckkn}). Thus, it is easy to modify a little
+the algorithm \textsc{DyckFastEasy}{2,n} to return the $\pm 3$-string when
+it rejects. Finally, it can be plug into the main algorithm, the computation
+of the quantum query complexity are almost identical to the one done in
+\autoref{proof:complexity_dyckkn} but initial case is for $k=2$ instead of $k=1$.
+The consequence is the removing of a recursion step which implies the loss of
+a $\sqrt{\log_2(n)}$ factor which bring the quantum query complexity of
+the algorithm that recognizing \Dyck{k} to $O(\sqrt{n}(\log_2(n))^{0.5(k-2)})$.

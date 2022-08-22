@@ -12,20 +12,20 @@ reductions, algorithms, and adversary methods\cite{adversary_equivalence}.
 
 In the article \cite{trichotomy_not_andris}, Aaronson, Grier and Schaeffer use
 a really interesting algebraic characterization of regular languages based on
-monoids and syntactic congruence. This definition was unknown to me and I spend
-a lot of time to understand it correctly.
+monoids and syntactic congruence. This definition was unknown to me and I spent
+a lot of time on understanding it correctly.
 
 \subsubsection{Regular languages}
 
 Usually, the set of regular languages $\mathcal{R}$ on the alphabet $\Sigma$ is
-defined as the smallest fixed point of the function F (the function that computes
-concatenations, unions, and Kleene stars) including $\{\varnothing\} \cup
-    \{\varepsilon\} \cup(\cup_{l\in\Sigma}\{l\})$ with
+defined as the smallest fixed point of the function $F$ that includes $\{\varnothing\} \cup
+    \{\varepsilon\} \cup(\cup_{l\in\Sigma}\{l\})$. With $F$ being the function that computes
+concatenations, unions, and Kleene stars:
 \begin{align*}\label{eq:F}
-    F(X) = & \{AB\  \forall (A,B)\in X^2\}                                                   \\
-           & \cup \{A\cup B\ \forall (A,B) \in X^2 \}                                        \\
-           & \cup \{A\cap B\ \forall (A,B) \in X^2 \}\ \texttt{\color{gray!50}$\#$ optional} \\
-           & \cup \{A^*\ \forall A \in X \}.
+    F(X) = & \{AB,\  \forall (A,B)\in X^2\}                                                   \\
+           & \cup \{A\cup B,\ \forall (A,B) \in X^2 \}                                        \\
+           & \cup \{A\cap B,\ \forall (A,B) \in X^2 \}\ \texttt{\color{gray!50}$\#$ optional} \\
+           & \cup \{A^*,\ \forall A \in X \}.
 \end{align*}
 
 However in \cite{trichotomy_not_andris}, the more convenient way to characterize
@@ -76,7 +76,7 @@ $\overline{\varnothing}2\overline{\overline{\varnothing}\Sigma{\setminus}
 
 As for regular languages, it exists an algebraic characterization for star-free
 languages. Let $M$ be a monoid, $M$ is said to be aperiodic if for every $x$ in
-$M$ it exits a positive integer $n$ such that $x^n=x^n+1$. A theorem proved by
+$M$ it exits a positive integer $n$ such that $x^n=x^{n+1}$. A theorem proved by
 Schützenberger \cite{Schtzenberger1965OnFM} states that a language is recognized
 by a finite aperiodic monoid if and only if it is star-free.
 
@@ -408,31 +408,42 @@ a $\pm(k+1)$-string. Let's detail a little how is it done.
                     \end{enumerate}
           \end{enumerate}
 
-          {\color{red} end of the rereading}
-
-          Let's explain the quantum query complexities and the idea behind
-          each step. It has been shown before that searching for every minimal $\pm(k+1)$-string isn't a solution has it is too slow. So the idea
-          is to bound the size of minimal $\pm(k+1)$-string the function is currently searching for. This is interesting
-          as it allows to use a function describes in step \ref{alg:step3} named \FALM{k+1}, whose main parameters are $d$ and $t$, and which is able to
-          find a minimal $\pm(k+1)$-string if and only if it include the index $t$ and the size of the minimal $\pm(k+1)$-string
-          is bounded between $\frac{d}{2}$ and $d$. These constraints imply two things:
-          First, the parameter $t$ implies a call to Grover (as it may be possible to have a $\pm(k+1)$-string  not including $t$), but
-          there is $O(d)$ value of $t$ such that \FALM{k+1} returns a minimal $\pm(k+1)$-string so it is possible
-          to cut early the Grover search to get its quantum query complexity in $O\left(\sqrt{\frac{n}{d}}\right)$.
-          This Grover search corresponds to \autoref{alg:step2} named \FFL{k+1}.
-          After that for $d$, in order not to miss any minimal $\pm(k+1)$-string, it is necessary to call \FFL{k+1}
-          for every $d$ in $\{2, 4, 8, \ldots, 2^{\lfloor \log_2(n) \rfloor}\}$ (\autoref{alg:step1}) which implies a
-          call to Grover in $O\left(\sqrt{\log(n)}\right)$. This is done in \autoref{alg:step1} by the function named
-          \FA{k+1}.
-          Finally, the quantum query complexity of \FALM{k+1} is $O\left(\sqrt{d}(\log_2(d))^{0.5(k-1)}\right)$, it comes from
-          complex calls to many subroutines. In steps \ref{alg:step3:1} and \ref{alg:step3:2}, at most
-          three calls to \FALM{k} are done with a quantum query complexity of $O\left(\sqrt{d}(\log_2(d))^{0.5(k-2)}\right)$.
-          In step \ref{alg:step3:2} and \ref{alg:step3:3}, at most 4 calls to \FF{k} are done. The
-          subroutines \FF{k} find the closer $\pm k$-strings from the end $r$ or the beginning $l$ of a
-          specified interval. This function finally do a binary search using calls to \FA{k}
-          and \FFP{k} in a quantum query complexity of $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)$.
-          This last subroutine \FFP{k} searches only for $\pm k$-strings which include the index $t$
-          with a quantum query complexity of $O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)$.
+          Let's explain quantum query complexity and the ideas behind
+          each step. First, it has been shown before that searching for
+          every minimal $\pm(k+1)$-string isn't a solution as it is too
+          slow. So, the idea is to bound the size of the minimal
+          $\pm(k+1)$-string the function is currently searching for.
+          This is interesting as it allows to use a function describes
+          in step \ref{alg:step3} named \FALM{k+1}, whose main parameters
+          are $d$ and $t$, and which is able to found and return a minimal
+          $\pm(k+1)$-string if and only if the returned substring includes
+          the index $t$ and has its size between $\frac{d}{2}$ and $d$.
+          These constraints imply two things:
+          \begin{itemize}
+              \item First, the parameter $t$ implies a call to Grover (as it may be possible to have a $\pm(k+1)$-string  not including $t$), but
+                    there are $O(d)$ values of $t$ such that \FALM{k+1} return a minimal $\pm(k+1)$-string so it is possible
+                    to cut early the Grover search to get its quantum query complexity in $O\left(\sqrt{\frac{n}{d}}\right)$.
+                    This Grover search corresponds to \autoref{alg:step2} named \FFL{k+1}.
+              \item After that for $d$, in order not to miss any minimal $\pm(k+1)$-string, it is necessary to call \FFL{k+1}
+                    for every $d$ in $\{2, 4, 8, \ldots, 2^{\lfloor \log_2(n) \rfloor}\}$ (\autoref{alg:step1}) which implies a
+                    call to Grover in $O\left(\sqrt{\log(n)}\right)$. This is done in \autoref{alg:step1} by the function named
+                    \FA{k+1}.
+          \end{itemize}
+          Finally, the quantum query complexity of \FALM{k+1} is
+          $O\left(\sqrt{d}(\log_2(d))^{0.5(k-1)}\right)$, it comes from
+          complex calls to many subroutines. In steps \ref{alg:step3:1} and
+          \ref{alg:step3:2}, at most three calls to \FALM{k} are done with
+          a quantum query complexity of
+          $O\left(\sqrt{d}(\log_2(d))^{0.5(k-2)}\right)$. In step
+          \ref{alg:step3:2} and \ref{alg:step3:3}, at most 4 calls to
+          \FF{k} are done. The subroutine \FF{k} find the closer
+          $\pm k$-string from the end $r$ or the beginning $l$ of a
+          specified interval by doing a binary search using calls to
+          \FA{k} and \FFP{k} in a quantum query complexity of
+          $O\left(\sqrt{r-l}(\log_2(r-l))^{0.5(k-1)}\right)$.
+          This last subroutine \FFP{k} searches only for $\pm k$-strings
+          which include the index $t$, it has a quantum query complexity of
+          $O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)$.
 
           \begin{figure}[h!]
               \centering
@@ -458,13 +469,13 @@ a $\pm(k+1)$-string. Let's detail a little how is it done.
 Finally, this complex algorithm has a quantum query
 complexity of $O\left(\sqrt{n}(\log(n))^{0.5k}\right)$ which is a
 $\tilde{\Theta}\left(\sqrt{n}\right)$. This description of the existing
-algorithm stay at the surface in order to stay simple, every the pseudo
-code of every subroutines can be found in
+algorithm stay at the surface in order to stay simple, every
+subroutines' pseudo code can be found in
 \autoref{annex:complete_subroutine_dyck_kn}. No proof of their
-quantum query complexity is provided as a proof for
+quantum query complexities are provided as a proof for
 \autoref{th:subroutine_complexity}, almost identical,
 is already provided in \autoref{proof:complexity_dyckkn}.
-However, this algorithm can
-be improved, indeed the first upper bound by reduction
-is still better than the upper bound from algorithm.
-Now, two personal improvements are described in \autoref{main_section}.
+However, this algorithm can be improved, indeed the upper bound by
+reduction to 2d directed grid ($O\left(\sqrt{n}(\log_2(n))^{0.5(k-1)}\right)$)
+is still better than the quantum query complexity of the algorithm
+($O\left(\sqrt{n}(\log_2(n))^{0.5k}\right)$).

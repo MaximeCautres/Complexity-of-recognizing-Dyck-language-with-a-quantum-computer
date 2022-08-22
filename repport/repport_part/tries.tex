@@ -1,26 +1,27 @@
-\subsection{A try to expand the new
+\subsection{An attempt to expand the new
     algorithm's first version to every $k$.}
 
-The second version of the algorithm is a lot more simple than the previous one,
-but it doesn't make the first version of the algorithm obsolete. Indeed, the
-first algorithm was think with the goal to be easily modified to work with higher
-value of $k$. Unfortunately, the key property that make the algorithm works
-(i.e. after each letter with an even index, the height is equal to 0 or 2, both
-being the bounds for the height) no more hold. So I didn't succeed to find a way
-to generalized to greater value of $k$.
+The second version of the fast algorithm is a lot simpler than the
+previous one, but it doesn't make the first version of the algorithm
+obsolete. Indeed, the first algorithm was thought with the idea of being
+easily modified in order to work with higher value of $k$. Unfortunately,
+the key property that make the algorithm works (i.e. after each letter with
+an even index, the height is equal to 0 or 2, both being the bounds for the
+height) no more holds. So I didn't succeed to generalized to greater value
+of $k$ as the behaviors of intermediate height become too complex.
 
-\subsection{A try for a new algorithm for any k.}
+\subsection{An attempt for a new algorithm for any k.}
 \label{subsec:dicho}
 
-In order to reduce the quantum query complexity of \Dyck{k}, one idea was
+To reduce the quantum query complexity of \Dyck{k}, one idea was
 to reduce the number of recursive calls during the execution. For that,
-two different possibilities seemed possible, both were using the same
+two different possibilities seemed possible, both using the same
 main principle: The recursive calls could be associated to nested loops,
 whose variables would correspond to the choice of $d$ for each recursion level.
-Indeed, in every recursion level, \FA{k} is called with $l$ and $r$ such that
-$r-l\leq d_{k+1}$ with $d_{k+1}$ the value give to $d$ in the call of \FA{k+1}.
-It is in reality more complicated but the goal is just to check if,
-first it is possible to compute the quantum query complexity
+Indeed, in every recursion level, \FA{k} is called by \FA{k+1} with $l$ and $r$
+such that $r-l\leq d_{k+1}$ with $d_{k+1}$ the value give to $d$ in the call
+from \FA{k+1}. It is in reality more complicated but the goal is just to
+check if, first it is possible to compute the quantum query complexity
 of this model, and after to translate the method to get a better algorithm to
 recognize \Dyck{k}.
 
