@@ -121,6 +121,7 @@ of bounded height with quantum query algorithms.}}
 \comment{}
 \subsection{Quantum query model and complexity}
 
+\comment{
 \begin{frame}
     \frametitle{Classical and quantum computers are both made with simple components.}
     \begin{minipage}{.45\textwidth}
@@ -137,7 +138,7 @@ of bounded height with quantum query algorithms.}}
             \caption{A Quantum circuit.}
         \end{figure}
     \end{minipage}
-\end{frame}
+\end{frame}}
 
 \begin{frame}
     \frametitle{Interacting with qubits is more complexe.}
@@ -205,7 +206,7 @@ of bounded height with quantum query algorithms.}}
         \caption{Structure of a quantum query algorithm.}
         \label{fig:quantum_query_algorithm_structure}
     \end{figure}
-    {\Huge \[\visible<5->{Q(f)=T} \hspace*{1cm} \visible<6->{Q(\textsc{Grover})=\Theta\left(\sqrt{n}\right)} \]}
+    {\Huge \[\visible<5->{Q(f)=T} \hspace*{1cm} \visible<6->{Q(\textsc{Grover})=O\left(\sqrt{n}\right)} \]}
 \end{frame}
 
 \subsection{Dyck languages of bounded height}
@@ -215,11 +216,11 @@ of bounded height with quantum query algorithms.}}
     \begin{figure}
         \input{illustration/dyckword.tex}
     \end{figure}
-    \visible<10>{
+    \visible<9>{
         {\Huge \[\Dyck{k}\]}}
 \end{frame}
 
-\subsection{History and state of the art of the problem}
+\subsection{History and state of the art}
 
 \begin{frame}
     \frametitle{A result which does not answer fully the $Q(\Dyck{k})$ problem.}
@@ -239,7 +240,7 @@ of bounded height with quantum query algorithms.}}
     \vfill
     \textbf{Implication:}
     \begin{center}
-        {\huge $\comment{\exists p, }Q(\Dyck{k,n})=\Theta \left(\sqrt{n}\log_2(n)^{p(k)}\right)$}
+        {\huge $\comment{\exists p, }Q(\Dyck{k})=\Theta \left(\sqrt{n}\log_2(n)^{p(k)}\right)$}
     \end{center}
     \vfill
 \end{frame}
@@ -391,7 +392,7 @@ of bounded height with quantum query algorithms.}}
             \visible<3->{\caption{A substring of height 3.}}
         \end{figure}
         \visible<5->{
-            {\huge \[O\left(\sqrt{n\log_2(n)}\right)\]}}
+            {\huge \[O\left(n\sqrt{n}\right)\]}}
 
     \end{minipage}
 
@@ -401,7 +402,7 @@ of bounded height with quantum query algorithms.}}
 \begin{frame}
     \frametitle{Small definitions and intuitions.}
 
-    \begin{minipage}{.30\textwidth}
+    \begin{minipage}{.45\textwidth}
         \begin{itemize}
             \item \textbf{$\pm k$ strings: $\phantom{decomposition}$}
         \end{itemize}
@@ -414,32 +415,12 @@ of bounded height with quantum query algorithms.}}
                 \draw[dotted, red] (2, -.5) -- (4.5, -.5);
                 \draw[-latex, red, thick] (4.3, -.5) --node[right] {$+ k$} (4.3, 2.3);
             \end{tikzpicture}
-            \caption{Representation of a $+ k$ string.}
-        \end{figure}
-    \end{minipage}
-    \hfill
-    \pause
-    \begin{minipage}{.30\textwidth}
-        \begin{itemize}
-            \item \textbf{Minimal $\pm k$ strings:}
-        \end{itemize}
-        \begin{figure}
-            \begin{tikzpicture}[scale=.55]
-                \draw[latex-latex, thick] (0, 2.5) -- (0, 0)  -- (4.5, 0);
-                \draw[red, dashed] (-.2, 1) -- (4.5, 1);
-                \draw[dashed] (-.2, 2) -- (4.5, 2);
-                \draw (0, 0) node[above left] {0};
-                \draw[red] (0, 1) node[above left] {1};
-                \draw (0, 2) node[above left] {2};
-                \draw[blue, very thick] (0, 0) -- (1, 1) -- (2, 0) -- (4, 2);
-                \draw[red, very thick] (2, 0) -- (4,2);
-            \end{tikzpicture}
-            \caption{A non-minimal $+2$ string.}
+            \caption{Representation of a $+k$-string.}
         \end{figure}
     \end{minipage}
     \pause
     \hfill
-    \begin{minipage}{.3\textwidth}
+    \begin{minipage}{.45\textwidth}
         \begin{itemize}
             \item \textbf{Minimal decomposition:}
         \end{itemize}
@@ -562,7 +543,7 @@ of bounded height with quantum query algorithms.}}
 
     \begin{minipage}{.45\textwidth}
         \begin{itemize}
-            \item \textbf{Second half:}
+            \item \textbf{Highest +2-substring:}
         \end{itemize}
         \begin{figure}
             \begin{tikzpicture}[scale=.5]
@@ -571,73 +552,61 @@ of bounded height with quantum query algorithms.}}
                     \draw[red, dashed, thick] (-.2, 2) -- (9.5, 2);
                     \draw[dashed] (-.2, 1) -- (9.5, 1);
                     \draw[blue, very thick] (0, 0) -- (1,1);
-                    \draw[blue, dashed] (1, .5) -- (1, 1.5);
+                    \draw[red, dashed] (1, .5) -- (1, 1.5);
                 }
                 \visible<2->{
                     \draw[blue, very thick] (1,1) -- (2, 2);
                     \draw[blue, very thick] (2, 2) -- (3, 1);
-                    \draw[dashed, blue] (3, .5) -- (3, 1.5);
+                    \draw[dashed, red] (3, .5) -- (3, 1.5);
                 }
                 \visible<3->{
                     \draw[blue, very thick] (3,1) -- (4, 0);
                     \draw[blue, very thick] (4, 0) -- (5, 1);
-                    \draw[dashed, blue] (5, .5) -- (5, 1.5);
+                    \draw[dashed, red] (5, .5) -- (5, 1.5);
                 }
                 \visible<4->{
                     \draw[blue ,fill=blue] (6, 1) circle (1.5pt);
                     \draw[blue, fill=blue] (6.5, 1) circle (1.5pt);
                     \draw[blue, fill=blue] (7, 1) circle (1.5pt);
-                    \draw[blue, dashed] (8, .5) -- (8, 1.5);
+                    \draw[dashed, red] (8, .5) -- (8, 1.5);
                     \draw[blue, very thick] (8, 1) -- (9, 0);
                 }
-                \visible<5->{
-                    \draw[latex-latex, thick] (1.25+0, 2.5-3.5) -- (1.25+0, 0-3.5) -- (1.25+6.5, 0-3.5);
-                    \draw[red, dashed, thick] (1.25+-.2, 2-3.5) -- (1.25+6.5, 2-3.5);
-                    \draw[dashed] (1.25+-.2, 1-3.5) -- (1.25+6.5, 1-3.5);
-                    \draw[blue, very thick] (1.25+1, 1-3.5) -- (1.25+3,3-3.5);
-                    \draw[blue, dashed] (1.25+1, .5-3.5) -- (1.25+1, 1.5-3.5);
-                    \draw[blue, very thick] (1.25+4, 1-3.5) -- (1.25+6,-1-3.5);
-                    \draw[blue, dashed] (1.25+4, .5-3.5) -- (1.25+4, 1.5-3.5);}
+                \visible<5>{
+                    \draw[red, thick] (5, 1) -- (7, -1);
+                }
+
+                \visible<6->{
+                    \draw[red, thick] (5, 1) -- (7, 3);
+                }
             \end{tikzpicture}
         \end{figure}
     \end{minipage}
     \hfill
     \begin{minipage}{.45\textwidth}
-        \visible<6->{
+        \visible<7->{
             \begin{itemize}
-                \item \textbf{First half}:
+                \item \textbf{Lowest +2-substring:}
             \end{itemize}}
-        \vspace*{1cm}
-        \begin{tikzpicture}[scale=.5]
-            \visible<6->{
-                \draw[latex-latex, thick] (0, 2.5) -- (0, 0) -- (9.5, 0);
-                \draw[red, dashed, thick] (-.2, 2) -- (9.5, 2);
-                \draw[dashed] (-.2, 1) -- (9.5, 1);
-                \draw[blue, very thick] (0, 0) -- (1,1);
-                \draw[blue, very thick] (7, 1) -- (9, 3);
+        \begin{figure}
+            \begin{tikzpicture}[scale=.5]
+                \visible<7->{
+                    \draw[latex-latex, thick] (0, 2.5) -- (0, 0) -- (9.5, 0);
+                    \draw[red, dashed, thick] (-.2, 2) -- (9.5, 2);
+                    \draw[dashed] (-.2, 1) -- (9.5, 1);
+                    \draw[blue, very thick] (0, 0) -- (1,1);
+                    \draw[blue, very thick] (7, 1) -- (9, 3);
 
-                \draw[red] (0, -.5) -- (0, 2.5);
-                \draw[red] (8, -.5) -- (8, 2.5);
-                \draw[red] (4, -.5) -- (4, 2.5);}
+                    \draw[blue, very thick] (2, 0) -- (4, 2);
+                    \draw[blue, very thick] (4, 0) -- (6, 2);
 
-            \visible<7>{
-                \draw[green, thick] (5.7, -.7) -- (6, -1) -- (6.6, -.4);}
-            \visible<8>{
-                \draw[green, thick] (3.7, -.7) -- (4, -1) -- (4.6, -.4);
-                \draw[red, thick] (5.7, -.4) -- (6.3, -1);
-                \draw[red, thick] (5.7, -1) -- (6.3, -.4);
-            }
-            \visible<9->{
-                \draw[green, thick] (1.7, -.7) -- (2, -1) -- (2.6, -.4);
-                \draw[red, thick] (5.7, -.4) -- (6.3, -1);
-                \draw[red, thick] (5.7, -1) -- (6.3, -.4);
-                \draw[red, thick] (3.7, -.4) -- (4.3, -1);
-                \draw[red, thick] (3.7, -1) -- (4.3, -.4);
-            }
+                    \draw[red] (0, -.5) -- (0, 2.5);
+                    \draw[red] (8, -.5) -- (8, 2.5);
+                    \draw[red] (4, -.5) -- (4, 2.5);}
 
-        \end{tikzpicture}
+            \end{tikzpicture}
+        \end{figure}
     \end{minipage}
-    {\large \[\visible<10->{Q(\Dyck{2,n}) = O\left(\sqrt{n}\right)} \visible<11->{\implies Q(\Dyck{k,n})= O\left(\sqrt{n}(\log_2(n))^{0.5(k-2)}\right)}\]}
+    {\large \[\visible<8->{Q(\Dyck{2,n}) = O\left(\sqrt{n}\right)} \visible<9->{\implies Q(\Dyck{k,n})= O\left(\sqrt{n}(\log_2(n))^{0.5(k-2)}\right)}\]}
 \end{frame}
 
 \section{New idea to get better quantum query complexity bounds }
@@ -662,30 +631,34 @@ of bounded height with quantum query algorithms.}}
                 \For{$1 \leq d_2 < d_1$}
                 \State $\ddots$
                 \For{$1\leq d_{k-1} < d_{k-2}$}
-                \State \texttt{Do smthg}
+                \State \texttt{Find a} $\pm(k+1)$-string
                 \EndFor
                 \EndFor
                 \EndFor
             \end{algorithmic}
-            \caption{Currents algorithm behavior}
+            \caption{Inexact simplification of the original algorithm.}
         \end{figure}
     \end{minipage}
     \hfill
     \begin{minipage}{.45\textwidth}
         \begin{figure}
             \begin{tikzpicture}[scale=.4]
-                \draw[thick, latex-latex] (0, 10) -- (0, 0) -- (10, 0);
-                \draw (10, 0) node[below] {$d_1$};
-                \draw (0, 10) node[left] {$d_2$};
-                \draw[dotted] (0, 0) -- (10, 10);
-                \draw[black, fill=black] (2.5, 1.7) circle(1pt);
-                \draw[-latex] (2.5, 1.7) -- (3.2, 1.7);
-                \draw[-latex] (2.5, 1.7) -- (2.5, 2.4);
-                \draw (0, 0) node[below left] {(1,1)};
-                \draw[fill = blue, fill opacity=.2, blue] (10, 10) -- (8, 8) -- (8, 7) -- (10, 7);
-                \draw[red, fill = red] (8, 7) circle (3pt);
+                \visible<2->{
+                    \draw[thick, latex-latex] (0, 10) -- (0, 0) -- (10, 0);
+                    \draw (10, 0) node[below] {$d_1$};
+                    \draw (0, 10) node[left] {$d_2$};
+                    \draw[dotted] (0, 0) -- (10, 10);
+                    \draw (0, 0) node[below left] {(1,1)};}
+                \visible<3->{
+                    \draw[red, fill = red] (6, 4) circle (3pt);
+                    \draw[red, <- ] (6, 4) -- (4, 8) node[above] {$\pm(4)$-string};
+                }
+                \visible<4->{
+                    \draw[fill = blue, fill opacity=.2, blue] (10, 10) -- (6, 6) -- (6, 4) -- (10, 4);
+                    \draw[blue, <- ] (8, 6) -- (5, 2) node[below] {$\pm(4)$-string};}
             \end{tikzpicture}
-            \caption{Graph for $k=4$.}
+            \visible<2->{
+                \caption{Graph for $k=4$.}}
         \end{figure}
     \end{minipage}
 \end{frame}
@@ -712,6 +685,13 @@ of bounded height with quantum query algorithms.}}
 
 
 \begin{frame}
+    \centering
+    {\Huge
+        Thanks for your attention.\\[1cm]
+
+        Question Time\\[1cm]}
+
+
     \bibliographystyle{plain}
     \bibliography{biblio}
 

@@ -5,3 +5,5 @@ slide 15: Says things simpler, important
 slide 16: not clear, should work on my explanation
 
 slide 18: More graphical explanation, important.
+
+  
