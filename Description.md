@@ -4,4 +4,5 @@ This repository contains every material, report and slide that I have used or wr
 May the 2nd 2022 to July the 22nd 2022.
 
 My work focus on the quantum query algorithm and more precisely on 
-the quantum query complexity of recognizing Dyck language. Both concepts are really interesting and it has been exciting to made them join. D       
+the quantum query Complexity of recognizing Dyck languages
+                of bounded height. Both concepts are really interesting and it has been exciting to made them join. D       
